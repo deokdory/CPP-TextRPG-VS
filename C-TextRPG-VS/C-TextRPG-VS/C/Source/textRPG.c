@@ -76,9 +76,6 @@ enum COMBAT_INFO{
     HEALTH_BAR,
     STAT
 };
-
-// 한글 커밋 테스트
-
 typedef struct {
     char* name;
     int cooldown;
