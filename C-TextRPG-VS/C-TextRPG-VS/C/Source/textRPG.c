@@ -106,7 +106,7 @@ typedef struct {
 	int atk;
 	int def;
 	int spd;
-	float exp;
+	int exp;
 	int lvl;
 	Item iWeapon;
 	Item iHead;
@@ -271,7 +271,7 @@ void Initialize() {
 			EnemyType[MUMMY].class = WARRIOR;
 		}
 		{ //산에 사는 적들(마왕)
-			EnemyType[DEMON_KING].name = "DEMON KING";
+			EnemyType[DEMON_KING].name = "DEMONKING";
 			EnemyType[DEMON_KING].class = COMMON;
 		}
 	}
