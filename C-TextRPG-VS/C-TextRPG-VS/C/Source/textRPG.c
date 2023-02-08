@@ -250,7 +250,7 @@ void Initialize() {
 			StatPerLvl[COMMON].def = 12;
 			StatPerLvl[COMMON].spd = 10;
 		}
-	}
+	} 
 	{ //적 데이터 초기화
 		{ //숲에 사는 적들
 			EnemyType[WOLF].name = "WOLF";
