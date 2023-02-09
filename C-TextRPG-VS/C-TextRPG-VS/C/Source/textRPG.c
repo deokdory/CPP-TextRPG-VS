@@ -100,20 +100,21 @@ typedef struct {
 typedef struct {
 	char* name;
 	int class; // CHARACTER_CLASS
-	int type; // CHARACTER_TYPE
+	int type; // CHARACTER_TYPE(아군 or 적)
 	int hp;
 	int maxHp;
 	int atk;
 	int def;
 	int spd;
 	int exp;
+	int maxExp;
 	int lvl;
 	Item iWeapon;
 	Item iHead;
 	Item iArmor;
 	Item iShoes;
 	bool isAlive;
-	int gold;
+	int gold; // 몬스터 처치 시 보상 용 골드
 } Character;
 typedef struct {
 	char* name;
@@ -129,7 +130,9 @@ void Compareint(int*, int*); //
 
 //캐릭터 관련 함수
 void SetHero(Character*, int class, int lvl);
+void GainExp(Character* Who, int exp);
 void InitCharacter(Character* Who, int class, int lvl);
+void LevelUp(Character* Who);
 
 //전투 관련 함수
 //적 생성 함수
@@ -305,10 +308,24 @@ void InitCharacter(Character* Who, int class, int lvl) {
 	Who->exp = 0; Who->lvl = lvl; Who->gold = 0;  Who->isAlive = true;
 }
 
+void LevelUp(Character* Who) {
+	Who->lvl++;
+	Who->exp = Who->exp - Who->maxExp;
+	Who->maxExp = 
+}
+
 void SetHero(Character* Hero, int class, int lvl) {
 	Hero->name = &"HERO";
 	InitCharacter(Hero, class, lvl);
 	Hero->type = HERO;
+}
+
+void GainExp(Character* Who, int exp) {
+	Who->exp += exp;
+	if (Who->exp >= Who->maxExp) {
+		LevelUp(Who);
+	}
+	return 0;
 }
 
 
