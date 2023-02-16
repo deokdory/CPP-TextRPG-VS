@@ -26,10 +26,12 @@
     <ClCompile Include="C\textRPG.c">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="CPP\Source\Hero.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CPP\Header\Character.h" />
     <ClInclude Include="CPP\Header\stdafx.h" />
+    <ClInclude Include="CPP\Header\Hero.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
