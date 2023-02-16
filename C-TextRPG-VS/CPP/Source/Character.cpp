@@ -1,10 +1,10 @@
-#include "stdafx.h"
+#include "pch.h"
 #include "Character.h"
- 
+
 int Character::num_of_character = 0;
 
 Character::Character()
-    : name("NAME"),
+    : name("CHARACTER"),
       class_of_character(Class::COMMON),
       max_hp(COMMON_MAXHP_ORIGIN),
       hp(max_hp),
@@ -13,11 +13,16 @@ Character::Character()
       spd(COMMON_SPD_ORIGIN),
       lvl(1),
       is_dead(false) {
+  //std::cout << "기본 생성자 호출" << std::endl;
   num_of_character++;
 }
 
 Character::Character(std::string _name, int _lvl)
-    : name(_name), class_of_character(Class::COMMON), lvl(_lvl), is_dead(false) {
+    : name(_name),
+      class_of_character(Class::COMMON),
+      lvl(_lvl),
+      is_dead(false) {
+  //std::cout << "매개변수 생성자 호출" << std::endl;
   int lvl_for_stat = 0;
   if (_lvl > 0) {
     lvl_for_stat = _lvl - 1;
@@ -46,6 +51,7 @@ Character::Character(const Character& _hero)
       spd(_hero.spd),
       lvl(_hero.lvl),
       is_dead(_hero.is_dead) {
+  //std::cout << "복사 생성자 호출" << std::endl;
   num_of_character++;
 }
 
@@ -70,16 +76,90 @@ std::string Character::GetClass() const {
   return class_name;
 }
 
+int Character::GetLvl() const { return lvl; }
+
 void Character::PrintTotalCharacter() {
   std::cout << "total character : " << num_of_character << std::endl;
 }
 
 void Character::PrintStatus() {
-  std::cout << "name : " << name << "\tclass : " << GetClass() << std::endl;
-  std::cout << "hp : " << hp << " / " << max_hp << std::endl;
-  std::cout << "atk : " << atk << "\tdef : " << def << "\tspd : " << spd
-            << std::endl;
-  std::cout << "lvl : " << lvl << "\t\tis_dead : " << is_dead << endll;
+  for (int i = 0; i < HP_BAR_LENGTH; i++) {
+    std::cout << "=";
+  }
+  ENDL;
+  std::cout << "name : ";
+  SET_FORMAT_WIDTH_L(15);
+  std::cout << name;
+  RESET_FORMAT;
+  std::cout << "lvl : ";
+  SET_FORMAT_WIDTH_R(2);
+  std::cout << lvl << std::endl;
+  RESET_FORMAT;
+  PrintHp();
+  SET_FORMAT_WIDTH_R(16);
+  std::cout << GetClass() << std::endl;
+  RESET_FORMAT;
+  PrintHpBar();
+  ENDL;
+  std::cout << "ATK ";
+  SET_FORMAT_WIDTH_L(4);
+  std::cout << atk;
+  RESET_FORMAT;
+  std::cout << "DEF ";
+  SET_FORMAT_WIDTH_L(4);
+  std::cout << def;
+  RESET_FORMAT;
+  std::cout << "SPD ";
+  SET_FORMAT_WIDTH_L(4);
+  std::cout << spd;
+  RESET_FORMAT;
+  std::cout << std::endl;
+  for (int i = 0; i < HP_BAR_LENGTH; i++) {
+    std::cout << "=";
+  }
+  ENDL;
 }
 
-Character::~Character() { num_of_character--; }
+double Character::GetHpRemain() const {
+  if (max_hp != 0) {
+    return (hp / max_hp) * 100;
+  } else {
+    std::cout << "ERROR : max_hp == 0!!" << std::endl;
+    return 0;
+  }
+}
+
+void Character::PrintHp() const {
+  std::cout << "HP : ";
+  SET_FORMAT_WIDTH_R(3);
+  std::cout << hp;
+  RESET_FORMAT;
+  std::cout << " / ";
+  SET_FORMAT_WIDTH_L(3);
+  std::cout << max_hp;
+  RESET_FORMAT;
+  //SET_FORMAT_2PREC;
+  //std::cout << GetHpRemain() << "%)";
+  //RESET_FORMAT;
+}
+
+void Character::PrintHpBar() const {
+  float hp_per_box;
+  if (HP_BAR_LENGTH) {
+    hp_per_box = 100 / HP_BAR_LENGTH;
+  } else {
+    printf("ERROR : HP_BAR_LENGTH = 0!!");
+  }
+  for (int i = 1; i <= HP_BAR_LENGTH; i++) {
+    if ((int)GetHpRemain() > hp_per_box * i) {
+      printf("■");
+    } else {
+      printf("□");
+    }
+  }
+}
+
+Character::~Character() {
+  //std::cout << "캐릭터 수 감소" << std::endl;
+  num_of_character--;
+}

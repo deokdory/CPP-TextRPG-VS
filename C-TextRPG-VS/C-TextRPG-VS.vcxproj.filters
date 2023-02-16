@@ -21,13 +21,13 @@
     <ClCompile Include="C\textRPG.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="CPP\Source\main.cpp">
+    <ClCompile Include="CPP\Source\master.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="CPP\Source\stdafx.cpp">
+    <ClCompile Include="CPP\Source\pch.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="CPP\Header\main.h">
+    <ClCompile Include="CPP\Header\master.h">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="CPP\Source\Hero.cpp">
@@ -35,7 +35,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CPP\Header\stdafx.h">
+    <ClInclude Include="CPP\Header\pch.h">
       <Filter>소스 파일</Filter>
     </ClInclude>
     <ClInclude Include="CPP\Header\Character.h">
