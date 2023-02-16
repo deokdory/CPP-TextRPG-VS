@@ -47,6 +47,8 @@ class Character {
 
   std::string GetClass() const;
 
+  static void PrintTotalCharacter();
+
   virtual void PrintStatus();
 
   virtual ~Character();
