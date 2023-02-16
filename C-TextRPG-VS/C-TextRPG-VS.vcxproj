@@ -19,17 +19,16 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CPP\Header\master.h" />
+    <ClCompile Include="CPP\Source\Message.cpp" />
     <ClCompile Include="CPP\Source\pch.cpp" />
     <ClCompile Include="CPP\Source\Character.cpp" />
     <ClCompile Include="CPP\Source\master.cpp" />
-    <ClCompile Include="C\textRPG.c">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="CPP\Source\Hero.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CPP\Header\master.h" />
     <ClInclude Include="CPP\Header\Character.h" />
+    <ClInclude Include="CPP\Header\Message.h" />
     <ClInclude Include="CPP\Header\pch.h" />
     <ClInclude Include="CPP\Header\Hero.h" />
   </ItemGroup>

@@ -21,9 +21,64 @@ int Hero::GetMaxExpForCurrentLvl() const {
   return max_exp_for_each_lvl[Character::GetLvl() - 1];
 }
 
-void Hero::PrintStatus() { Character::PrintStatus();
-  std::cout << "exp : " << exp << " / " << max_exp << std::endl;
-  std::cout << "gold : " << gold << std::endl;
+void Hero::GiveExp(int _exp) {
+  int prev_lvl = GetLvl();
+  exp += _exp;
+  std::cout << "경험치를 " << exp << "만큼 얻었다!" << std::endl;
+  SYSTEM_MESSAGE_DELAY;
+  while (true) {
+    if (exp >= max_exp) {
+      LvlUp();
+      exp -= max_exp;
+      max_exp = GetMaxExpForCurrentLvl();
+    } else {
+      break;
+    }
+  }
+}
+
+void Hero::PrintStatus() {
+  for (int i = 0; i < STATUS_LENGTH; i++) {
+    std::cout << "=";
+  }
+  ENDL;
+  SET_FORMAT_WIDTH_L(NAME_LIMIT + 2);
+  std::cout << Character::GetName();
+  RESET_FORMAT;
+  SET_FORMAT_WIDTH_R(STATUS_LENGTH - NAME_LIMIT - 2);
+  std::cout << GetClass() << std::endl;
+  RESET_FORMAT;
+  PrintHp();
+  PrintHpBar();
+  ENDL;
+  Character::PrintAtk();
+  Character::PrintDef();
+  Character::PrintSpd();
+  std::cout << std::endl;
+  for (int i = 0; i < STATUS_LENGTH; i++) {
+    std::cout << "-";
+  }
+  ENDL;
+  PrintExp();
+  std::cout << "           ";
+  Character::PrintLvl();
+  ENDL;
+  for (int i = 0; i < STATUS_LENGTH; i++) {
+    std::cout << "=";
+  }
+  ENDL;
+}
+
+void Hero::PrintExp() {
+  std::cout << "EXP ";
+  SET_FORMAT_WIDTH_R(3);
+  std::cout << exp;
+  RESET_FORMAT;
+  std::cout << " / ";
+  SET_FORMAT_WIDTH_L(3);
+  std::cout << max_exp;
+  RESET_FORMAT;
+
 }
 
   Hero::~Hero() {}

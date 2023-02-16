@@ -4,7 +4,7 @@
 int Character::num_of_character = 0;
 
 Character::Character()
-    : name("CHARACTER"),
+    : name("Character"),
       class_of_character(Class::COMMON),
       max_hp(COMMON_MAXHP_ORIGIN),
       hp(max_hp),
@@ -18,11 +18,15 @@ Character::Character()
 }
 
 Character::Character(std::string _name, int _lvl)
-    : name(_name),
-      class_of_character(Class::COMMON),
+    : class_of_character(Class::COMMON),
       lvl(_lvl),
       is_dead(false) {
   //std::cout << "매개변수 생성자 호출" << std::endl;
+  if (_name.length() > NAME_LIMIT) {
+    std::cout << "ERROR : name out of range (name limit : " << NAME_LIMIT << ")" << std::endl;
+    _name = "Character";
+  }
+  name = _name;
   int lvl_for_stat = 0;
   if (_lvl > 0) {
     lvl_for_stat = _lvl - 1;
@@ -55,6 +59,17 @@ Character::Character(const Character& _hero)
   num_of_character++;
 }
 
+void Character::LvlUp() {
+  lvl++;
+  max_hp += COMMON_MAXHP_PER_LVL;
+  hp += COMMON_MAXHP_PER_LVL;
+  atk += COMMON_ATK_PER_LVL;
+  def += COMMON_DEF_PER_LVL;
+  spd += COMMON_SPD_PER_LVL;
+  std::cout << name << "의 레벨이 올랐다!" << std::endl;
+  SYSTEM_MESSAGE_DELAY;
+}
+
 std::string Character::GetClass() const {
   std::string class_name;
   switch (class_of_character) {
@@ -76,45 +91,54 @@ std::string Character::GetClass() const {
   return class_name;
 }
 
+std::string Character::GetName() const { return name; }
+
+void Character::SetMaxHp(int _max_hp) { max_hp = _max_hp; }
+void Character::SetHp(int _hp) { hp = _hp; }
+void Character::SetAtk(int _atk) { atk = _atk; }
+void Character::SetDef(int _def) { def = _def; }
+void Character::SetSpd(int _spd) { spd = _spd; }
+void Character::SetLvl(int _lvl) { lvl = _lvl; }
+
+int Character::GetMaxHp() const { return max_hp; }
+double Character::GetHp() const { return hp; }
+int Character::GetAtk() const { return atk; }
+int Character::GetDef() const { return def; }
+int Character::GetSpd() const { return spd; }
 int Character::GetLvl() const { return lvl; }
+bool Character::IsDead() const { return false; }
 
 void Character::PrintTotalCharacter() {
   std::cout << "total character : " << num_of_character << std::endl;
 }
 
 void Character::PrintStatus() {
-  for (int i = 0; i < HP_BAR_LENGTH; i++) {
+  for (int i = 0; i < STATUS_LENGTH; i++) {
     std::cout << "=";
   }
   ENDL;
-  std::cout << "name : ";
-  SET_FORMAT_WIDTH_L(15);
-  std::cout << name;
+  SET_FORMAT_WIDTH_L(NAME_LIMIT + 2);
+  std::cout << GetName();
   RESET_FORMAT;
-  std::cout << "lvl : ";
-  SET_FORMAT_WIDTH_R(2);
-  std::cout << lvl << std::endl;
-  RESET_FORMAT;
-  PrintHp();
-  SET_FORMAT_WIDTH_R(16);
+  SET_FORMAT_WIDTH_R(STATUS_LENGTH - NAME_LIMIT - 2);
   std::cout << GetClass() << std::endl;
   RESET_FORMAT;
+
+  PrintHp();
   PrintHpBar();
   ENDL;
-  std::cout << "ATK ";
-  SET_FORMAT_WIDTH_L(4);
-  std::cout << atk;
-  RESET_FORMAT;
-  std::cout << "DEF ";
-  SET_FORMAT_WIDTH_L(4);
-  std::cout << def;
-  RESET_FORMAT;
-  std::cout << "SPD ";
-  SET_FORMAT_WIDTH_L(4);
-  std::cout << spd;
-  RESET_FORMAT;
-  std::cout << std::endl;
-  for (int i = 0; i < HP_BAR_LENGTH; i++) {
+  PrintAtk();
+  PrintDef();
+  PrintSpd();
+  ENDL;
+  for (int i = 0; i < STATUS_LENGTH; i++) {
+    std::cout << "-";
+  }
+  ENDL;
+  std::cout << "                        ";
+  Character::PrintLvl();
+  ENDL;
+  for (int i = 0; i < STATUS_LENGTH; i++) {
     std::cout << "=";
   }
   ENDL;
@@ -130,7 +154,7 @@ double Character::GetHpRemain() const {
 }
 
 void Character::PrintHp() const {
-  std::cout << "HP : ";
+  std::cout << "HP ";
   SET_FORMAT_WIDTH_R(3);
   std::cout << hp;
   RESET_FORMAT;
@@ -157,6 +181,34 @@ void Character::PrintHpBar() const {
       printf("□");
     }
   }
+}
+
+void Character::PrintAtk() const {
+  std::cout << "ATK ";
+  SET_FORMAT_WIDTH_L(4);
+  std::cout << GetAtk();
+  RESET_FORMAT;
+}
+
+void Character::PrintDef() const {
+  std::cout << "DEF ";
+  SET_FORMAT_WIDTH_L(4);
+  std::cout << GetDef();
+  RESET_FORMAT;
+}
+
+void Character::PrintSpd() const {
+  std::cout << "SPD ";
+  SET_FORMAT_WIDTH_L(4);
+  std::cout << GetSpd();
+  RESET_FORMAT;
+}
+
+void Character::PrintLvl() const {
+  std::cout << "lvl ";
+  SET_FORMAT_WIDTH_R(2);
+  std::cout << GetLvl();
+  RESET_FORMAT;
 }
 
 Character::~Character() {

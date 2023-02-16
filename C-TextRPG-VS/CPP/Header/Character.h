@@ -1,8 +1,9 @@
 #pragma once
+#include "Message.h"
 
 #define PARTY_MAX 4  // 파티 최대 인원 (아군, 적군 공통)
 
-#define NAME_LIMIT 12
+#define NAME_LIMIT 14
 #define CLASS_TOTAL 4
 
 #define SET_FORMAT_WIDTH_L(length) \
@@ -24,7 +25,8 @@
 
 #define CHARACTER_LVL_MAX 10
 
-#define HP_BAR_LENGTH 30
+#define STATUS_LENGTH 30
+#define HP_BAR_LENGTH 18
 
 enum class Class {
   COMMON,
@@ -57,15 +59,38 @@ class Character {
   Character(std::string _name, int _lvl);
   Character(const Character& other);
 
+  void LvlUp();
   std::string GetClass() const;
+  std::string GetName() const;
+
+  void SetMaxHp(int _max_hp);
+  void SetHp(int _hp);
+  void SetAtk(int _atk);
+  void SetDef(int _Def);
+  void SetSpd(int _spd);
+  void SetLvl(int _lvl);
+
+  int GetMaxHp() const;
+  double GetHp() const;
+  int GetAtk() const;
+  int GetDef() const;
+  int GetSpd() const;
   int GetLvl() const;
 
+  bool IsDead() const;
+  
   static void PrintTotalCharacter();
 
   virtual void PrintStatus();
   double GetHpRemain() const;
   void PrintHp() const;
   void PrintHpBar() const;
+
+  void PrintAtk() const;
+  void PrintDef() const;
+  void PrintSpd() const;
+  void PrintLvl() const;
+
 
   virtual ~Character();
 };

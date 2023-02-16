@@ -13,8 +13,10 @@ class Hero : public Character {
   Hero(const Hero& other);
 
   int GetMaxExpForCurrentLvl() const;
+  void GiveExp(int _exp);
 
   virtual void PrintStatus();
+  void PrintExp();
 
   ~Hero();
 };
