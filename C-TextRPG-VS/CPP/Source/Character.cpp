@@ -36,6 +36,19 @@ Character::Character(std::string _name, int _lvl)
   num_of_character++;
 }
 
+Character::Character(const Character& _hero)
+    : name(_hero.name),
+      class_of_character(_hero.class_of_character),
+      max_hp(_hero.max_hp),
+      hp(_hero.hp),
+      atk(_hero.atk),
+      def(_hero.def),
+      spd(_hero.spd),
+      lvl(_hero.lvl),
+      is_dead(_hero.is_dead) {
+  num_of_character++;
+}
+
 std::string Character::GetClass() const {
   std::string class_name;
   switch (class_of_character) {

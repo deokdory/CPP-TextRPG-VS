@@ -44,11 +44,11 @@ class Character {
  public:
   Character();
   Character(std::string _name, int _lvl);
+  Character(const Character& other);
 
   std::string GetClass() const;
 
   static void PrintTotalCharacter();
-
   virtual void PrintStatus();
 
   virtual ~Character();
