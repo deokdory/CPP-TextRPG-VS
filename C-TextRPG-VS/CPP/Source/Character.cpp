@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Character.h"
-
+ 
 int Character::num_of_character = 0;
 
 Character::Character()

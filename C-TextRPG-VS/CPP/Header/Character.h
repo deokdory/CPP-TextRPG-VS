@@ -20,7 +20,7 @@
 
 enum class Class {
   COMMON,
-  WARRIOR, 
+  WARRIOR,
   ARCHOR,
   THIEF,
 };
