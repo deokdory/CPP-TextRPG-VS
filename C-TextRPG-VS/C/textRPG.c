@@ -6,7 +6,7 @@
 #include <conio.h>
 
 #define NAME_LIMIT 12
-
+ 
 #undef random
 #define random() ((double)rand()/RAND_MAX)
 #define CLASS_TOTAL 4
