@@ -5,9 +5,14 @@
 #include <time.h>
 #include <conio.h>
 
+#define NAME_LIMIT 12
+
 #undef random
 #define random() ((double)rand()/RAND_MAX)
 #define CLASS_TOTAL 4
+
+#define CHARACTER_LVL_MAX 10
+#define PARTY_MAX 4  // 파티 최대 인원 (아군, 적군 공통)
 
 #define SYSTEM_MESSAGE_DELAY 1500
 
@@ -20,9 +25,6 @@
 #define HEALTH_BAR_LENGTH 15
 #define COMBAT_INFO_ROW 4
 
-#define CHARACTER_LVL_MAX 10
-#define NAME_LIMIT 16
-#define PARTY_MAX 4 // 파티 최대 인원 (아군, 적군 공통)
 
 enum CHARACTER_CLASS {
 	WARRIOR,
@@ -34,6 +36,7 @@ enum CHARACTER_TYPE {
 	HERO,
 	ENEMY,
 };
+
 enum ENEMY_TYPE {
 	WOLF,
 	GOBLIN,
