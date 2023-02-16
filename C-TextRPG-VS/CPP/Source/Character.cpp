@@ -21,8 +21,11 @@ Character::Character(std::string _name, int _lvl)
   int lvl_for_stat = 0;
   if (_lvl > 0) {
     lvl_for_stat = _lvl - 1;
+  } else if (_lvl > 10) {
+    std::cout << "ERROR : over level max" << std::endl;
+    lvl_for_stat = 10;
   } else {
-    std::cout << "ERROR : cannot create character for 0 lvl" << std::endl;
+    std::cout << "ERROR : lvl out of range" << std::endl;
     lvl_for_stat = 1;
   }
   max_hp = COMMON_MAXHP_ORIGIN + COMMON_MAXHP_PER_LVL * lvl_for_stat;
@@ -32,6 +35,7 @@ Character::Character(std::string _name, int _lvl)
   spd = COMMON_SPD_ORIGIN + COMMON_SPD_PER_LVL * lvl_for_stat;
   num_of_character++;
 }
+
 std::string Character::GetClass() const {
   std::string class_name;
   switch (class_of_character) {
@@ -53,6 +57,10 @@ std::string Character::GetClass() const {
   return class_name;
 }
 
+void Character::PrintTotalCharacter() {
+  std::cout << "total character : " << num_of_character << std::endl;
+}
+
 void Character::PrintStatus() {
   std::cout << "name : " << name << "\tclass : " << GetClass() << std::endl;
   std::cout << "hp : " << hp << " / " << max_hp << std::endl;
@@ -61,4 +69,4 @@ void Character::PrintStatus() {
   std::cout << "lvl : " << lvl << "\t\tis_dead : " << is_dead << endll;
 }
 
-Character::~Character() {}
+Character::~Character() { num_of_character--; }
