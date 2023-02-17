@@ -25,6 +25,7 @@
     <ClCompile Include="CPP\Source\Character.cpp" />
     <ClCompile Include="CPP\Source\master.cpp" />
     <ClCompile Include="CPP\Source\Hero.cpp" />
+    <ClCompile Include="CPP\Source\Enemy.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CPP\Header\Combat.h" />
@@ -33,6 +34,7 @@
     <ClInclude Include="CPP\Header\Message.h" />
     <ClInclude Include="CPP\Header\pch.h" />
     <ClInclude Include="CPP\Header\Hero.h" />
+    <ClInclude Include="CPP\Header\Enemy.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

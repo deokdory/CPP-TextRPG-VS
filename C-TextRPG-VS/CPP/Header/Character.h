@@ -54,15 +54,25 @@ class Character {
   static int num_of_character;
 
  public:
-
+  //持失切
   Character();
   Character(std::string _name, int _lvl);
   Character(const Character& other);
 
-  void LvlUp();
   std::string GetClass() const;
   std::string GetName() const;
-
+  void LvlUp();
+  
+  //Get
+  int GetMaxHp() const;
+  double GetHp() const;
+  double GetHpRemain() const;
+  int GetAtk() const;
+  int GetDef() const;
+  int GetSpd() const;
+  int GetLvl() const;
+  
+  //Set
   void SetMaxHp(int _max_hp);
   void SetHp(int _hp);
   void SetAtk(int _atk);
@@ -70,27 +80,23 @@ class Character {
   void SetSpd(int _spd);
   void SetLvl(int _lvl);
 
-  int GetMaxHp() const;
-  double GetHp() const;
-  int GetAtk() const;
-  int GetDef() const;
-  int GetSpd() const;
-  int GetLvl() const;
+  //Combat
+  void Attack(Character& target);
 
-  bool IsDead() const;
-  
+  //Check
+  bool CheckIsDead();
+
+  //Print
   static void PrintTotalCharacter();
 
   virtual void PrintStatus();
-  double GetHpRemain() const;
   void PrintHp() const;
   void PrintHpBar() const;
-
   void PrintAtk() const;
   void PrintDef() const;
   void PrintSpd() const;
   void PrintLvl() const;
 
-
+  //社瑚切
   virtual ~Character();
 };

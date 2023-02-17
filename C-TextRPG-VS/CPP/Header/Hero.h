@@ -6,12 +6,16 @@ class Hero : public Character {
   int max_exp;
 
   static int gold;
-
- public:
+public:
   Hero();
   Hero(std::string _name, int _lvl);
   Hero(const Hero& other);
 
+  //Gold
+  int GetGold() const;
+  void SetGold(int _gold);
+
+  //Get
   int GetMaxExpForCurrentLvl() const;
   void GiveExp(int _exp);
 

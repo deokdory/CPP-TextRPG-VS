@@ -137,7 +137,7 @@ bool Character::CheckIsDead() {
         if (hp <= 0) {
             hp = 0;
             is_dead = true;
-            std::cout << name << "은 쓰러졌다." << endl;
+            std::cout << name << "은 쓰러졌다." << std::endl;
             SYSTEM_MESSAGE_DELAY;
         }
     } return is_dead;

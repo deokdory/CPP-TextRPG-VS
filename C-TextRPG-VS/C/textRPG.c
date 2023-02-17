@@ -6,7 +6,7 @@
 #include <conio.h>
 
 #define NAME_LIMIT 12
- 
+
 #undef random
 #define random() ((double)rand()/RAND_MAX)
 #define CLASS_TOTAL 4
@@ -194,7 +194,7 @@ int main() {
 		Combat(MOUNTAIN);
 		break;
 	}
-	
+
 	system("pause");
 }
 
@@ -256,7 +256,7 @@ void Initialize() {
 			StatPerLvl[COMMON].def = 12;
 			StatPerLvl[COMMON].spd = 10;
 		}
-	} 
+	}
 	{ //적 데이터 초기화
 		{ //숲에 사는 적들
 			EnemyType[WOLF].name = "WOLF";
@@ -314,7 +314,7 @@ void InitCharacter(Character* Who, int class, int lvl) {
 void LevelUp(Character* Who) {
 	Who->lvl++;
 	Who->exp = Who->exp - Who->maxExp;
-	Who->maxExp = 
+	Who->maxExp =
 }
 
 void SetHero(Character* Hero, int class, int lvl) {
@@ -578,7 +578,7 @@ void Combat(int PLACE) {
 			if (Hero[i].isAlive) alliesAlive++;
 			if (Enemy[i].isAlive) enemiesAlive++;
 		}
-		
+
 		if (enemiesAlive <= 0 || alliesAlive <= 0) {  // 양쪽 중 한 쪽이라도 전멸 시 전투 종료
 			break;
 		}
