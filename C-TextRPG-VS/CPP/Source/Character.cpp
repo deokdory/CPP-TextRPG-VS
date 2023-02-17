@@ -100,13 +100,56 @@ void Character::SetDef(int _def) { def = _def; }
 void Character::SetSpd(int _spd) { spd = _spd; }
 void Character::SetLvl(int _lvl) { lvl = _lvl; }
 
+void Character::Attack(Character& target) {
+    int damage = 0;
+    std::cout << name << "가 " << target.name << "을 공격했다";
+    for (int i = 0; i < 3; i++) {
+        printf(" .");
+        Sleep(500);
+    }
+    if (damage = atk - target.def < 0) {
+        damage = 0;
+    }
+
+    target.hp -= damage; 
+    std::cout << target.name << "은 " << damage << "의 피해를 입었다" << std::endl;
+    SYSTEM_MESSAGE_DELAY;
+    if(!(target.CheckIsDead())) {
+        std::cout << target.name << "은 반격했다";
+        for (int i = 0; i < 3; i++) {
+            printf(" .");
+            Sleep(500);
+        }
+        if (damage = target.atk - def < 0) {
+            damage = 0;
+       
+        hp -= damage;
+
+        std::cout << name << "은 " << damage << "의 피해를 입었다" << std::endl;
+        SYSTEM_MESSAGE_DELAY;
+        CheckIsDead();
+        }
+    }
+}
+
+bool Character::CheckIsDead() {
+    if (!is_dead) {
+        if (hp <= 0) {
+            hp = 0;
+            is_dead = true;
+            std::cout << name << "은 쓰러졌다." << endl;
+            SYSTEM_MESSAGE_DELAY;
+        }
+    } return is_dead;
+}
+
 int Character::GetMaxHp() const { return max_hp; }
 double Character::GetHp() const { return hp; }
 int Character::GetAtk() const { return atk; }
 int Character::GetDef() const { return def; }
 int Character::GetSpd() const { return spd; }
 int Character::GetLvl() const { return lvl; }
-bool Character::IsDead() const { return false; }
+bool Character::GetIsDead() const { return is_dead; }
 
 void Character::PrintTotalCharacter() {
   std::cout << "total character : " << num_of_character << std::endl;
