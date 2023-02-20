@@ -16,11 +16,6 @@ Hero::Hero(const Hero& other)
 	: Character::Character(other), skills(other.skills), exp(other.exp), max_exp(other.max_exp) {
 }
 
-int Hero::GetGold() const { return gold; }
-void Hero::SetGold(int _gold) { gold += _gold; }
-
-void Hero::AddGold(int _gold) { Hero::gold += _gold; }
-
 int Hero::GetMaxExpForCurrentLvl() const {
 	int max_exp_for_each_lvl[CHARACTER_LVL_MAX - 1] = { 20, 30, 40, 50, 60,
 													   70, 80, 90, 100 };

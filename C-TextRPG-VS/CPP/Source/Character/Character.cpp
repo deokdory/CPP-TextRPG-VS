@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Character.h"
+//#include <string>
 
 int Character::num_of_character = 0;
 

@@ -1,6 +1,7 @@
 #pragma once
 #include "Message.h"
 
+
 #define PARTY_MAX 4  // 파티 최대 인원 (아군, 적군 공통)
 
 #define NAME_LIMIT 14

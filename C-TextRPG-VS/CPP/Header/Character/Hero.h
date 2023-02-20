@@ -1,12 +1,12 @@
 #pragma once
 #include "Character.h"
 #include "Skill.h"
+  static int gold;
 
 class Hero : public Character {
   double exp;
   int max_exp;
 
-  static int gold;
   Skill* skills;
 
  public:
@@ -15,9 +15,6 @@ class Hero : public Character {
   Hero(const Hero& other);
 
   //Gold
-  int GetGold() const;
-  static void SetGold(int _gold);
-  static void AddGold(int _gold);
 
   //Get
   int GetMaxExpForCurrentLvl() const;

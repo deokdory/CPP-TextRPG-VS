@@ -18,7 +18,7 @@
     <ClCompile Include="CPP\Source\Character\Character.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="CPP\Source\master.cpp">
+    <ClCompile Include="CPP\Source\main.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="CPP\Source\pch.cpp">
@@ -42,6 +42,9 @@
     <ClCompile Include="CPP\Source\Item.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="CPP\Source\Gold.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CPP\Header\pch.h">
@@ -53,7 +56,7 @@
     <ClInclude Include="CPP\Header\Character\Hero.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="CPP\Header\master.h">
+    <ClInclude Include="CPP\Header\main.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="CPP\Header\Message.h">
@@ -69,6 +72,9 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="CPP\Header\Item.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="CPP\Header\Gold.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

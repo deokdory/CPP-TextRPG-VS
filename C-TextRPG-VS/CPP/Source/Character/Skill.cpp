@@ -1,6 +1,5 @@
-#include "Skill.h"
-
 #include "pch.h"
+#include "Skill.h"
 
 //스킬 클래스
 Skill::Skill() : cooldown(0) { name = "NULL"; }
