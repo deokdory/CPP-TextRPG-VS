@@ -92,17 +92,27 @@ std::string Character::GetClass() const {
 }
 
 std::string Character::GetName() const { return name; }
-
+ 
 void Character::SetMaxHp(int _max_hp) { max_hp = _max_hp; }
-void Character::SetHp(int _hp) { hp = _hp; }
+void Character::SetHp(int _hp) {
+  if (_hp > max_hp) {
+    _hp = max_hp;
+  }
+  hp = _hp;
+}
 void Character::SetAtk(int _atk) { atk = _atk; }
 void Character::SetDef(int _def) { def = _def; }
 void Character::SetSpd(int _spd) { spd = _spd; }
-void Character::SetLvl(int _lvl) { lvl = _lvl; }
+void Character::SetLvl(int _lvl) {
+  if (_lvl > CHARACTER_LVL_MAX) {
+    _lvl = CHARACTER_LVL_MAX;
+  }
+  lvl = _lvl;
+}
 
 void Character::Attack(Character& target) {
     int damage = 0;
-    std::cout << name << "가 " << target.name << "을 공격했다";
+    std::cout << name << "가 " << target.name << "을 공격하려고 한다";
     for (int i = 0; i < 3; i++) {
         printf(" .");
         Sleep(500);
@@ -114,22 +124,45 @@ void Character::Attack(Character& target) {
     target.hp -= damage; 
     std::cout << target.name << "은 " << damage << "의 피해를 입었다" << std::endl;
     SYSTEM_MESSAGE_DELAY;
-    if(!(target.CheckIsDead())) {
-        std::cout << target.name << "은 반격했다";
-        for (int i = 0; i < 3; i++) {
-            printf(" .");
-            Sleep(500);
-        }
-        if (damage = target.atk - def < 0) {
-            damage = 0;
-       
-        hp -= damage;
+//
+//    if(!(target.CheckIsDead())) {
+//        std::cout << target.name << "은 반격했다";
+//        for (int i = 0; i < 3; i++) {
+//            printf(" .");
+//            Sleep(500);
+//        }
+//        if (damage = target.atk - def < 0) {
+//            damage = 0;
+//       
+//        hp -= damage;
+//
+//        std::cout << name << "은 " << damage << "의 피해를 입었다" << std::endl;
+//        SYSTEM_MESSAGE_DELAY;
+//        CheckIsDead();
+//        }
+//    }
+}
 
-        std::cout << name << "은 " << damage << "의 피해를 입었다" << std::endl;
-        SYSTEM_MESSAGE_DELAY;
-        CheckIsDead();
-        }
-    }
+void Character::BoostMaxHp(int _amount, int duration) {
+  if (duration) {
+    max_hp = _amount;
+  }
+}
+
+void Character::BoostAtk(int _amount, int duration) {
+  if (duration) {
+    atk += _amount;
+  }
+}
+void Character::BoostDef(int _amount, int duration) {
+  if (duration) {
+    def += _amount;
+  }
+}
+void Character::BoostSpd(int _amount, int duration) {
+  if (duration) {
+    spd += _amount;
+  }
 }
 
 bool Character::CheckIsDead() {
@@ -149,7 +182,6 @@ int Character::GetAtk() const { return atk; }
 int Character::GetDef() const { return def; }
 int Character::GetSpd() const { return spd; }
 int Character::GetLvl() const { return lvl; }
-bool Character::GetIsDead() const { return is_dead; }
 
 void Character::PrintTotalCharacter() {
   std::cout << "total character : " << num_of_character << std::endl;

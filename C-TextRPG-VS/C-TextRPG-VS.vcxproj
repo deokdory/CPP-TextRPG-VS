@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CPP\Source\Combat\Combat.cpp" />
+    <ClCompile Include="CPP\Source\Item.cpp" />
     <ClCompile Include="CPP\Source\Message.cpp" />
     <ClCompile Include="CPP\Source\pch.cpp" />
     <ClCompile Include="CPP\Source\Character\Character.cpp" />
@@ -30,6 +31,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CPP\Header\Combat\Combat.h" />
+    <ClInclude Include="CPP\Header\Item.h" />
     <ClInclude Include="CPP\Header\master.h" />
     <ClInclude Include="CPP\Header\Character\Character.h" />
     <ClInclude Include="CPP\Header\Message.h" />

@@ -14,7 +14,9 @@ enum ActionInCombat {
 
 class Combat
 {
-	int allies_alive, enemy_alive;
+  Enemy* enemy;
+
+	int allies_alive, enemies_alive;
 	int total_reward_gold;
 
 public:

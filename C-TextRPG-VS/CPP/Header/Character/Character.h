@@ -61,8 +61,8 @@ class Character {
   std::string GetClass() const;
   std::string GetName() const;
   void LvlUp();
-  
-  //Get
+
+  // Get
   int GetMaxHp() const;
   double GetHp() const;
   double GetHpRemain() const;
@@ -70,8 +70,8 @@ class Character {
   int GetDef() const;
   int GetSpd() const;
   int GetLvl() const;
-  
-  //Set
+
+  // Set
   void SetMaxHp(int _max_hp);
   void SetHp(int _hp);
   void SetAtk(int _atk);
@@ -79,13 +79,19 @@ class Character {
   void SetSpd(int _spd);
   void SetLvl(int _lvl);
 
-  //Combat
+  // Combat
   void Attack(Character& target);
 
-  //Check
+  // Boost (한 가지만 가능하도록)
+  void BoostMaxHp(int _amount, int duration);
+  void BoostAtk(int _amount, int duration);
+  void BoostDef(int _amount, int duration);
+  void BoostSpd(int _amount, int duration);
+
+  // Check
   bool CheckIsDead();
 
-  //Print
+  // Print
   static void PrintTotalCharacter();
 
   virtual void PrintStatus();
