@@ -36,6 +36,8 @@ enum class Class {
 };
 
 class Character {
+ protected:
+  static int num_of_character;
 
   std::string name;
   Class class_of_character;
@@ -49,9 +51,6 @@ class Character {
   int lvl;
 
   bool is_dead;
-
- protected:
-  static int num_of_character;
 
  public:
   //»ı¼ºÀÚ

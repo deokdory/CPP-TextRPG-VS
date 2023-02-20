@@ -19,22 +19,26 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CPP\Source\Combat.cpp" />
+    <ClCompile Include="CPP\Source\Combat\Combat.cpp" />
     <ClCompile Include="CPP\Source\Message.cpp" />
     <ClCompile Include="CPP\Source\pch.cpp" />
-    <ClCompile Include="CPP\Source\Character.cpp" />
+    <ClCompile Include="CPP\Source\Character\Character.cpp" />
     <ClCompile Include="CPP\Source\master.cpp" />
-    <ClCompile Include="CPP\Source\Hero.cpp" />
-    <ClCompile Include="CPP\Source\Enemy.cpp" />
+    <ClCompile Include="CPP\Source\Character\Hero.cpp" />
+    <ClCompile Include="CPP\Source\Character\Enemy.cpp" />
+    <ClCompile Include="CPP\Source\Character\Skill.cpp" />
+    <ClCompile Include="CPP\Source\Character\StrongAttack.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CPP\Header\Combat.h" />
+    <ClInclude Include="CPP\Header\Combat\Combat.h" />
     <ClInclude Include="CPP\Header\master.h" />
-    <ClInclude Include="CPP\Header\Character.h" />
+    <ClInclude Include="CPP\Header\Character\Character.h" />
     <ClInclude Include="CPP\Header\Message.h" />
     <ClInclude Include="CPP\Header\pch.h" />
-    <ClInclude Include="CPP\Header\Hero.h" />
-    <ClInclude Include="CPP\Header\Enemy.h" />
+    <ClInclude Include="CPP\Header\Character\Hero.h" />
+    <ClInclude Include="CPP\Header\Character\Enemy.h" />
+    <ClInclude Include="CPP\Header\Character\Skill.h" />
+    <ClInclude Include="CPP\Header\Combat\StrongAttack.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -91,7 +95,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(ProjectDir)/CPP/Header/;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)/CPP/Header/Character/Skill/;$(ProjectDir)/CPP/Header/Combat/;$(ProjectDir)/CPP/Header/Character/;$(ProjectDir)/CPP/Header/;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>

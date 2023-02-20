@@ -2,8 +2,11 @@
 #include "Character.h"
 
 enum class EnemyType {WOLF, GOBLIN, DEVILKING};
+
 class Enemy : public Character
 {
+  EnemyType enemy_type;
+
 	int reward_gold;
 	int reward_exp;
 
@@ -14,4 +17,3 @@ public:
 	int GetRewardGold() const;
 	int GetRewardExp() const;
 };
-

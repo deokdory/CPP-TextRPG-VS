@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CPP\Source\Character.cpp">
+    <ClCompile Include="CPP\Source\Character\Character.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="CPP\Source\master.cpp">
@@ -24,16 +24,22 @@
     <ClCompile Include="CPP\Source\pch.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="CPP\Source\Hero.cpp">
+    <ClCompile Include="CPP\Source\Character\Hero.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="CPP\Source\Message.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="CPP\Source\Combat.cpp">
+    <ClCompile Include="CPP\Source\Combat\Combat.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="CPP\Source\Enemy.cpp">
+    <ClCompile Include="CPP\Source\Character\Enemy.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="CPP\Source\Character\Skill.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="CPP\Source\Character\StrongAttack.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -41,10 +47,10 @@
     <ClInclude Include="CPP\Header\pch.h">
       <Filter>소스 파일</Filter>
     </ClInclude>
-    <ClInclude Include="CPP\Header\Character.h">
+    <ClInclude Include="CPP\Header\Character\Character.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="CPP\Header\Hero.h">
+    <ClInclude Include="CPP\Header\Character\Hero.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="CPP\Header\master.h">
@@ -53,10 +59,16 @@
     <ClInclude Include="CPP\Header\Message.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="CPP\Header\Combat.h">
+    <ClInclude Include="CPP\Header\Combat\Combat.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="CPP\Header\Enemy.h">
+    <ClInclude Include="CPP\Header\Character\Enemy.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="CPP\Header\Character\Skill.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="CPP\Header\Combat\StrongAttack.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

@@ -12,7 +12,7 @@ int main() {
   Character* Hero1 = new Hero;
   Hero1->PrintStatus();
   Hero* RealHero1 = dynamic_cast<Hero*>(Hero1);
-  RealHero1->GiveExp(100);
+  RealHero1->GiveExp(25);
   Hero1->PrintStatus();
   ENDL;
 
