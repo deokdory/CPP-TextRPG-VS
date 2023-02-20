@@ -14,7 +14,7 @@ bool Skill::IsAvailable() {
 		return true;
 	}
 	else {
-		std::cout << "아직 사용할 수 없습니다" << std::endl;
+		//std::cout << "아직 사용할 수 없습니다" << std::endl;
 		return false;
 	}
 }

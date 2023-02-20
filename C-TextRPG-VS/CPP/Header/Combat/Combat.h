@@ -14,8 +14,8 @@ enum ActionInCombat {
 
 class Combat
 {
+	int allies_alive, enemy_alive;
 	int total_reward_gold;
-  bool is_win;
 
 public:
 	Combat(Place _place); // 전투 시작

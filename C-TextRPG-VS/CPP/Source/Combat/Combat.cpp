@@ -4,7 +4,6 @@
 Combat::Combat(Place _place) {
 
 
-
 }
 
 Combat::~Combat() { Hero::AddGold(total_reward_gold); }

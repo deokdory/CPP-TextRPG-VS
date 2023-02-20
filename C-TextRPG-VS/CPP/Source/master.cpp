@@ -2,21 +2,24 @@
 #include "master.h"
  
 int main() {
-  Character Character1;
-  Character1.SetHp(Character1.GetHp() / 2);
-  Character1.PrintStatus();
+	
+	do
+	{
+		system("cls");
+		
+		if (temp.length > NAME_LIMIT) {
 
-  Character Test("AAAAAAAAAAAA", 5);
-  Test.PrintStatus();
+		}
 
-  Character* Hero1 = new Hero;
-  Hero1->PrintStatus();
-  Hero* RealHero1 = dynamic_cast<Hero*>(Hero1);
-  RealHero1->GiveExp(25);
-  Hero1->PrintStatus();
-  ENDL;
-
-  delete Hero1;
+		std::string temp;
+		std::cout << "이름? : ";
+		std::cin >> temp;
+	} while(temp.length > NAME_LIMIT)
+	Hero(temp, 1); // 영웅 생성
 
   return 0;
+}
+
+void Initialize() {
+
 }
