@@ -39,9 +39,6 @@
     <ClCompile Include="CPP\Source\Character\Skill.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="CPP\Source\Character\StrongAttack.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CPP\Header\pch.h">
@@ -66,9 +63,6 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="CPP\Header\Character\Skill.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="CPP\Header\Combat\StrongAttack.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

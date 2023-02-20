@@ -27,7 +27,6 @@
     <ClCompile Include="CPP\Source\Character\Hero.cpp" />
     <ClCompile Include="CPP\Source\Character\Enemy.cpp" />
     <ClCompile Include="CPP\Source\Character\Skill.cpp" />
-    <ClCompile Include="CPP\Source\Character\StrongAttack.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CPP\Header\Combat\Combat.h" />
@@ -38,7 +37,6 @@
     <ClInclude Include="CPP\Header\Character\Hero.h" />
     <ClInclude Include="CPP\Header\Character\Enemy.h" />
     <ClInclude Include="CPP\Header\Character\Skill.h" />
-    <ClInclude Include="CPP\Header\Combat\StrongAttack.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -102,7 +100,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(ProjectDir)/CPP/Header/;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)/CPP/Header/Combat/;$(ProjectDir)/CPP/Header/Character/;$(ProjectDir)/CPP/Header/;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>

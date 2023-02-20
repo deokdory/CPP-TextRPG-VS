@@ -19,3 +19,13 @@ class Skill : public Character {
   virtual void Use();
   bool IsAvailable();
 };
+
+class StrongAttack : public Skill {
+private:
+	Character Owner;
+public:
+	StrongAttack(Character _Owner);
+
+	virtual void Use(Character _Target);
+};
+
