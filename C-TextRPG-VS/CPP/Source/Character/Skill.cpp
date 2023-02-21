@@ -2,13 +2,21 @@
 #include "Skill.h"
 
 //스킬 클래스
-Skill::Skill()
+Skill::Skill() 
     : cooldown(0), cooldown_remain(0), skill_type(SkillType::ATTACK) {
+  std::cout << "^^";
   name = "NULL";
 }
 
 Skill::Skill(int _cooldown, int _cooldown_remain, SkillType _type)
-    : cooldown(_cooldown), cooldown_remain(_cooldown_remain), skill_type(_type) {}
+    : cooldown(_cooldown),
+      cooldown_remain(_cooldown_remain),
+      skill_type(_type) {}
+
+Skill::Skill(const Skill& other)
+    : cooldown(other.cooldown),
+      cooldown_remain(other.cooldown_remain),
+      skill_type(other.skill_type) {}
 
 int Skill::GetCoolDown() const { return cooldown; }
 int Skill::GetCoolDownRemain() const { return cooldown_remain; }

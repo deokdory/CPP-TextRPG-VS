@@ -106,3 +106,9 @@ void __CRTDECL operator delete(void* const block) noexcept
 }
 ```
 **new[] 후엔 꼭 delete[]를..!!!**
+
+
+### 6. class = class 와 복사 생성자는 다른거잖아
+class = class 이런 식으로 복사 생성자를 호출할 것이라고 생각하고 코드를 작성했다
+
+... 자야겠다.

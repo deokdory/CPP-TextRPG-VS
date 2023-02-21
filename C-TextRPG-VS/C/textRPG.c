@@ -117,7 +117,8 @@ typedef struct {
 	Item iArmor;
 	Item iShoes;
 	bool isAlive;
-	int gold; // 몬스터 처치 시 보상 용 골드
+	
+	; // 몬스터 처치 시 보상 용 골드
 } Character;
 typedef struct {
 	char* name;

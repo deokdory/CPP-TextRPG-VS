@@ -216,32 +216,90 @@ void Character::PrintTotalCharacter() {
   std::cout << "total character : " << num_of_character << std::endl;
 }
 
-void Character::PrintStatus() {
+void Character::PrintStatus(short x) {
+  gotox(x);
   for (int i = 0; i < STATUS_LENGTH; i++) {
     std::cout << "=";
   }
   ENDL;
+  
+  gotox(x);
   SET_FORMAT_WIDTH_L(NAME_LIMIT + 2);
   std::cout << GetName();
   RESET_FORMAT;
   SET_FORMAT_WIDTH_R(STATUS_LENGTH - NAME_LIMIT - 2);
   std::cout << GetClass() << std::endl;
+
+  gotox(x);
   RESET_FORMAT;
 
   PrintHp();
   PrintHpBar();
   ENDL;
+
+  gotox(x);
   PrintAtk();
   PrintDef();
   PrintSpd();
   ENDL;
+
+  gotox(x);
   for (int i = 0; i < STATUS_LENGTH; i++) {
     std::cout << "-";
   }
   ENDL;
+
+  gotox(x);
   std::cout << "                        ";
   Character::PrintLvl();
   ENDL;
+
+  gotox(x);
+  for (int i = 0; i < STATUS_LENGTH; i++) {
+    std::cout << "=";
+  }
+  ENDL;
+}
+
+void Character::PrintStatus(short x, short y) {
+  gotoxy(x, y);
+  for (int i = 0; i < STATUS_LENGTH; i++) {
+    std::cout << "=";
+  }
+  ENDL;
+
+  gotox(x);
+  SET_FORMAT_WIDTH_L(NAME_LIMIT + 2);
+  std::cout << GetName();
+  RESET_FORMAT;
+  SET_FORMAT_WIDTH_R(STATUS_LENGTH - NAME_LIMIT - 2);
+  std::cout << GetClass() << std::endl;
+
+  gotox(x);
+  RESET_FORMAT;
+
+  PrintHp();
+  PrintHpBar();
+  ENDL;
+
+  gotox(x);
+  PrintAtk();
+  PrintDef();
+  PrintSpd();
+  ENDL;
+
+  gotox(x);
+  for (int i = 0; i < STATUS_LENGTH; i++) {
+    std::cout << "-";
+  }
+  ENDL;
+
+  gotox(x);
+  std::cout << "                        ";
+  Character::PrintLvl();
+  ENDL;
+
+  gotox(x);
   for (int i = 0; i < STATUS_LENGTH; i++) {
     std::cout << "=";
   }

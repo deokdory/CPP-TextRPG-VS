@@ -1,8 +1,8 @@
 #pragma once
-#include "Character.h"
 #include "Hero.h"
 #include "Enemy.h"
 #include "Skill.h"
+#include "GameManager.h" // Quest, Gold µî
 
 enum class Place {
 	FOREST, CAVE, MOUNTAIN

@@ -26,44 +26,88 @@ int Enemy::GetRewardExpForCurrentLvl() {
   return reward_exp_per_lvl[lvl];
 }
 
-void Enemy::PrintStatus() {
-  gotox(60);
+void Enemy::PrintStatus(short x) {
+  gotox(x);
   for (int i = 0; i < STATUS_LENGTH; i++) {
     std::cout << "=";
   }
   ENDL;
 
-  gotox(60);
+  gotox(x);
   SET_FORMAT_WIDTH_L(NAME_LIMIT + 2);
   std::cout << GetName();
   RESET_FORMAT;
   SET_FORMAT_WIDTH_R(STATUS_LENGTH - NAME_LIMIT - 2);
   std::cout << GetClass() << std::endl;
 
-  gotox(60);
+  gotox(x);
   RESET_FORMAT;
   PrintHp();
   PrintHpBar();
   ENDL;
 
-  gotox(60);
+  gotox(x);
   PrintAtk();
   PrintDef();
   PrintSpd();
   ENDL;
 
-  gotox(60);
+  gotox(x);
   for (int i = 0; i < STATUS_LENGTH; i++) {
     std::cout << "-";
   }
   ENDL;
 
-  gotox(60);
+  gotox(x);
   std::cout << "                        ";
   Character::PrintLvl();
   ENDL;
 
-  gotox(60);
+  gotox(x);
+  for (int i = 0; i < STATUS_LENGTH; i++) {
+    std::cout << "=";
+  }
+  ENDL;
+}
+
+void Enemy::PrintStatus(short x, short y) {
+  gotoxy(x, y);
+  for (int i = 0; i < STATUS_LENGTH; i++) {
+    std::cout << "=";
+  }
+  ENDL;
+
+  gotox(x);
+  SET_FORMAT_WIDTH_L(NAME_LIMIT + 2);
+  std::cout << GetName();
+  RESET_FORMAT;
+  SET_FORMAT_WIDTH_R(STATUS_LENGTH - NAME_LIMIT - 2);
+  std::cout << GetClass() << std::endl;
+
+  gotox(x);
+  RESET_FORMAT;
+  PrintHp();
+  PrintHpBar();
+  ENDL;
+
+  gotox(x);
+  PrintAtk();
+  PrintDef();
+  PrintSpd();
+  ENDL;
+
+  gotox(x);
+  for (int i = 0; i < STATUS_LENGTH; i++) {
+    std::cout << "-";
+  }
+  ENDL;
+
+  gotox(x);
+  std::cout << "                        ";
+  Character::PrintLvl();
+  ENDL;
+
+  gotox(x);
   for (int i = 0; i < STATUS_LENGTH; i++) {
     std::cout << "=";
   }

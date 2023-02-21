@@ -21,8 +21,11 @@
 #define MOUNTAIN_ENEMIES_LVL_MAX 4
 #define MOUNTAIN_ENEMY_ADD_PERCENTAGE 0.75
 
-void Combat(Place _place) {
-  int allies_alive = 0;
+void Combat(Hero& _player, Place _place) {
+    int allies_alive = 1;
+  if (_player.CheckIsDead()) {
+      allies_alive = 0;
+  }
   int enemies_alive = GetEnemiesPersonnel(_place);
   Enemy* enemy = new Enemy[enemies_alive];
   int total_reward_gold = 0;
@@ -31,33 +34,31 @@ void Combat(Place _place) {
     if (&enemy[i] != nullptr) {
       enemy[i] = enemy_temp;
       total_reward_gold += enemy[i].GetRewardGold();
-      enemy[i].PrintStatus();
+      enemy[i].PrintStatus(60);
     } else {
       std::cout << "ERROR:enemy[" << i << "] is nullptr!" << std::endl;
     }
   }
+  while (true) {
+    if (!allies_alive || !enemies_alive) {  // 전투 종료 조건
+      break;
+    }
+
+    if (allies_alive && !enemies_alive) {  // 승리
+      // gold += total_reward_gold;
+      std::cout << total_reward_gold << "G 를 획득했습니다" << std::endl;
+      SYSTEM_MESSAGE_DELAY;
+    } else if (!allies_alive && enemies_alive) {  //패배
+      std::cout << "당신은 패배했습니다..." << std::endl;
+      SYSTEM_MESSAGE_DELAY;
+    } else {  // 도망
+      std::cout << "당신은 도망쳤습니다." << std::endl;
+      SYSTEM_MESSAGE_DELAY;
+    }
+  }
   delete[] enemy;
 }
-
-//  while (true) {
-//    if (!allies_alive || !enemies_alive) {  // 전투 종료 조건
-//      break;
-//    }
-//  }
-//
-//  if (allies_alive && !enemies_alive) {  // 승리
-//    gold += total_reward_gold;
-//    std::cout << total_reward_gold << "G 를 획득했습니다" << std::endl;
-//    SYSTEM_MESSAGE_DELAY;
-//  } else if (!allies_alive && enemies_alive) {  //패배
-//    std::cout << "당신은 패배했습니다..." << std::endl;
-//    SYSTEM_MESSAGE_DELAY;
-//  } else {  // 도망
-//    std::cout << "당신은 도망쳤습니다." << std::endl;
-//    SYSTEM_MESSAGE_DELAY;
-//  }
-
-int GetEnemiesPersonnel(Place _place) {
+  int GetEnemiesPersonnel(Place _place) {
   int enemies_min = 1;
   int enemies_max = 1;
   double percent = 1;

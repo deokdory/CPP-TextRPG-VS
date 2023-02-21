@@ -1,14 +1,16 @@
 #pragma once
 #include "Character.h"
 #include "Skill.h"
-  //int gold = 0;
+//int gold = 0;
+
+#define HERO_SKILL_MAX 3
 
 class Hero : public Character {
 
   double exp;
   int max_exp;
 
-  Skill* skills;
+  Skill * skills;
 
  public:
   Hero();
@@ -20,10 +22,13 @@ class Hero : public Character {
   //Get
   int GetMaxExpForCurrentLvl() const;
 
+  //Set
+  void SetSkills(int _slot, Skill& _skills);
+
   void GiveExp(int _exp);
 
-
-  virtual void PrintStatus();
+  virtual void PrintStatus(short x = 0);
+  virtual void PrintStatus(short x, short y);
   void PrintExp();
 
   ~Hero();

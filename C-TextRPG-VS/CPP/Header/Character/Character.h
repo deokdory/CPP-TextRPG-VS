@@ -1,6 +1,6 @@
 #pragma once
 #include "Message.h"
-
+#include "Common.h"
 #define PARTY_MAX 4  // 파티 최대 인원 (아군, 적군 공통)
 
 #define NAME_LIMIT 14
@@ -95,7 +95,9 @@ class Character {
   // Print
   static void PrintTotalCharacter();
 
-  virtual void PrintStatus();
+  virtual void PrintStatus(short x = 0);
+  virtual void PrintStatus(short x, short y);
+
   void PrintHp() const;
   void PrintHpBar() const;
   void PrintAtk() const;

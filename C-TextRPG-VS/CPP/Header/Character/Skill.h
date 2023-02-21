@@ -1,5 +1,4 @@
 #pragma once
-#include "Character.h"
 //#include <string>
 enum class SkillType {
   ATTACK,
@@ -8,7 +7,7 @@ enum class SkillType {
   BUFF,
 };
 
-class Skill : public Character {
+class Skill {
  protected:
   int cooldown;
   int cooldown_remain;
@@ -17,6 +16,7 @@ class Skill : public Character {
  public:
   Skill();
   Skill(int _cooldown, int _cooldown_remain, SkillType _type);
+  Skill(const Skill& other);
   // Get
   int GetCoolDown() const;
   int GetCoolDownRemain() const;
@@ -37,4 +37,3 @@ public:
 
 	virtual void Use(Character _Target);
 };
-
