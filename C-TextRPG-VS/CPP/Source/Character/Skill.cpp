@@ -2,7 +2,13 @@
 #include "Skill.h"
 
 //스킬 클래스
-Skill::Skill() : cooldown(0) { name = "NULL"; }
+Skill::Skill()
+    : cooldown(0), cooldown_remain(0), skill_type(SkillType::ATTACK) {
+  name = "NULL";
+}
+
+Skill::Skill(int _cooldown, int _cooldown_remain, SkillType _type)
+    : cooldown(_cooldown), cooldown_remain(_cooldown_remain), skill_type(_type) {}
 
 int Skill::GetCoolDown() const { return cooldown; }
 int Skill::GetCoolDownRemain() const { return cooldown_remain; }
@@ -19,7 +25,7 @@ bool Skill::IsAvailable() {
 }
 
 //세게 때리기
-StrongAttack::StrongAttack(Character _Owner) : Owner(_Owner) {
+StrongAttack::StrongAttack(Character _Owner) : Skill::Skill(3, 0, SkillType::ATTACK), Owner(_Owner) {
   name = "세게 때리기";
 }
 

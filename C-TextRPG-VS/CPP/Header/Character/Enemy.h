@@ -1,5 +1,6 @@
 #pragma once
 #include "Character.h"
+#include "Common.h"
 
 class Enemy : public Character
 {
@@ -17,4 +18,6 @@ public:
 	// Get
   int GetRewardGoldForCurrentLvl();
   int GetRewardExpForCurrentLvl();
+
+	virtual void PrintStatus();
 };

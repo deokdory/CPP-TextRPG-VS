@@ -84,5 +84,7 @@ void Hero::PrintExp() {
 }
 
 Hero::~Hero() {
-	delete skills;
+  if (skills != nullptr) {
+	delete[] skills;
+  }
 }

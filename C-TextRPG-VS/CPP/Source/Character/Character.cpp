@@ -46,6 +46,34 @@ Character::Character(std::string _name, int _lvl)
   num_of_character++;
 }
 
+Character::Character(std::string _name, int _lvl, double _adjust)
+    : class_of_character(Class::COMMON), lvl(_lvl), is_dead(false) {
+  // std::cout << "매개변수 생성자 호출" << std::endl;
+  if (_name.length() > NAME_LIMIT) {
+    std::cout << "ERROR : name out of range (name limit : " << NAME_LIMIT << ")"
+              << std::endl;
+    _name = "Character";
+  }
+  name = _name;
+  int lvl_for_stat = 0;
+  if (_lvl > 0) {
+    lvl_for_stat = _lvl - 1;
+  } else if (_lvl > 10) {
+    std::cout << "ERROR : over level max" << std::endl;
+    lvl_for_stat = 10;
+  } else {
+    std::cout << "ERROR : lvl out of range" << std::endl;
+    lvl_for_stat = 1;
+  }
+  max_hp =
+      (COMMON_MAXHP_ORIGIN + COMMON_MAXHP_PER_LVL * lvl_for_stat) * _adjust;
+  hp = max_hp;
+  atk = (COMMON_ATK_ORIGIN + COMMON_ATK_PER_LVL * lvl_for_stat) * _adjust;
+  def = (COMMON_DEF_ORIGIN + COMMON_DEF_PER_LVL * lvl_for_stat) * _adjust;
+  spd = (COMMON_SPD_ORIGIN + COMMON_SPD_PER_LVL * lvl_for_stat) * _adjust;
+  num_of_character++;
+}
+
 Character::Character(const Character& _hero)
     : name(_hero.name),
       class_of_character(_hero.class_of_character),

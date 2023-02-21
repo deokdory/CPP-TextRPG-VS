@@ -1,9 +1,10 @@
 #pragma once
 #include "Character.h"
 #include "Skill.h"
-  static int gold;
+  //int gold = 0;
 
 class Hero : public Character {
+
   double exp;
   int max_exp;
 
@@ -18,7 +19,9 @@ class Hero : public Character {
 
   //Get
   int GetMaxExpForCurrentLvl() const;
+
   void GiveExp(int _exp);
+
 
   virtual void PrintStatus();
   void PrintExp();

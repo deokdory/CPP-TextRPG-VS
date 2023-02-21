@@ -370,7 +370,7 @@ int HowManyEnemies(int PLACE) {
 	}return enemiesAlive;
 }
 int SetEnemyLvl(int PLACE) {
-	\
+	
 		int lvl = 0;
 
 	double random = 0.0f;

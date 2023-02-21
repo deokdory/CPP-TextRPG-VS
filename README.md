@@ -1,6 +1,6 @@
 # CPP-TextRPG-VS
 
-## 작성 중 생긴 문제 및 몰랐던 사항들
+## 작성 중 생긴 문제 및 몰랐던 사항, 실수 등
 ### 1. 부모 클래스의 static 멤버 변수 접근
 부모 클래스인 `Character` 의 `private: static int num_of_charcter`에 접근 불가능
 - **이유** - `static` 으로 선언된 경우 `private` 여도 자식 클래스에선 접근 가능할 줄 알았으나 불가능  
@@ -81,3 +81,28 @@ std::cout << "DELAY2" << endl;
 Slee(1500);
 ```
 windows.h 를 포함했는데 나중엔 다른 기능을 찾아보도록 하자
+
+
+### 5. new[] 후엔 꼭 delete[]를!!!!
+```cpp
+Enemy * enemy = new Enemy[3];
+Skill * skills = new Skill[3];
+...
+delete enemy
+delete skills
+```
+이런 실수를 해서 비주얼 스튜디오에서 아래와 같은 곳에 중단점을 트리거했다.
+```cpp
+//delete_scaler.cpp 
+...
+_CRT_SECURITYCRITICAL_ATTRIBUTE
+void __CRTDECL operator delete(void* const block) noexcept
+{
+    #ifdef _DEBUG
+    _free_dbg(block, _UNKNOWN_BLOCK); // <- 중단점 트리거
+    #else 
+    free(block);
+    #endif
+}
+```
+**new[] 후엔 꼭 delete[]를..!!!**

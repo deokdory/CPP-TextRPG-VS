@@ -2,28 +2,44 @@
 #include "main.h"
  
 int main() {
-  Enemy* enemy = new Enemy("WOLF", 1);
-  std::cout << enemy->GetRewardGold() << std::endl;
-  std::cout << enemy->GetRewardExp() << std::endl;
-  delete enemy;
-}
+  Initialize();
 
-//	do
-//	{
-//		system("cls");
-//		
-//		if (temp.length > NAME_LIMIT) {
-//
-//		}
-//
-//		std::string temp;
-//		std::cout << "이름? : ";
-//		std::cin >> temp;
-//	} while(temp.length > NAME_LIMIT)
-//	Hero(temp, 1); // 영웅 생성
-//
-//  return 0;
-//}
+  gotoxy(60, 0);
+  std::cout << "숲 몬스터 테스트" << std::endl;
+  Combat(Place::FOREST);
+  ENDL;
+
+  std::cout << "동굴 몬스터 테스트 " << std::endl;
+  Combat(Place::CAVE);
+  ENDL;
+
+  std::cout << "산 몬스터 테스트" << std::endl;
+  Combat(Place::MOUNTAIN);
+  ENDL;
+
+}
 
 void Initialize() {
+  srand((unsigned)time(NULL));  // 난수 seed 생성
+
+  std::string name;
+  while (true) {
+    system("cls");
+
+    std::string temp;
+    std::cout << "이름? : ";
+    std::cin >> temp;
+
+    if (temp.length() > NAME_LIMIT) {
+      std::cout << "이름 길이 제한은 영어" << NAME_LIMIT << "자, 한글 "
+                << NAME_LIMIT / 2 << "자 입니다." << std::endl;
+      SYSTEM_MESSAGE_DELAY;
+    } else {
+      name = temp;
+      break;
+    }
+  }
+  Hero Player(name, 1);
+  Player.PrintStatus();
 }
+
