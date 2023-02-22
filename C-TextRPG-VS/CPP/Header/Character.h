@@ -17,7 +17,7 @@
 #define COMMON_MAXHP_ORIGIN 50
 #define COMMON_ATK_ORIGIN 25
 #define COMMON_DEF_ORIGIN 10
-#define COMMON_SPD_ORIGIN 10
+#define COMMON_SPD_ORIGIN 30
 
 #define COMMON_MAXHP_PER_LVL 5
 #define COMMON_ATK_PER_LVL 5
@@ -50,6 +50,9 @@ class Character {
 
   int lvl;
 
+  double turn_spd;
+  double turn_waiter;
+
   bool is_dead;
 
  public:
@@ -71,6 +74,8 @@ class Character {
   int GetDef() const;
   int GetSpd() const;
   int GetLvl() const;
+  double GetTurnSpd() const;
+  double GetTurnWaiter() const;
 
   // Set
   void SetMaxHp(int _max_hp);
@@ -79,6 +84,9 @@ class Character {
   void SetDef(int _Def);
   void SetSpd(int _spd);
   void SetLvl(int _lvl);
+  void SetTurnSpd(double _turn_spd);
+  void SetTurnWaiter(double _turn_waiter);
+  void AddTurnWaiter(double _turn_waiter);
 
   // Combat
   void Attack(Character& target);
@@ -144,7 +152,6 @@ class Skill : public Character {
   int GetCoolDown() const;
   int GetCoolDownRemain() const;
   std::string GetDescription() const;
-
 
   // Set
   void SetCoolDown(int _cooldown);

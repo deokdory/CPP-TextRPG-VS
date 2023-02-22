@@ -22,18 +22,13 @@
 #define MOUNTAIN_ENEMY_ADD_PERCENTAGE 0.75
 
 void Combat(Hero** Player, Place _place) {
-  int allies_alive = 0;
-  //PlayerArrayAlign(Player);
+  // PlayerArrayAlign(Player);
   int num_of_playble_heroes = GetNumOfPlayableHeroes(Player);
-  for (int i = 0; i < num_of_playble_heroes; i++) {
-    if (!(Player[i]->CheckIsDead())) {
-      allies_alive++;
-    }
-  }
-  int enemies_alive = GetEnemiesPersonnel(_place);
-  Enemy* enemy = new Enemy[enemies_alive];
+  int enemies_personnel = GetEnemiesPersonnel(_place);
+  int total_combat_personnel = num_of_playble_heroes + enemies_personnel;
+  Enemy* enemy = new Enemy[enemies_personnel];
   int total_reward_gold = 0;
-  for (int i = 0; i < enemies_alive; i++) {
+  for (int i = 0; i < enemies_personnel; i++) {
     Enemy enemy_temp(GetEnemyName(_place), GetEnemyLvl(_place));
     if (&enemy[i] != nullptr) {
       enemy[i] = enemy_temp;
@@ -43,9 +38,37 @@ void Combat(Hero** Player, Place _place) {
       std::cout << "ERROR:enemy[" << i << "] is nullptr!" << std::endl;
     }
   }
-  Character* SpdComparison[PARTY_MAX * 2];
-
+  Character* TurnWaiting[PARTY_MAX * 2];
+  {
+    int index = 0;
+    for (int i = 0; i < num_of_playble_heroes; i++) {
+      if (Player[i]) {
+        TurnWaiting[index] = Player[i];
+        TurnWaiting[index]->SetTurnWaiter(0);
+        index++;
+      }
+    }
+    for (int i = 0; i < enemies_personnel; i++) {
+      TurnWaiting[index] = &enemy[i];
+      TurnWaiting[index]->SetTurnWaiter(0);
+      index++;
+    }
+  }
+  int allies_alive = 0;
+  int enemies_alive = 0;
   while (true) {
+    allies_alive = enemies_alive = 0;
+    for (int i = 0; i < num_of_playble_heroes; i++) {
+      if (!(Player[i]->CheckIsDead())) {
+        allies_alive++;
+      }
+    }
+    for (int i = 0; i < enemies_personnel; i++) {
+      if (!(enemy[i].CheckIsDead())) {
+        enemies_alive++;
+      }
+    }
+
     if (!allies_alive || !enemies_alive) {  // 전투 종료 조건
       break;
     }
@@ -66,16 +89,31 @@ void Combat(Hero** Player, Place _place) {
     }
     gotoxy(0, 24);
     {
-      int index;
-      for (int i = 0; i < allies_alive; i++) {
-        SpdComparison[index] = Player[i];
-        index++;
+      int top_spd = 0;
+      for (int i = 0; i < total_combat_personnel; i++) {
+          if (TurnWaiting[i]->GetSpd() > top_spd) {
+            top_spd = TurnWaiting[i]->GetSpd();
+        }
       }
-      for (int i = 0; i < enemies_alive; i++) {
-        SpdComparison[index] = &enemy[i];
-        index++;
+      for (int i = 0; i < total_combat_personnel; i++) {
+        TurnWaiting[i]->SetTurnSpd((double)(TurnWaiting[i]->GetSpd()) / top_spd); 
+        std::cout << "TurnWaiting " << i
+                  << " TurnSpd = " << TurnWaiting[i]->GetTurnSpd() << std::endl;
       }
-    system("pause");
+      while (true) {
+        for (int i = 0; i < total_combat_personnel; i++) {
+          if (TurnWaiting[i]->GetTurnWaiter() >= 100) {
+            std::cout << "TEST : " << TurnWaiting[i]->GetName() << "의 턴!" << std::endl;
+            TurnWaiting[i]->SetTurnWaiter(0);
+            system("pause");
+          } else {
+            for (int i = 0; i < total_combat_personnel; i++) {
+              TurnWaiting[i]->AddTurnWaiter(TurnWaiting[i]->GetTurnSpd());
+            }
+          }
+        }
+      }
+    }
   }
   if (allies_alive && !enemies_alive) {  // 승리
     // gold += total_reward_gold;

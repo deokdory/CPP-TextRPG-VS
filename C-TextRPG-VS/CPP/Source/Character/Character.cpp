@@ -10,6 +10,8 @@ Character::Character()
       def(COMMON_DEF_ORIGIN),
       spd(COMMON_SPD_ORIGIN),
       lvl(1),
+      turn_spd(0),
+      turn_waiter(0),
       is_dead(false) {
   //std::cout << "기본 생성자 호출" << std::endl;
 }
@@ -17,6 +19,8 @@ Character::Character()
 Character::Character(std::string _name, int _lvl)
     : class_of_character(Class::COMMON),
       lvl(_lvl),
+      turn_spd(0),
+      turn_waiter(0),
       is_dead(false) {
   //std::cout << "매개변수 생성자 호출" << std::endl;
   if (_name.length() > NAME_LIMIT) {
@@ -42,7 +46,11 @@ Character::Character(std::string _name, int _lvl)
 }
 
 Character::Character(std::string _name, int _lvl, double _adjust)
-    : class_of_character(Class::COMMON), lvl(_lvl), is_dead(false) {
+    : class_of_character(Class::COMMON),
+      lvl(_lvl),
+      turn_spd(0),
+      turn_waiter(0),
+      is_dead(false) {
   // std::cout << "매개변수 생성자 호출" << std::endl;
   if (_name.length() > NAME_LIMIT) {
     std::cout << "ERROR : name out of range (name limit : " << NAME_LIMIT << ")"
@@ -68,16 +76,18 @@ Character::Character(std::string _name, int _lvl, double _adjust)
   spd = (COMMON_SPD_ORIGIN + COMMON_SPD_PER_LVL * lvl_for_stat) * _adjust;
 }
 
-Character::Character(const Character& _hero)
-    : name(_hero.name),
-      class_of_character(_hero.class_of_character),
-      max_hp(_hero.max_hp),
-      hp(_hero.hp),
-      atk(_hero.atk),
-      def(_hero.def),
-      spd(_hero.spd),
-      lvl(_hero.lvl),
-      is_dead(_hero.is_dead) {
+Character::Character(const Character& other)
+    : name(other.name),
+      class_of_character(other.class_of_character),
+      max_hp(other.max_hp),
+      hp(other.hp),
+      atk(other.atk),
+      def(other.def),
+      spd(other.spd),
+      lvl(other.lvl),
+      turn_spd(other.turn_spd),
+      turn_waiter(other.turn_waiter),
+      is_dead(other.is_dead) {
   //std::cout << "복사 생성자 호출" << std::endl;
 }
 
@@ -132,6 +142,15 @@ void Character::SetLvl(int _lvl) {
   lvl = _lvl;
 }
 
+void Character::SetTurnSpd(double _turn_spd) { turn_spd = _turn_spd; }
+void Character::SetTurnWaiter(double _turn_waiter) {
+  turn_waiter = _turn_waiter;
+}
+
+void Character::AddTurnWaiter(double _turn_waiter) {
+  turn_waiter += _turn_waiter;
+}
+
 void Character::Attack(Character& target) {
     int damage = 0;
     std::cout << name << "가 " << target.name << "을 공격하려고 한다";
@@ -146,7 +165,8 @@ void Character::Attack(Character& target) {
     target.hp -= damage; 
     std::cout << target.name << "은 " << damage << "의 피해를 입었다" << std::endl;
     SYSTEM_MESSAGE_DELAY;
-//
+
+    //
 //    if(!(target.CheckIsDead())) {
 //        std::cout << target.name << "은 반격했다";
 //        for (int i = 0; i < 3; i++) {
@@ -204,6 +224,10 @@ int Character::GetAtk() const { return atk; }
 int Character::GetDef() const { return def; }
 int Character::GetSpd() const { return spd; }
 int Character::GetLvl() const { return lvl; }
+
+double Character::GetTurnSpd() const { return turn_spd; }
+
+double Character::GetTurnWaiter() const { return turn_waiter; }
 
 void Character::PrintStatus(short x) {
   gotox(x);
