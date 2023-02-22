@@ -1,6 +1,7 @@
 #pragma once
 #include "Message.h"
 #include "Common.h"
+
 #define PARTY_MAX 4  // 파티 최대 인원 (아군, 적군 공통)
 
 #define NAME_LIMIT 14
@@ -37,10 +38,11 @@ enum class Class {
 
 class Character {
  protected:
-  static int num_of_character;
 
   std::string name;
   Class class_of_character;
+ 
+  Skill** skills;
 
   int max_hp;
   double hp;
@@ -93,8 +95,6 @@ class Character {
   bool CheckIsDead();
 
   // Print
-  static void PrintTotalCharacter();
-
   virtual void PrintStatus(short x = 0);
   virtual void PrintStatus(short x, short y);
 
@@ -107,4 +107,94 @@ class Character {
 
   //소멸자
   virtual ~Character();
+};
+
+#define HERO_SKILL_MAX 3
+
+class Hero : public Character {
+  double exp;
+  int max_exp;
+
+  Skill** skills;
+
+ public:
+  Hero();
+  Hero(std::string _name, int _lvl);
+  Hero(const Hero& other);
+
+  // Gold
+
+  // Get
+  int GetMaxExpForCurrentLvl() const;
+
+  // Set
+  void GiveExp(int _exp);
+
+  virtual void PrintStatus(short x = 0);
+  virtual void PrintStatus(short x, short y);
+  void PrintExp();
+
+  ~Hero();
+};
+
+class Enemy : public Character {
+  int reward_gold;
+  int reward_exp;
+
+ public:
+  Enemy();
+  Enemy(std::string _name, int _lvl);
+
+  // Get
+  int GetRewardGold() const;
+  int GetRewardExp() const;
+
+  // Get
+  int GetRewardGoldForCurrentLvl();
+  int GetRewardExpForCurrentLvl();
+
+  virtual void PrintStatus(short x = 0);
+  virtual void PrintStatus(short x, short y);
+};
+
+enum class SkillType {
+  ATTACK,
+  DEBUFF,
+  HEAL,
+  BUFF,
+};
+
+class Skill : public Character {
+ protected:
+  Character* Owner;
+
+  int cooldown;
+  int cooldown_remain;
+
+  SkillType skill_type;
+
+  std::string description;
+
+ public:
+  Skill();
+  Skill(Character* _owner, int _cooldown, int _cooldown_remain, SkillType _type, std::string _description);
+  Skill(const Skill& other);
+  // Get
+  int GetCoolDown() const;
+  int GetCoolDownRemain() const;
+
+  // Set
+  void SetCoolDown(int _cooldown);
+
+  bool IsAvailable();
+
+  // Virtual
+  virtual void Use(Character& _Target) = 0;
+};
+
+class StrongAttack : public Skill {
+ public:
+  StrongAttack(Character* _Owner);
+
+  virtual void Use(Character& _Target);
 };

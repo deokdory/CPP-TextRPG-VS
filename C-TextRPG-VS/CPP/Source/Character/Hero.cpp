@@ -1,18 +1,18 @@
 #include "pch.h"
-#include "Hero.h"
+#include "Character.h"
 
-Hero::Hero() : Character::Character(), exp(0), skills(new Skill[HERO_SKILL_MAX]) {
+Hero::Hero() : Character::Character(), exp(0), skills(nullptr) {
 	max_exp = GetMaxExpForCurrentLvl();
 }
 
 Hero::Hero(std::string _name, int _lvl)
-	: Character::Character(_name, _lvl), exp(0), skills(new Skill[HERO_SKILL_MAX]) {
+	: Character::Character(_name, _lvl), exp(0), skills(nullptr) {
 	max_exp = GetMaxExpForCurrentLvl();
 }
 
 Hero::Hero(const Hero& other)
 	: Character::Character(other), exp(other.exp), max_exp(other.max_exp) {
-  skills = new Skill(*other.skills);
+  skills[1] = new Skill(other.skills[1]);
 }
 
 int Hero::GetMaxExpForCurrentLvl() const {
@@ -142,7 +142,9 @@ void Hero::PrintExp() {
 }
 
 Hero::~Hero() {
-  if (skills != nullptr) {
-    delete[] skills;
+  for (int i = 0; i < HERO_SKILL_MAX; i++) {
+    if (skills[i] != nullptr) {
+      delete skills[i];
+    }
   }
 }

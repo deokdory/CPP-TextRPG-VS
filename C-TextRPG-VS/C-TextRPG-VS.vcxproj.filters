@@ -56,19 +56,10 @@
     <ClInclude Include="CPP\Header\Character\Character.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="CPP\Header\Character\Hero.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="CPP\Header\main.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="CPP\Header\Combat\Combat.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="CPP\Header\Character\Enemy.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="CPP\Header\Character\Skill.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="CPP\Header\Item.h">

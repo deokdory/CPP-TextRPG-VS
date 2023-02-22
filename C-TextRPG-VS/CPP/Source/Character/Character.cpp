@@ -1,8 +1,5 @@
 #include "pch.h"
 #include "Character.h"
-//#include <string>
-
-int Character::num_of_character = 0;
 
 Character::Character()
     : name("Character"),
@@ -15,7 +12,6 @@ Character::Character()
       lvl(1),
       is_dead(false) {
   //std::cout << "기본 생성자 호출" << std::endl;
-  num_of_character++;
 }
 
 Character::Character(std::string _name, int _lvl)
@@ -43,7 +39,6 @@ Character::Character(std::string _name, int _lvl)
   atk = COMMON_ATK_ORIGIN + COMMON_ATK_PER_LVL * lvl_for_stat;
   def = COMMON_DEF_ORIGIN + COMMON_DEF_PER_LVL * lvl_for_stat;
   spd = COMMON_SPD_ORIGIN + COMMON_SPD_PER_LVL * lvl_for_stat;
-  num_of_character++;
 }
 
 Character::Character(std::string _name, int _lvl, double _adjust)
@@ -71,7 +66,6 @@ Character::Character(std::string _name, int _lvl, double _adjust)
   atk = (COMMON_ATK_ORIGIN + COMMON_ATK_PER_LVL * lvl_for_stat) * _adjust;
   def = (COMMON_DEF_ORIGIN + COMMON_DEF_PER_LVL * lvl_for_stat) * _adjust;
   spd = (COMMON_SPD_ORIGIN + COMMON_SPD_PER_LVL * lvl_for_stat) * _adjust;
-  num_of_character++;
 }
 
 Character::Character(const Character& _hero)
@@ -85,7 +79,6 @@ Character::Character(const Character& _hero)
       lvl(_hero.lvl),
       is_dead(_hero.is_dead) {
   //std::cout << "복사 생성자 호출" << std::endl;
-  num_of_character++;
 }
 
 void Character::LvlUp() {
@@ -211,10 +204,6 @@ int Character::GetAtk() const { return atk; }
 int Character::GetDef() const { return def; }
 int Character::GetSpd() const { return spd; }
 int Character::GetLvl() const { return lvl; }
-
-void Character::PrintTotalCharacter() {
-  std::cout << "total character : " << num_of_character << std::endl;
-}
 
 void Character::PrintStatus(short x) {
   gotox(x);
@@ -375,5 +364,4 @@ void Character::PrintLvl() const {
 
 Character::~Character() {
   //std::cout << "캐릭터 수 감소" << std::endl;
-  num_of_character--;
 }

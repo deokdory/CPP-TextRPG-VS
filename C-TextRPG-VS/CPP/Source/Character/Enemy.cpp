@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "Enemy.h"
+#include "Character.h"
 
 #define ENEMY_STAT_ADJUST 0.9
 

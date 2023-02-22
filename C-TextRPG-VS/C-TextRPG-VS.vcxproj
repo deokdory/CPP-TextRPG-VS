@@ -40,9 +40,6 @@
     <ClInclude Include="CPP\Header\main.h" />
     <ClInclude Include="CPP\Header\Character\Character.h" />
     <ClInclude Include="CPP\Header\pch.h" />
-    <ClInclude Include="CPP\Header\Character\Hero.h" />
-    <ClInclude Include="CPP\Header\Character\Enemy.h" />
-    <ClInclude Include="CPP\Header\Character\Skill.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
