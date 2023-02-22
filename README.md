@@ -108,7 +108,14 @@ void __CRTDECL operator delete(void* const block) noexcept
 **new[] 후엔 꼭 delete[]를..!!!**
 
 
-### 6. class = class 와 복사 생성자는 다른거잖아
-class = class 이런 식으로 복사 생성자를 호출할 것이라고 생각하고 코드를 작성했다
+### 6. 아무데서나 변수를 선언할 수 있다지만..
+  ```cpp
+  if (int slot = GetNumOfPlayableHeroes(_Player) < PARTY_MAX) {
+    //...
+    }
+```
+이렇게 써놓고 작동되길 바랐던 나..ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ
 
-... 자야겠다.
+slot 에 GetNumOfPlaybleHeroes(_Player)의 값이 할당될 줄 알았던 나였지만
+
+**당연히** int slot 에는 뒤의 조건이 만족했는지에 따라 1과 0이 할당되었다.

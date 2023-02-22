@@ -1,8 +1,8 @@
 #pragma once
-#include "Message.h"
 #include "Common.h"
+#include <string>
 
-#define PARTY_MAX 4  // 파티 최대 인원 (아군, 적군 공통)
+#define PARTY_MAX 3  // 파티 최대 인원 (아군, 적군 공통)
 
 #define NAME_LIMIT 14
 #define CLASS_TOTAL 4
@@ -42,8 +42,6 @@ class Character {
   std::string name;
   Class class_of_character;
  
-  Skill** skills;
-
   int max_hp;
   double hp;
   int atk;
@@ -111,24 +109,83 @@ class Character {
 
 #define HERO_SKILL_MAX 3
 
+
+enum class SkillType {
+  ATTACK,
+  DEBUFF,
+  HEAL,
+  BUFF,
+};
+
+enum SkillIndex {
+  NONE,
+  STRONG_ATTACK
+};
+
+class Skill : public Character {
+ protected:
+  int index;
+
+  Character* Owner;
+
+  int cooldown;
+  int cooldown_remain;
+
+  SkillType skill_type;
+
+  std::string description;
+
+ public:
+  Skill();
+  Skill(int _index, Character* _owner, int _cooldown, int _cooldown_remain, SkillType _type, std::string _description);
+  Skill(const Skill& other);
+
+  // Get
+  int GetCoolDown() const;
+  int GetCoolDownRemain() const;
+  std::string GetDescription() const;
+
+
+  // Set
+  void SetCoolDown(int _cooldown);
+  void SetOwner(Character* _character);
+
+  bool IsAvailable();
+
+  // Virtual
+  virtual void Use(Character& _Target);
+};
+
+class StrongAttack : public Skill { // index : 1
+ public:
+  StrongAttack(Character* _Owner);
+
+  virtual void Use(Character& _Target);
+};
+
 class Hero : public Character {
+  //static int num_of_heroes;
+
   double exp;
   int max_exp;
 
-  Skill** skills;
+  Skill* skill_slot[HERO_SKILL_MAX];
 
  public:
   Hero();
   Hero(std::string _name, int _lvl);
   Hero(const Hero& other);
 
-  // Gold
-
   // Get
   int GetMaxExpForCurrentLvl() const;
+  //static int GetNumOfHeroes();
 
   // Set
   void GiveExp(int _exp);
+  void GiveSkill(int _index);
+
+  void PrintSkillsAll();
+  int GetEmptySkillSlot();
 
   virtual void PrintStatus(short x = 0);
   virtual void PrintStatus(short x, short y);
@@ -157,44 +214,7 @@ class Enemy : public Character {
   virtual void PrintStatus(short x, short y);
 };
 
-enum class SkillType {
-  ATTACK,
-  DEBUFF,
-  HEAL,
-  BUFF,
-};
-
-class Skill : public Character {
- protected:
-  Character* Owner;
-
-  int cooldown;
-  int cooldown_remain;
-
-  SkillType skill_type;
-
-  std::string description;
-
- public:
-  Skill();
-  Skill(Character* _owner, int _cooldown, int _cooldown_remain, SkillType _type, std::string _description);
-  Skill(const Skill& other);
-  // Get
-  int GetCoolDown() const;
-  int GetCoolDownRemain() const;
-
-  // Set
-  void SetCoolDown(int _cooldown);
-
-  bool IsAvailable();
-
-  // Virtual
-  virtual void Use(Character& _Target) = 0;
-};
-
-class StrongAttack : public Skill {
- public:
-  StrongAttack(Character* _Owner);
-
-  virtual void Use(Character& _Target);
-};
+void NewPlayerCharacter(Hero** _Player);
+void PlayerArrayAlign(Hero** Player);
+int GetNumOfPlayableHeroes(Hero** _Player);
+void Swap(Hero*, Hero*);

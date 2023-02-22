@@ -1,27 +1,14 @@
 #include "pch.h"
 #include "main.h"
 
+
 int main() {
-  std::string name;
-  while (true) {
-    system("cls");
+  Hero* Player[PARTY_MAX] = {};
 
-    std::string temp;
-    std::cout << "이름? : ";
-    std::cin >> temp;
+  NewPlayerCharacter(Player);
+  NewPlayerCharacter(Player);
 
-    if (temp.length() > NAME_LIMIT) {
-      std::cout << "이름 길이 제한은 영어" << NAME_LIMIT << "자, 한글 "
-                << NAME_LIMIT / 2 << "자 입니다." << std::endl;
-      SYSTEM_MESSAGE_DELAY;
-    } else {
-      name = temp;
-      break;
-    }
-  }
-  Hero Player(name, 1);
-  Player.PrintStatus();
-
+  Combat(Player, Place::FOREST);
 }
 
   
@@ -44,3 +31,6 @@ int main() {
 void Initialize() {
   srand((unsigned)time(NULL));  // 난수 seed 생성
 }
+
+
+

@@ -365,3 +365,55 @@ void Character::PrintLvl() const {
 Character::~Character() {
   //std::cout << "캐릭터 수 감소" << std::endl;
 }
+
+void NewPlayerCharacter(Hero** _Player) {
+  int slot = GetNumOfPlayableHeroes(_Player);
+  if (slot < PARTY_MAX) {
+    std::string name;
+    while (true) {
+      system("cls");
+
+      std::string temp;
+      std::cout << "이름? : ";
+      std::cin >> temp;
+
+      if (temp.length() > NAME_LIMIT) {
+        std::cout << "이름 길이 제한은 영어" << NAME_LIMIT << "자, 한글 "
+                  << NAME_LIMIT / 2 << "자 입니다." << std::endl;
+        SYSTEM_MESSAGE_DELAY;
+      } else {
+        name = temp;
+        break;
+      }
+    }
+    _Player[slot] = new Hero(name, 1);
+  }
+}
+
+void PlayerArrayAlign(Hero** Player) {
+  for (int i = 0; i < PARTY_MAX; i++) {
+    for (int j = i + 1; j < PARTY_MAX; j++) {
+      if (Player[i] == nullptr && Player[j] != nullptr) {
+        Swap(Player[i], Player[j]);
+      }
+    }
+  }
+}
+
+int GetNumOfPlayableHeroes(Hero** _Player) {
+  int num_of_playble_heroes = 0;
+  for (int i = 0; i < PARTY_MAX; i++) {
+    if (_Player[i] != nullptr) {
+      num_of_playble_heroes++;
+    } else {
+      break;
+    }
+  }
+  return num_of_playble_heroes;
+}
+
+void Swap(Hero* _Hero1, Hero* _Hero2) {
+  Hero* temp = _Hero1;
+  _Hero1 = _Hero2;
+  _Hero2 = temp;
+}

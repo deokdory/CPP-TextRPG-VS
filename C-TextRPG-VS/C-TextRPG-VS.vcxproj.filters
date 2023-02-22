@@ -27,7 +27,7 @@
     <ClCompile Include="CPP\Source\Character\Hero.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="CPP\Source\Combat\Combat.cpp">
+    <ClCompile Include="CPP\Source\Combat.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="CPP\Source\Character\Enemy.cpp">
@@ -39,13 +39,7 @@
     <ClCompile Include="CPP\Source\Item.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="CPP\Source\Gold.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="CPP\Source\Common.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="CPP\Source\GameManager.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -53,25 +47,19 @@
     <ClInclude Include="CPP\Header\pch.h">
       <Filter>소스 파일</Filter>
     </ClInclude>
-    <ClInclude Include="CPP\Header\Character\Character.h">
+    <ClInclude Include="CPP\Header\Character.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="CPP\Header\main.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="CPP\Header\Combat\Combat.h">
+    <ClInclude Include="CPP\Header\Combat.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="CPP\Header\Item.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="CPP\Header\Gold.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="CPP\Header\Common.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="CPP\Header\GameManager.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
