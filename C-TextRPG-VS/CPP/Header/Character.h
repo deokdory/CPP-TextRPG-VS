@@ -221,7 +221,7 @@ class Enemy : public Character {
   virtual void PrintStatus(short x, short y);
 };
 
-void NewPlayerCharacter(Hero** _Player);
+void NewPlayerCharacter(Hero** _Player, int _lvl);
 void PlayerArrayAlign(Hero** Player);
 int GetNumOfPlayableHeroes(Hero** _Player);
 void Swap(Hero*, Hero*);

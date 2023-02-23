@@ -158,9 +158,8 @@ void Character::Attack(Character& target) {
         printf(" .");
         Sleep(500);
     }
-    if (damage = atk - target.def < 0) {
-        damage = 0;
-    }
+    damage = atk - target.def;
+    if (damage < 0) damage = 0;
 
     target.hp -= damage; 
     std::cout << target.name << "은 " << damage << "의 피해를 입었다" << std::endl;
@@ -390,7 +389,7 @@ Character::~Character() {
   //std::cout << "캐릭터 수 감소" << std::endl;
 }
 
-void NewPlayerCharacter(Hero** _Player) {
+void NewPlayerCharacter(Hero** _Player, int _lvl) {
   int slot = GetNumOfPlayableHeroes(_Player);
   if (slot < PARTY_MAX) {
     std::string name;
@@ -410,7 +409,7 @@ void NewPlayerCharacter(Hero** _Player) {
         break;
       }
     }
-    _Player[slot] = new Hero(name, 1);
+    _Player[slot] = new Hero(name, _lvl);
   }
 }
 

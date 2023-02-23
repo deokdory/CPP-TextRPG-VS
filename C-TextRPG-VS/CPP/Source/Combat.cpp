@@ -82,7 +82,7 @@ void Combat(Hero** Player, Place _place) {
       }
     }
     gotoy(0);
-    for (int i = 0; i < enemies_alive; i++) {
+    for (int i = 0; i < enemies_personnel; i++) {
       if (!(enemy[i].CheckIsDead())) {
         enemy[i].PrintStatus(60);
       }
@@ -91,30 +91,91 @@ void Combat(Hero** Player, Place _place) {
     {
       int top_spd = 0;
       for (int i = 0; i < total_combat_personnel; i++) {
-          if (TurnWaiting[i]->GetSpd() > top_spd) {
-            top_spd = TurnWaiting[i]->GetSpd();
+        if (TurnWaiting[i]->GetSpd() > top_spd) {
+          top_spd = TurnWaiting[i]->GetSpd();
         }
       }
       for (int i = 0; i < total_combat_personnel; i++) {
-        TurnWaiting[i]->SetTurnSpd((double)(TurnWaiting[i]->GetSpd()) / top_spd); 
+        TurnWaiting[i]->SetTurnSpd((double)(TurnWaiting[i]->GetSpd()) /
+                                   top_spd);
         std::cout << "TurnWaiting " << i
                   << " TurnSpd = " << TurnWaiting[i]->GetTurnSpd() << std::endl;
       }
-      while (true) {
-        for (int i = 0; i < total_combat_personnel; i++) {
-          if (TurnWaiting[i]->GetTurnWaiter() >= 100) {
-            std::cout << "TEST : " << TurnWaiting[i]->GetName() << "의 턴!" << std::endl;
-            TurnWaiting[i]->SetTurnWaiter(0);
-            system("pause");
-          } else {
-            for (int i = 0; i < total_combat_personnel; i++) {
-              TurnWaiting[i]->AddTurnWaiter(TurnWaiting[i]->GetTurnSpd());
+    }
+    Character* turn_now = 0;
+    Character* turn_next = 0;
+
+    bool turn_waiting = true;
+    while (turn_waiting) {
+      for (int i = 0; i < total_combat_personnel; i++) {
+        if (TurnWaiting[i]->GetTurnWaiter() >= 100) {
+          turn_now = TurnWaiting[i];
+
+          int second_turn_waiter = 0;
+          for (int i = 0; i < total_combat_personnel; i++) {
+            if (TurnWaiting[i]->GetTurnWaiter() > second_turn_waiter) {
+              second_turn_waiter = TurnWaiting[i]->GetTurnWaiter();
+              turn_next = TurnWaiting[i];
             }
           }
+          turn_waiting = false;
+          break;
+        } else
+          continue;
+      }
+      if (turn_waiting) {
+        for (int i = 0; i < total_combat_personnel; i++) {
+          TurnWaiting[i]->AddTurnWaiter(TurnWaiting[i]->GetTurnSpd());
         }
       }
     }
-  }
+    int action = 0;
+    std::cout << turn_now->GetName() << "이 행동할 차례입니다." << std::endl;
+    SYSTEM_MESSAGE_DELAY;
+    std::cout << "1. 공격   2. 스킬 사용   3. 아이템 사용   4. 도망"
+              << std::endl;
+    std::cout << "행동을 선택해주십시오 : ";
+    std::cin >> action;
+    switch (action) {
+      case ATTACK: {
+        Character* Target = nullptr;
+
+        for (int i = 0; i < enemies_personnel; i++) {
+          if (&enemy[i] != nullptr) {
+            if (i) {
+              std::cout << "   ";
+            }
+            std::cout << i + 1 << ". " << enemy[i].GetName();
+          }
+        }
+        ENDL;
+        int target;
+        while (true) {
+          std::cout << "대상을 선택해주십시오" << std::endl;
+          std::cin >> target;
+          if (target > 0 || target <= enemies_personnel) {
+            Target = &enemy[target - 1];
+            break;
+          } else {
+            std::cout << "선택 범위를 벗어났습니다." << std::endl;
+            SYSTEM_MESSAGE_DELAY;
+          }
+        }
+        turn_now->Attack(*Target);
+        turn_now->SetTurnWaiter(0);
+        break;
+      }
+      case USE_SKILL: {
+        break;
+      }
+      case USE_ITEM: {
+        break;
+      }
+      case RUNAWAY: {
+        break;
+      }
+    }
+  } // 승패 결정났을 때
   if (allies_alive && !enemies_alive) {  // 승리
     // gold += total_reward_gold;
     std::cout << total_reward_gold << "G 를 획득했습니다" << std::endl;
@@ -237,3 +298,4 @@ std::string GetEnemyName(Place _place) {
   }
   return name;
 }
+

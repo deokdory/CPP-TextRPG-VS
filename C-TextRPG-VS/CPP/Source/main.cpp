@@ -5,8 +5,8 @@
 int main() {
   Hero* Player[PARTY_MAX] = {};
 
-  NewPlayerCharacter(Player);
-  NewPlayerCharacter(Player);
+  NewPlayerCharacter(Player, 5);
+  NewPlayerCharacter(Player, 5);
 
   Combat(Player, Place::FOREST);
 }
