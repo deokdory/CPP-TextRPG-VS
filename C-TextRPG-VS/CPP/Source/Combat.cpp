@@ -136,8 +136,10 @@ void Combat(Hero** Player, Place _place) {
               << std::endl;
     std::cout << "행동을 선택해주십시오 : ";
     std::cin >> action;
+
     switch (action) {
       case ATTACK: {
+        
         Character* Target = nullptr;
 
         for (int i = 0; i < enemies_personnel; i++) {
@@ -153,14 +155,19 @@ void Combat(Hero** Player, Place _place) {
         while (true) {
           std::cout << "대상을 선택해주십시오" << std::endl;
           std::cin >> target;
-          if (target > 0 || target <= enemies_personnel) {
-            Target = &enemy[target - 1];
-            break;
-          } else {
-            std::cout << "선택 범위를 벗어났습니다." << std::endl;
-            SYSTEM_MESSAGE_DELAY;
-          }
+		  if (target > 0 || target <= enemies_personnel) {
+			if (enemy[target - 1].CheckIsDead()) {
+				  std::cout << "이미 쓰러진 대상입니다." << std::endl; continue;
+			  }
+		    Target = &enemy[target - 1];
+			break;
+		  }
+		  else {
+			  std::cout << "선택 범위를 벗어났습니다." << std::endl;
+			  SYSTEM_MESSAGE_DELAY;
+		  }
         }
+        
         turn_now->Attack(*Target);
         turn_now->SetTurnWaiter(0);
         break;
