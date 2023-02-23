@@ -5,8 +5,9 @@
 
 Hero::Hero() : Character::Character(), exp(0) {
   for (int i = 0; i < HERO_SKILL_MAX; i++) {
-    skill_slot[i] = nullptr;
+    skill[i] = nullptr;
   }
+  SetType(CharacterType::HERO);
   max_exp = GetMaxExpForCurrentLvl();
   //num_of_heroes++;
 }
@@ -14,8 +15,9 @@ Hero::Hero() : Character::Character(), exp(0) {
 Hero::Hero(std::string _name, int _lvl)
   : Character::Character(_name, _lvl), exp(0) {
   for (int i = 0; i < HERO_SKILL_MAX; i++) {
-    skill_slot[i] = nullptr;
+    skill[i] = nullptr;
   }
+  SetType(CharacterType::HERO);
   max_exp = GetMaxExpForCurrentLvl();
   //num_of_heroes++;
 }
@@ -23,8 +25,8 @@ Hero::Hero(std::string _name, int _lvl)
 Hero::Hero(const Hero& other)
   : Character::Character(other), exp(other.exp), max_exp(other.max_exp) {
   for (int i = 0; i < HERO_SKILL_MAX; i++) {
-    skill_slot[i] = new Skill(*(other.skill_slot[i]));
-    skill_slot[i]->SetOwner(this);
+    skill[i] = new Skill(*(other.skill[i]));
+    skill[i]->SetOwner(this);
   }
   //num_of_heroes++;
 }
@@ -34,6 +36,8 @@ int Hero::GetMaxExpForCurrentLvl() const {
                              70, 80, 90, 100 };
   return max_exp_for_each_lvl[Character::GetLvl() - 1];
 }
+
+Skill* Hero::GetSkill(int slot_number) { return skill[slot_number]; }
 
 //int Hero::GetNumOfHeroes() { return num_of_heroes; }
 
@@ -61,7 +65,7 @@ void Hero::GiveSkill(int _index) {
     break;
   }
   case STRONG_ATTACK: {
-    skill_slot[slot] = new StrongAttack(this);
+    skill[slot] = new StrongAttack(this);
     break;
   }
   default: {
@@ -72,10 +76,12 @@ void Hero::GiveSkill(int _index) {
 
 void Hero::PrintSkillsAll() {
   for (int i = 0; i < HERO_SKILL_MAX; i++) {
-    if (skill_slot[i] != nullptr) {
-      std::cout << skill_slot[i]->GetName() << std::endl;
-      std::cout << skill_slot[i]->GetDescription() << std::endl;
+    std::cout << i + 1 << ". ";
+    if (skill[i] != nullptr) {
+      std::cout << skill[i]->GetName() << std::endl;
+      std::cout << skill[i]->GetDescription() << std::endl;
     } else {
+      std::cout << "스킬 없음" << std::endl;
       continue;
     }
   }
@@ -84,7 +90,7 @@ void Hero::PrintSkillsAll() {
 int Hero::GetEmptySkillSlot() { 
   int empty_slot = -1;
   for (int i = 0; i < HERO_SKILL_MAX; i++) {
-    if (skill_slot[i] == nullptr) {
+    if (skill[i] == nullptr) {
       empty_slot = i;
       break;
     } else {
@@ -95,6 +101,14 @@ int Hero::GetEmptySkillSlot() {
     }
   }
   return empty_slot;
+}
+
+SkillType Hero::GetSkillType(int slot_number) {
+  return skill[slot_number]->GetSkillType();
+}
+
+void Hero::UseSkill(int slot_number, Character& Target) {
+  skill[slot_number]->Use(Target);
 }
 
   void Hero::PrintStatus(short x) {
@@ -202,8 +216,8 @@ void Hero::PrintExp() {
 
 Hero::~Hero() {
   for (int i = 0; i < HERO_SKILL_MAX; i++) {
-    if (skill_slot[i] != nullptr) {
-      delete skill_slot[i];
+    if (skill[i] != nullptr) {
+      delete skill[i];
     }
   }
   //num_of_heroes--;

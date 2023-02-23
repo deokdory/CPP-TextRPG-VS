@@ -2,7 +2,8 @@
 #include "Character.h"
 
 Character::Character()
-    : name("Character"),
+    : type(CharacterType::BASE),
+      name("Character"),
       class_of_character(Class::COMMON),
       max_hp(COMMON_MAXHP_ORIGIN),
       hp(max_hp),
@@ -17,7 +18,8 @@ Character::Character()
 }
 
 Character::Character(std::string _name, int _lvl)
-    : class_of_character(Class::COMMON),
+    : type(CharacterType::BASE),
+      class_of_character(Class::COMMON),
       lvl(_lvl),
       turn_spd(0),
       turn_waiter(0),
@@ -46,7 +48,8 @@ Character::Character(std::string _name, int _lvl)
 }
 
 Character::Character(std::string _name, int _lvl, double _adjust)
-    : class_of_character(Class::COMMON),
+    : type(CharacterType::BASE),
+      class_of_character(Class::COMMON),
       lvl(_lvl),
       turn_spd(0),
       turn_waiter(0),
@@ -77,7 +80,8 @@ Character::Character(std::string _name, int _lvl, double _adjust)
 }
 
 Character::Character(const Character& other)
-    : name(other.name),
+    : type(other.type),
+      name(other.name),
       class_of_character(other.class_of_character),
       max_hp(other.max_hp),
       hp(other.hp),
@@ -88,7 +92,7 @@ Character::Character(const Character& other)
       turn_spd(other.turn_spd),
       turn_waiter(other.turn_waiter),
       is_dead(other.is_dead) {
-  //std::cout << "복사 생성자 호출" << std::endl;
+  // std::cout << "복사 생성자 호출" << std::endl;
 }
 
 void Character::LvlUp() {
@@ -125,6 +129,8 @@ std::string Character::GetClass() const {
 
 std::string Character::GetName() const { return name; }
  
+void Character::SetType(CharacterType _type) { type = _type; }
+
 void Character::SetMaxHp(int _max_hp) { max_hp = _max_hp; }
 void Character::SetHp(int _hp) {
   if (_hp > max_hp) {
@@ -217,6 +223,7 @@ bool Character::CheckIsDead() {
     } return is_dead;
 }
 
+CharacterType Character::GetType() const { return type; }
 int Character::GetMaxHp() const { return max_hp; }
 double Character::GetHp() const { return hp; }
 int Character::GetAtk() const { return atk; }

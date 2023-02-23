@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "Common.h"
+#include "System.h"
 
 void gotoxy(short x, short y) {
   COORD Cur;
@@ -24,4 +24,9 @@ void gotoy(short y) {
   Cur.X = temp.dwCursorPosition.X;
   Cur.Y = y;
   SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), Cur);
+}
+
+void TextColor(int foreground, int background) {
+  int color = foreground + background * 16;
+  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
 }

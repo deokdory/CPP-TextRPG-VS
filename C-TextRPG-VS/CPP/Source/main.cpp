@@ -3,12 +3,17 @@
 
 
 int main() {
+  Initialize();
+  
   Hero* Player[PARTY_MAX] = {};
+  GameManager Game;
 
-  NewPlayerCharacter(Player, 5);
-  NewPlayerCharacter(Player, 5);
+  NewPlayerCharacter(Player, 2);
+  NewPlayerCharacter(Player, 1);
 
-  Combat(Player, Place::FOREST);
+  Player[0]->GiveSkill(STRONG_ATTACK);
+
+  Combat(Game, Player, Place::FOREST);
 }
 
   

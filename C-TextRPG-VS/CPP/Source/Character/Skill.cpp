@@ -7,7 +7,7 @@ Skill::Skill()
       Owner(nullptr),
       cooldown(0),
       cooldown_remain(0),
-      skill_type(SkillType::ATTACK),
+      type(SkillType::ATTACK),
       description("NONE") {}
 
 Skill::Skill(int _index, Character* _Owner, int _cooldown, int _cooldown_remain,
@@ -16,7 +16,7 @@ Skill::Skill(int _index, Character* _Owner, int _cooldown, int _cooldown_remain,
       Owner(_Owner),
       cooldown(_cooldown),
       cooldown_remain(_cooldown_remain),
-      skill_type(_type),
+      type(_type),
       description(_description) {}
 
 Skill::Skill(const Skill& other)
@@ -24,14 +24,19 @@ Skill::Skill(const Skill& other)
       Owner(other.Owner),
       cooldown(other.cooldown),
       cooldown_remain(other.cooldown_remain),
-      skill_type(other.skill_type),
+      type(other.type),
       description(other.description) {}
 
 int Skill::GetCoolDown() const { return cooldown; }
 int Skill::GetCoolDownRemain() const { return cooldown_remain; }
 std::string Skill::GetDescription() const { return description; }
+
+SkillType Skill::GetSkillType() const { return type; }
+
+
 void Skill::SetCoolDown(int _cooldown) { cooldown = _cooldown; }
 void Skill::SetOwner(Character* _character) { Owner = _character; }
+
 bool Skill::IsAvailable() {
   if (!GetCoolDownRemain()) {
     return true;
@@ -57,7 +62,7 @@ void StrongAttack::Use(Character& _Target) {
               << std::endl;
     prev_atk = Owner->GetAtk();
     Owner->SetAtk(Owner->GetAtk() * 1.25);
-    Character::Attack(_Target);
+    Owner->Attack(_Target);
     Owner->SetAtk(prev_atk);
     cooldown_remain = cooldown;
   }

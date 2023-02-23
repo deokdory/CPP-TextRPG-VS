@@ -19,8 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CPP\Source\GameManager.cpp" />
     <ClCompile Include="CPP\Source\Combat.cpp" />
-    <ClCompile Include="CPP\Source\Common.cpp" />
+    <ClCompile Include="CPP\Source\System.cpp" />
     <ClCompile Include="CPP\Source\Item.cpp" />
     <ClCompile Include="CPP\Source\pch.cpp" />
     <ClCompile Include="CPP\Source\Character\Character.cpp" />
@@ -31,7 +32,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CPP\Header\Combat.h" />
-    <ClInclude Include="CPP\Header\Common.h" />
+    <ClInclude Include="CPP\Header\GameManager.h" />
+    <ClInclude Include="CPP\Header\System.h" />
     <ClInclude Include="CPP\Header\Item.h" />
     <ClInclude Include="CPP\Header\main.h" />
     <ClInclude Include="CPP\Header\Character.h" />
