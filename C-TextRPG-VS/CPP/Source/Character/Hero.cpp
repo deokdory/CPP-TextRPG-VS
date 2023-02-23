@@ -80,6 +80,12 @@ void Hero::PrintSkillsAll() {
     if (skill[i] != nullptr) {
       std::cout << skill[i]->GetName() << std::endl;
       std::cout << skill[i]->GetDescription() << std::endl;
+      if (skill[i]->GetCoolDownRemain()) {
+        std::cout << "재사용 대기 중 : " << skill[i]->GetCoolDownRemain()
+                  << "턴 후 사용가능" << std::endl;
+      } else {
+        std::cout << "사용가능" << std::endl;
+      }
     } else {
       std::cout << "스킬 없음" << std::endl;
       continue;
@@ -109,6 +115,17 @@ SkillType Hero::GetSkillType(int slot_number) {
 
 void Hero::UseSkill(int slot_number, Character& Target) {
   skill[slot_number]->Use(Target);
+}
+
+void Hero::TurnEnd() {
+  SetTurnWaiter(0);
+  for (int i = 0; i < HERO_SKILL_MAX; i++) {
+    if (skill[i] != nullptr) {
+      if (skill[i]->GetCoolDownRemain()) {
+        skill[i]->SetCoolDownRemain(skill[i]->GetCoolDownRemain() - 1);
+      }
+    }
+  }
 }
 
   void Hero::PrintStatus(short x) {

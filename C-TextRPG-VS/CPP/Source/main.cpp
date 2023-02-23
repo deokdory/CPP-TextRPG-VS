@@ -8,16 +8,15 @@ int main() {
   Hero* Player[PARTY_MAX] = {};
   GameManager Game;
 
-  NewPlayerCharacter(Player, 2);
-  NewPlayerCharacter(Player, 1);
+  NewPlayerCharacter(Player, 3);
+  NewPlayerCharacter(Player, 3);
+  NewPlayerCharacter(Player, 3);
 
   Player[0]->GiveSkill(STRONG_ATTACK);
 
-  Combat(Game, Player, Place::FOREST);
+
+  Combat(Game, Player, Place::CAVE);
 }
-
-  
-
 
   //gotoxy(60, 0);
   //std::cout << "숲 몬스터 테스트" << std::endl;
@@ -36,6 +35,3 @@ int main() {
 void Initialize() {
   srand((unsigned)time(NULL));  // 난수 seed 생성
 }
-
-
-

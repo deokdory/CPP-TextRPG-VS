@@ -165,6 +165,7 @@ class Skill : public Character {
   // Set
   void SetCoolDown(int _cooldown);
   void SetOwner(Character* _character);
+  void SetCoolDownRemain(int _cooldown_remain);
 
   bool IsAvailable();
 
@@ -205,6 +206,8 @@ class Hero : public Character {
   int GetEmptySkillSlot();
   SkillType GetSkillType(int slot_number);
   void UseSkill(int slot_number, Character& Target);
+  
+  void TurnEnd();
 
   virtual void PrintStatus(short x = 0);
   virtual void PrintStatus(short x, short y);

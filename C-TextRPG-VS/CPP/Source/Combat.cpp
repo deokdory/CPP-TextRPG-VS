@@ -159,7 +159,8 @@ void Combat(GameManager& Game, Hero** Player, Place _place) {
       std::cout << "다음 차례 : " << turn_next->GetName() << std::endl;
     }
     // 플레이어 턴
-    if (turn_now->GetType() == CharacterType::HERO) { 
+    if (turn_now->GetType() == CharacterType::HERO) {
+      Hero* TurnNowHero = dynamic_cast<Hero*>(turn_now);
       //행동 선택
       int action = 0;
       std::cout << "1. 공격   2. 스킬 사용   3. 아이템 사용   4. 도망"
@@ -170,13 +171,16 @@ void Combat(GameManager& Game, Hero** Player, Place _place) {
       switch (action) {
         case ATTACK: {
           Character* Target = SelectTarget(enemy, enemies_personnel);
-          turn_now->Attack(*Target);
-          turn_now->SetTurnWaiter(0);
+          if (Target != nullptr) {
+            turn_now->Attack(*Target);
+            TurnNowHero->TurnEnd();
+          } else {
+            std::cout << "ERROR: TargetPtr is NULL!" << std::endl;
+          }
           break;
         }
         case USE_SKILL: {
           int skill_select = 0;
-          Hero* TurnNowHero = dynamic_cast<Hero*>(turn_now);
           Skill* UsingSkill = nullptr;
           TurnNowHero->PrintSkillsAll();
           std::cout << "4. 취소" << std::endl;
@@ -185,8 +189,13 @@ void Combat(GameManager& Game, Hero** Player, Place _place) {
             std::cin >> skill_select;
             if (skill_select >= 1 && skill_select <= 3) {
               if (TurnNowHero->GetSkill(skill_select - 1) != nullptr) {
+                if (TurnNowHero->GetSkill(skill_select - 1)->IsAvailable()) {
                 UsingSkill = TurnNowHero->GetSkill(skill_select - 1);
                 break;
+                } else {
+                  std::cout << "해당 스킬은 아직 사용할 수 없습니다."
+                            << std::endl;
+                }
               } else {
                 std::cout << "해당 스킬 슬롯은 비어있습니다." << std::endl;
               }
@@ -202,7 +211,7 @@ void Combat(GameManager& Game, Hero** Player, Place _place) {
             case SkillType::ATTACK: {
               Character* Target = SelectTarget(enemy, enemies_personnel);
               UsingSkill->Use(*Target);
-              turn_now->SetTurnWaiter(0);
+              TurnNowHero->TurnEnd();
               break;
             }
             case SkillType::HEAL: {
@@ -232,37 +241,56 @@ void Combat(GameManager& Game, Hero** Player, Place _place) {
       }
     } else { // 적 차례
       int target_score[PARTY_MAX] = {};
-      int max_damage = 0;
-      int min_damage = 9999;
-      int damage = 0;
-      int lowest_hp = 9999;
-      int hp_after_attack = 0;
+      int dealt_damage[PARTY_MAX] = {};
+      int max_dealt_damage = 0;
+      int received_damage[PARTY_MAX] = {};
+      int min_received_damage = 99999;
+      int target_hp_remain[PARTY_MAX] = {};
+      int min_target_hp_remain = 99999;
+      bool attack_will_die[PARTY_MAX] = {};
 
       for (int i = 0; i < allies_personnel; i++) {
         if (Player[i] != nullptr) {
           if (Player[i]->CheckIsDead()) {
             continue;
           } else {
-            damage = turn_now->GetAtk() - Player[i]->GetDef();
-            if (damage > max_damage) { // 가장 대미지가 많이 들어가는 적
-              max_damage = damage;
+            dealt_damage[i] = turn_now->GetAtk() - Player[i]->GetDef();
+            if (dealt_damage[i] > max_dealt_damage) {
+              max_dealt_damage = dealt_damage[i];
+            }
+            //received_damage[i] = Player[i]->GetAtk() - turn_now->GetAtk();
+            //if (received_damage[i] < min_received_damage) {
+            //  min_received_damage = received_damage[i];
+            //}
+            //if (turn_now->GetHp() - received_damage[i] <= 0) {
+            //  attack_will_die[i] = true;
+            //}
+            target_hp_remain[i] = Player[i]->GetHp() - dealt_damage[i];
+            if (target_hp_remain[i] < min_target_hp_remain) {
+              min_target_hp_remain = target_hp_remain[i];
+            }
+          }
+        }
+      }
+      for (int i = 0; i < allies_personnel; i++) {
+        if (Player[i] != nullptr) {
+          if (Player[i]->CheckIsDead()) {
+            continue;
+          } else {
+            if (dealt_damage[i] == max_dealt_damage) {
               target_score[i]++;
             }
-            hp_after_attack = Player[i]->GetHp() - damage;
-            if (hp_after_attack < lowest_hp) { // 공격당한 후 체력이 가장 적게 남는 적
-              lowest_hp = hp_after_attack;
+            //if (received_damage[i] == min_received_damage) {
+            //  target_score[i] += 1;
+            //}
+            //if (attack_will_die) {
+            //  target_score[i] -= 1;
+            //}
+            if (target_hp_remain[i] = min_target_hp_remain) {
               target_score[i]++;
             }
-            if (hp_after_attack <= 0) { // 공격당한다면 죽는 적
-              target_score[i] += 3;
-            }
-            damage = Player[i]->GetAtk() + turn_now->GetDef();
-            if (damage < min_damage) {
-              min_damage = damage;
+            if (target_hp_remain[i] <= 0) {
               target_score[i]++;
-            }
-            if (turn_now->GetHp() - damage <= 0) {
-              target_score[i]--;
             }
           }
         }
@@ -341,7 +369,7 @@ int GetEnemiesPersonnel(Place _place) {
   }
 
   for (int i = 0; i < enemies_max - enemies_min; i++) {
-    random = random();
+    random = RealRandom();
     if (enemies_personnel >= enemies_max) {
       enemies_personnel = enemies_max;
       break;
@@ -375,7 +403,7 @@ int GetEnemyLvl(Place _place) {
       break;
     }
   }
-  double random = random();
+  double random = RealRandom();
   double ratio = 1.0;
   if (lvl_min > lvl_max) {
     std::cout << "ERROR : lvl_min is higher than lvl_max ! so swapped"
@@ -419,11 +447,8 @@ std::string GetEnemyName(Place _place) {
 Character* SelectTarget(Enemy* enemy, int personnel) {
   Character* Target = nullptr;
 
-  for (int i = 0; i < personnel + 1; i++) {
-    if (i = personnel) {
-      std::cout << i + 1 << ". 취소";
-    }
-    if (enemy + i != nullptr) {
+  for (int i = 0; i < personnel; i++) {
+    if (&enemy[i] != nullptr) {
       if (i) {
         std::cout << "   ";
       }
@@ -450,7 +475,11 @@ Character* SelectTarget(Enemy* enemy, int personnel) {
       }
     }
   }
-  return Target;
+  if (Target != nullptr) {
+    return Target;
+  } else {
+    return NULL;
+  }
 }
 Character* SelectTarget(Hero** Player, int personnel) {
   Character* Target = nullptr;

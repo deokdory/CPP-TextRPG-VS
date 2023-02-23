@@ -22,3 +22,5 @@ void gotox(short x);
 void gotoy(short y);
 
 void TextColor(int foreground = LIGHT_GRAY, int background = BLACK);
+
+double RealRandom();

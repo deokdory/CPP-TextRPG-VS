@@ -1,6 +1,6 @@
 # CPP-TextRPG-VS
 
-## 작성 중 생긴 문제 및 몰랐던 사항, 실수 등
+## 제작 중 배운 것들
 ### 1. 부모 클래스의 static 멤버 변수 접근
 부모 클래스인 `Character` 의 `private: static int num_of_charcter`에 접근 불가능
 - **이유** - `static` 으로 선언된 경우 `private` 여도 자식 클래스에선 접근 가능할 줄 알았으나 불가능  
@@ -119,3 +119,25 @@ void __CRTDECL operator delete(void* const block) noexcept
 slot 에 GetNumOfPlaybleHeroes(_Player)의 값이 할당될 줄 알았던 나였지만
 
 **당연히** int slot 에는 뒤의 조건이 만족했는지에 따라 1과 0이 할당되었다.
+
+
+### 7. 좀 더 만족스러운 난수를 얻는 법
+```cpp
+srand((unsigned)time(NULL))
+random = (double)rand() / RAND_MAX;
+```
+위와 같은 방식으로 0.000... ~ 1.0 까지의 난수를 얻어 게임을 제작하기 시작했으나 rand()를 한 번만 호출해서 사용하니 유사한 시간의 같은 상황에서는 시간의 흐름에 따라 난수가 천천히 증가하며 루프하는 현상이 발견되었다.
+
+```cpp
+srand((unsigned)time(NULL))
+#define random() (double)rand() / RAND_MAX;
+
+void RealRandom() {
+    double random[10] = {};
+    for(int i = 0; i < 10; i++) {
+        random[i] = random();
+    }
+    return random[rand % 10];
+}
+```
+위와 같이 rand()를 10번 할당한 값을 배열의 원소로 할당하고 한 번 더 rand()를 호출해 그 중 한 개의 random값만을 반환하는 RealRandom() 함수를 만들어 사용하니 더 만족스러운 난수를 얻을 수 있었다.

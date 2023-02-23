@@ -37,6 +37,10 @@ SkillType Skill::GetSkillType() const { return type; }
 void Skill::SetCoolDown(int _cooldown) { cooldown = _cooldown; }
 void Skill::SetOwner(Character* _character) { Owner = _character; }
 
+void Skill::SetCoolDownRemain(int _cooldown_remain) {
+  cooldown_remain = _cooldown_remain;
+}
+
 bool Skill::IsAvailable() {
   if (!GetCoolDownRemain()) {
     return true;
@@ -64,6 +68,6 @@ void StrongAttack::Use(Character& _Target) {
     Owner->SetAtk(Owner->GetAtk() * 1.25);
     Owner->Attack(_Target);
     Owner->SetAtk(prev_atk);
-    cooldown_remain = cooldown;
+    cooldown_remain = cooldown + 1;
   }
 }

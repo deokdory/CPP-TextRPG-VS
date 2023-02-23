@@ -30,3 +30,11 @@ void TextColor(int foreground, int background) {
   int color = foreground + background * 16;
   SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
 }
+
+double RealRandom() {
+  double random[10] = {};
+  for (int i = 0; i < 10; i++) {
+    random[i] = random();
+  }
+  return random[rand() % 10];
+}
