@@ -12,12 +12,14 @@ enum class ItemType {
 
 class Item {
  protected:
+  int index;
   std::string name;
   ItemType item_type;
  public:
   Item();
   Item(std::string name, ItemType item_type);
   //Get
+  int GetIndex() const { return index; }
   std::string GetName() const;
   ItemType GetItemType() const;
 
@@ -46,7 +48,6 @@ class Potion : public Item {
   PotionType type;
 
  public:
-  Potion();
   Potion(std::string _name, PotionType _type, int _amount, int duration);
 
   virtual void Use(Character& character);

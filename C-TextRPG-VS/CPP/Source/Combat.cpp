@@ -121,8 +121,8 @@ void Combat(GameManager& Game, Hero** Player, Place _place) {
           TurnWaiting[i]->SetTurnSpd(
               0);  // 캐릭터가 죽은 경우 턴 돌아오는 속도 0으로 설정
         }
-        std::cout << TurnWaiting[i]->GetName()
-                  << " TurnSpd = " << TurnWaiting[i]->GetTurnSpd() << std::endl;
+        //std::cout << TurnWaiting[i]->GetName()
+        //          << " TurnSpd = " << TurnWaiting[i]->GetTurnSpd() << std::endl;
       }
     }
 

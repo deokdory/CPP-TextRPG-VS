@@ -1,19 +1,73 @@
 #pragma once
+#include "Character.h"
+#include "Item.h"
 
-enum class QuestType { HUNT, BRING_ITEM, GOTO };
+enum class QuestType { HUNT, SUPPLY, GOTO };
 
 class Quest {
  public:
-   void PrintDialogue() const;
+  std::string GetName() const { return name; }
+  std::string GetDescription() const { return description; }
+  QuestType GetType() const { return type; }
 
-  std::string GetName() const;
-  std::string GetDescription() const;
-  QuestType GetType() const;
-  
+  bool GetIsCompleted() const { return is_completed; }
+  bool SetIsCompleted(bool _is_completed = true);
+
+  int GetRewardExp() const { return reward_exp; }
+  int GetRewardGold() const { return reward_gold; }
+
+  void SetRewardExp(int);
+  void SetRewardGold(int);
+
+  virtual void PrintProgress() = 0;
+
  protected:
   std::string name;
   std::string description;
   QuestType type;
+
+  bool is_completed;
+
+  int reward_exp;
+  int reward_gold;
+  // Item* reward_item;
 };
 
-class HuntQuest : public 
+class HuntQuest : public Quest {
+ public:
+  int GetTargetIndex() const { return target_enemy_index; }
+  int GetObjectiveCount() const { return target_enemy_goal; }
+  int GetCount() const { return count; }
+
+  bool IsGoalAchieved();
+
+  void SetTargetEnemyIndex(int);
+  void SetObjectiveCount(int);
+
+  void AddCount();
+
+  virtual void PrintProgress();
+
+ private:
+  int target_enemy_index;
+  int target_enemy_goal;
+  int count;
+};
+
+class SupplyQuest : public Quest {
+ public:
+  int GetRequiredItemIndex() const { return required_item_index; }
+  int GetRequiredItemCount() const { return required_item_count; }
+  int GetCount() const { return count; }
+
+  bool IsGoalAchieved();
+
+  void SetRequiredItemIndex(int);
+  void SetRequiredItemCount(int);
+  void AddCount();
+
+ private:
+  int required_item_index;
+  int required_item_count;
+  int count;
+};

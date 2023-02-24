@@ -231,7 +231,7 @@ class Enemy : public Character {
   Enemy(int _index, int _lvl);
 
   // Get
-  std::string GetNameWithIndex(int _index) const;
+  static const std::string GetNameWithIndex(int _index);
   int GetRewardGold() const;
   int GetRewardExp() const;
 

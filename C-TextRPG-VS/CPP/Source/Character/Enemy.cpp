@@ -9,11 +9,9 @@ Enemy::Enemy(int _index, int _lvl)
     : index(_index),
       Character::Character(GetNameWithIndex(_index), _lvl, 0.9),
       reward_gold(GetRewardGoldForCurrentLvl()),
-      reward_exp(GetRewardExpForCurrentLvl()) {
-  ;
-}
+      reward_exp(GetRewardExpForCurrentLvl()) {}
 
-std::string Enemy::GetNameWithIndex(int _index) const{
+const std::string Enemy::GetNameWithIndex(int _index){
   std::string name;
   switch (_index) {
     case 0:
