@@ -1,10 +1,15 @@
 #pragma once
+#include "Quest.h"
+#include "Item.h"
+
+enum class Place { TOWN, WORLD_MAP, FOREST, CAVE, MOUNTAIN };
 
 class GameManager {
   int gold;
   int top_lvl_of_player;
 
-  //Quest* ProgressQuest;
+  Quest* ProgressQuest;
+  
 
  public:
   int GetGold();

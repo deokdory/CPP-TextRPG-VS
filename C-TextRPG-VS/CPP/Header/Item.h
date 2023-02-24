@@ -1,6 +1,7 @@
 #pragma once
 #include "Character.h"
 
+
 enum class ItemType { 
   WEAPON,
   EQUIP,
@@ -53,4 +54,44 @@ class Potion : public Item {
   virtual void Use(Character& character);
 
   ~Potion();
+};
+
+void OpenInventory();
+
+class Inventory {
+ public:
+  static void GotItem(Item* _item);
+
+  static Inventory* GotNewItem(Item* item);
+  void Push();
+
+  void AddCount();
+
+  Inventory* FindItem(Item* item);
+
+  Item* GetItem() const { return item; }
+  int GetItemCount() const { return item_count; }
+  static const Inventory* GetNode(int index);
+
+  static const int GetLength() { return Length; }
+
+  static const Inventory* GetHead() { return Head; }
+  static const Inventory* GetTail() { return Tail; }
+
+  void RemoveItem(int index);
+  void RemoveAll();
+
+  private:
+  void RemoveAll(Inventory* head);
+
+  Item* item;
+  int item_count;
+
+  Inventory* Next;
+  Inventory* Prev;
+
+  static Inventory* Head;
+  static Inventory* Tail;
+
+  static int Length;
 };

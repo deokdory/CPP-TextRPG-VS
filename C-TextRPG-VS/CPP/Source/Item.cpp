@@ -1,10 +1,20 @@
-#include "pch.h"
 #include "Item.h"
+#include "pch.h"
+
+void OpenInventory() {
+    std::cout
+        << "Inventory "
+           "================================================================="
+        << std::endl;
+  for (int i = 0; i < Inventory::GetLength(); i++) {
+    std::cout << i + 1 << ". " << Inventory::GetNode(i)->GetItem()->GetName();
+  }
+}
 
 Item::Item() : name("NONE"), item_type(ItemType::VALUABLE) {}
 
-Item::Item(std::string _name, ItemType _item_type) : name(_name), item_type(_item_type) {}
-
+Item::Item(std::string _name, ItemType _item_type)
+    : name(_name), item_type(_item_type) {}
 
 std::string Item::GetName() const { return name; }
 ItemType Item::GetItemType() const { return item_type; }
@@ -56,3 +66,94 @@ void Potion::Use(Character& character) {
     }
   }
 }
+
+void Inventory::GotItem(Item* _item) {
+}
+
+Inventory* Inventory::GotNewItem(Item* _item) {
+  Inventory* node = new Inventory;
+
+  node->item = _item;
+  node->item_count = 1;
+  node->Next = nullptr;
+  node->Prev = nullptr;
+}
+
+void Inventory::Push() {
+  if (Head == nullptr) {
+    Head = this;
+    Tail = this;
+  } else {
+    Tail->Next = this;
+    this->Prev = Tail;
+    Tail = this;
+  }
+  Length++;
+}
+
+Inventory* Inventory::FindItem(Item* _item) {
+  if (Head == nullptr) {
+    std::cout << "Inventory is null" << std::endl;
+  }
+  Inventory* finder = Head;
+  while (finder != nullptr) {
+    if (item == _item) {
+      return finder;
+    }
+  }
+  return nullptr;
+}
+
+const Inventory* Inventory::GetNode(int index) {
+  if (Head == nullptr) {
+    std::cout << "Inventory is null" << std::endl;
+    return nullptr;
+  }
+  Inventory* finder = Head;
+  while (finder != nullptr && --index >= 0) {
+    finder = finder->Next;
+  }
+  return finder;
+}
+
+  void Inventory::RemoveItem(int index) {
+  if (this == Head) {
+    if (this->Next != nullptr) {
+      this->Next->Prev = nullptr;
+      Head = this->Next;
+    }
+  }
+  if (this == Tail) {
+    this->Prev->Next = nullptr;
+    Tail = this->Prev;
+  } else {
+    this->Prev->Next = this->Next;
+    this->Next->Prev = this->Prev;
+  }
+  delete this;
+  Length--;
+  return;
+}
+
+void Inventory::RemoveAll() {
+  Length = 0;
+
+  if (Head == nullptr) {
+    std::cout << "List is already NULL" << std::endl;
+  }
+  if (Head->Next != nullptr) {
+    RemoveAll(Head->Next);
+  }
+  delete Head;
+
+  Head = nullptr;
+  Tail = nullptr;
+}
+
+void Inventory::RemoveAll(Inventory* head) {
+  if (head->Next != nullptr) {
+    RemoveAll(head->Next);
+  }
+  delete head;
+}
+

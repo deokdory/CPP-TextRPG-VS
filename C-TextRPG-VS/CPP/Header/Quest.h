@@ -30,7 +30,7 @@ class Quest {
 
   int reward_exp;
   int reward_gold;
-  // Item* reward_item;
+  Item* reward_item;
 };
 
 class HuntQuest : public Quest {
@@ -65,6 +65,8 @@ class SupplyQuest : public Quest {
   void SetRequiredItemIndex(int);
   void SetRequiredItemCount(int);
   void AddCount();
+
+  virtual void PrintProgress();
 
  private:
   int required_item_index;

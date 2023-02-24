@@ -3,8 +3,6 @@
 #include "System.h"
 #include "GameManager.h"
 
-enum class Place { FOREST, CAVE, MOUNTAIN };
-
 enum ActionInCombat { ATTACK = 1, USE_SKILL, USE_ITEM, RUNAWAY };
 
 void Combat(GameManager& Game, Hero** Player, Place _place);  // 전투 시작

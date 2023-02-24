@@ -23,7 +23,7 @@ void HuntQuest::SetObjectiveCount(int _objective_count) {
 void HuntQuest::AddCount() { count++; }
 
 void HuntQuest::PrintProgress() {
-  double progress_percent = count / target_enemy_goal * 100;
+  double progress_percent = (double)count / target_enemy_goal * 100;
   std::cout << Enemy::GetNameWithIndex(target_enemy_index)
             << "사냥하기 : " << count << " / " << target_enemy_goal << " ("
             << progress_percent << "%)" << std::endl;
@@ -44,3 +44,10 @@ void SupplyQuest::SetRequiredItemCount(int _required_count) {
 }
 
 void SupplyQuest::AddCount() { count++; }
+
+void SupplyQuest::PrintProgress() {
+  double progress_percent = (double)count / required_item_count * 100;
+  std::cout << Enemy::GetNameWithIndex(required_item_index)
+            << "모아오기 : " << count << " / " << required_item_count << " ("
+            << progress_percent << "%)" << std::endl;
+}
