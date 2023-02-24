@@ -216,21 +216,29 @@ class Hero : public Character {
   ~Hero();
 };
 
+enum EnemyIndex {
+  WOLF = 1, GOBLIN, DEVILKING
+};
+
 class Enemy : public Character {
+  int index;
+
   int reward_gold;
   int reward_exp;
 
  public:
   Enemy();
-  Enemy(std::string _name, int _lvl);
+  Enemy(int _index, int _lvl);
 
   // Get
+  std::string GetNameWithIndex(int _index) const;
   int GetRewardGold() const;
   int GetRewardExp() const;
 
-  // Get
   int GetRewardGoldForCurrentLvl();
   int GetRewardExpForCurrentLvl();
+
+  // Set
 
   virtual void PrintStatus(short x = 0);
   virtual void PrintStatus(short x, short y);

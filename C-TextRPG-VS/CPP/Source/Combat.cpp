@@ -34,7 +34,7 @@ void Combat(GameManager& Game, Hero** Player, Place _place) {
   int total_reward_exp = 0;
 
   for (int i = 0; i < enemies_personnel; i++) {
-    Enemy enemy_temp(GetEnemyName(_place), GetEnemyLvl(_place));
+    Enemy enemy_temp(GetEnemyIndex(_place), GetEnemyLvl(_place));
     if (&enemy[i] != nullptr) {
       enemy[i] = enemy_temp;
       total_reward_gold += enemy[i].GetRewardGold();
@@ -424,23 +424,24 @@ int GetEnemyLvl(Place _place) {
   }
   return lvl;
 }
-std::string GetEnemyName(Place _place) {
-  std::string name = "NONE";
+
+int GetEnemyIndex(Place _place) {
+  int index = 0;
   switch (_place) {
     case Place::FOREST: {
-      name = "WOLF";
+      index = WOLF;
       break;
     }
     case Place::CAVE: {
-      name = "GOBLIN";
+      index = GOBLIN;
       break;
     }
     case Place::MOUNTAIN: {
-      name = "DEVILKING";
+      index = DEVILKING;
       break;
     }
   }
-  return name;
+  return index;
 }
 
 // 대상 선택

@@ -2,6 +2,7 @@
 
 class GameManager {
   int gold;
+  
 
  public:
   int GetGold();

@@ -3,12 +3,37 @@
 
 #define ENEMY_STAT_ADJUST 0.9
 
-Enemy::Enemy() : Character::Character(), reward_gold(0), reward_exp(0) {}
+Enemy::Enemy() : Character::Character(), index(0), reward_gold(0), reward_exp(0) {}
 
-Enemy::Enemy(std::string _name, int _lvl)
-    : Character::Character(_name, _lvl, 0.9),
+Enemy::Enemy(int _index, int _lvl)
+    : index(_index),
+      Character::Character(GetNameWithIndex(_index), _lvl, 0.9),
       reward_gold(GetRewardGoldForCurrentLvl()),
-      reward_exp(GetRewardExpForCurrentLvl()) {}
+      reward_exp(GetRewardExpForCurrentLvl()) {
+  ;
+}
+
+std::string Enemy::GetNameWithIndex(int _index) const{
+  std::string name;
+  switch (_index) {
+    case 0:
+      name = "NONE";
+      break;
+    case WOLF:
+      name = "WOLF";
+      break;
+    case GOBLIN:
+      name = "GOBLIN";
+      break;
+    case DEVILKING:
+      name = "DEVINKING";
+      break;
+    default:
+      name = "DEFAULT";
+      break;
+  }
+  return name;
+}
 
 int Enemy::GetRewardGold() const { return reward_gold; }
 
