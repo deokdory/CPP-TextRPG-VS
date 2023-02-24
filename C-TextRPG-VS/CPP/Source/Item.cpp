@@ -1,11 +1,19 @@
 #include "Item.h"
 #include "pch.h"
 
+Inventory* Inventory::Head = nullptr;
+Inventory* Inventory::Tail = nullptr;
+int Inventory::Length = 0;
+
 void OpenInventory() {
     std::cout
         << "Inventory "
            "================================================================="
         << std::endl;
+  if (Inventory::GetHead() == nullptr) {
+    std::cout << "인벤토리에 아이템이 없습니다." << std::endl;
+    return;
+  }
   for (int i = 0; i < Inventory::GetLength(); i++) {
     std::cout << i + 1 << ". " << Inventory::GetNode(i)->GetItem()->GetName();
   }
@@ -67,7 +75,17 @@ void Potion::Use(Character& character) {
   }
 }
 
+
+
+//인벤토리
 void Inventory::GotItem(Item* _item) {
+  Inventory* find = FindItem(_item);
+  if (find == nullptr) {
+    Inventory* node = GotNewItem(_item);
+    node->Push();
+  } else {
+    find->AddCount();
+  }
 }
 
 Inventory* Inventory::GotNewItem(Item* _item) {
@@ -77,6 +95,8 @@ Inventory* Inventory::GotNewItem(Item* _item) {
   node->item_count = 1;
   node->Next = nullptr;
   node->Prev = nullptr;
+
+  return node;
 }
 
 void Inventory::Push() {
@@ -91,13 +111,15 @@ void Inventory::Push() {
   Length++;
 }
 
+void Inventory::AddCount() { item_count++; }
+
 Inventory* Inventory::FindItem(Item* _item) {
   if (Head == nullptr) {
     std::cout << "Inventory is null" << std::endl;
   }
   Inventory* finder = Head;
   while (finder != nullptr) {
-    if (item == _item) {
+    if (finder->item == _item) {
       return finder;
     }
   }
@@ -122,8 +144,7 @@ const Inventory* Inventory::GetNode(int index) {
       this->Next->Prev = nullptr;
       Head = this->Next;
     }
-  }
-  if (this == Tail) {
+  } else if (this == Tail) {
     this->Prev->Next = nullptr;
     Tail = this->Prev;
   } else {
@@ -141,6 +162,7 @@ void Inventory::RemoveAll() {
   if (Head == nullptr) {
     std::cout << "List is already NULL" << std::endl;
   }
+
   if (Head->Next != nullptr) {
     RemoveAll(Head->Next);
   }

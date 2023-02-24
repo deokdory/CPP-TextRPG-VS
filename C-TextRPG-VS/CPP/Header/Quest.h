@@ -11,7 +11,7 @@ class Quest {
   QuestType GetType() const { return type; }
 
   bool GetIsCompleted() const { return is_completed; }
-  bool SetIsCompleted(bool _is_completed = true);
+  void SetIsCompleted(bool _is_completed = true);
 
   int GetRewardExp() const { return reward_exp; }
   int GetRewardGold() const { return reward_gold; }

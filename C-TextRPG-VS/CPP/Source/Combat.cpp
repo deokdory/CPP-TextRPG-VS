@@ -233,6 +233,8 @@ void Combat(GameManager& Game, Hero** Player, Place _place) {
           break;
         }
         case USE_ITEM: {
+          OpenInventory();
+          system("pause");
           break;
         }
         case RUNAWAY: {

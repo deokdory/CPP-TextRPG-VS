@@ -1,7 +1,6 @@
 #pragma once
 #include "Character.h"
 
-
 enum class ItemType { 
   WEAPON,
   EQUIP,
@@ -67,7 +66,7 @@ class Inventory {
 
   void AddCount();
 
-  Inventory* FindItem(Item* item);
+  static Inventory* FindItem(Item* item);
 
   Item* GetItem() const { return item; }
   int GetItemCount() const { return item_count; }

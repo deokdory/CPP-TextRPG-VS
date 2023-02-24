@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Quest.h"
 
-bool Quest::SetIsCompleted(bool _is_completed) { is_completed = _is_completed; }
+void Quest::SetIsCompleted(bool _is_completed) { is_completed = _is_completed; }
 
 void Quest::SetRewardExp(int _reward_exp) { reward_exp = _reward_exp; }
 void Quest::SetRewardGold(int _reward_gold) { reward_gold = _reward_gold; }
