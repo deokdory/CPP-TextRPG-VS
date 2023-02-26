@@ -24,6 +24,8 @@
 void Combat(GameManager& Game, Hero** Player, Place _place) {
   // PlayerArrayAlign(Player);
 
+  Inventory::GotItem(1);
+
   int allies_personnel = GetNumOfPlayableHeroes(Player); // 현재 생성된 영웅 수
   int enemies_personnel = GetEnemiesPersonnel(_place); // 생성할 적 수
   int total_combat_personnel = allies_personnel + enemies_personnel; // 이번 전투의 전체 캐릭터 수

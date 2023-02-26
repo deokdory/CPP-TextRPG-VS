@@ -1,7 +1,9 @@
 #pragma once
 #include "Character.h"
+#include "Item.h"
 #include "System.h"
 #include "GameManager.h"
+
 
 enum ActionInCombat { ATTACK = 1, USE_SKILL, USE_ITEM, RUNAWAY };
 

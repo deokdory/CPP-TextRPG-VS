@@ -190,27 +190,27 @@ void Character::Attack(Character& target) {
 //    }
 }
 
-void Character::BoostMaxHp(int _amount, int duration) {
-  if (duration) {
-    max_hp = _amount;
-  }
-}
-
-void Character::BoostAtk(int _amount, int duration) {
-  if (duration) {
-    atk += _amount;
-  }
-}
-void Character::BoostDef(int _amount, int duration) {
-  if (duration) {
-    def += _amount;
-  }
-}
-void Character::BoostSpd(int _amount, int duration) {
-  if (duration) {
-    spd += _amount;
-  }
-}
+//void Character::BoostMaxHp(int _amount, int duration) {
+//  if (duration) {
+//    max_hp = _amount;
+//  }
+//}
+//
+//void Character::BoostAtk(int _amount, int duration) {
+//  if (duration) {
+//    atk += _amount;
+//  }
+//}
+//void Character::BoostDef(int _amount, int duration) {
+//  if (duration) {
+//    def += _amount;
+//  }
+//}
+//void Character::BoostSpd(int _amount, int duration) {
+//  if (duration) {
+//    spd += _amount;
+//  }
+//}
 
 bool Character::CheckIsDead() {
     if (!is_dead) {

@@ -19,13 +19,7 @@ void OpenInventory() {
   }
 }
 
-Item::Item() : name("NONE"), item_type(ItemType::VALUABLE) {}
-
-Item::Item(std::string _name, ItemType _item_type)
-    : name(_name), item_type(_item_type) {}
-
-std::string Item::GetName() const { return name; }
-ItemType Item::GetItemType() const { return item_type; }
+Item::Item() : index(0), name("NONE"), item_type(ItemType::NONE){}
 
 void Item::SetName(std::string _name) { name = _name; }
 void Item::SetItemType(ItemType _item_type) { item_type = _item_type; }
@@ -34,65 +28,109 @@ void Item::Use(Character& character) { std::cout << "NULL ITEM" << std::endl; }
 
 Item::~Item() {}
 
-Potion::Potion(std::string _name, PotionType _type, int _amount, int _duration)
-    : Item::Item(_name, ItemType::POTION),
-      type(_type),
-      amount(_amount),
-      duration(_duration) {
-  if (_type != PotionType::HP_RECOVER) {
-    if (!duration) {
-      duration = 1;
-    }
-  } else {
-    duration = 0;
-  }
-}
+Potion::Potion(int _index) { NewPotion(_index); }
 
 void Potion::Use(Character& character) {
   switch (type) {
-    case PotionType::HP_RECOVER:
-      character.SetHp(character.GetHp() + amount);
-      break;
-    case PotionType::MAXHP_INCREASE: {
-      character.BoostMaxHp(amount, duration);
-      break;
-    }
-    case PotionType::ATK_INCREASE: {
-      character.BoostAtk(amount, duration);
-      break;
-    }
-    case PotionType::DEF_INCREASE: {
-      character.BoostDef(amount, duration);
+    case PotionType::HP_RECOVER: {
+      int recovered = 0;
+      if (character.GetMaxHp() - character.GetHp() < amount) {
+        recovered = character.GetMaxHp() - character.GetHp();
+      } else {
+        recovered = amount;
+      }
+      character.SetHp(character.GetHp() + recovered);
+      std::cout << character.GetName() << "의 체력이 " << recovered
+                << "만큼 회복되었다!" << std::endl;
       break;
     }
-    case PotionType::SPD_INCREASE: {
-      character.BoostSpd(amount, duration);
-      break;
+    //case PotionType::MAXHP_INCREASE: {
+    //  break;
+    //}
+    //case PotionType::ATK_INCREASE: {
+    //  break;
+    //}
+    //case PotionType::DEF_INCREASE: {
+    //  break;
+    //}
+    //case PotionType::SPD_INCREASE: {
+    //  break;
+    //}
+    default: {
+      std::cout << "ERROR:Undefined Potion Type" << std::endl;
+    }
+  }
+}
+
+void Potion::NewPotion(int _index) {
+  item_type = ItemType::POTION;
+
+  if (_index > 100) {
+    std::cout << "ERROR:Potion Index is 1~100" << std::endl;
+    index = 0;
+    name = "NONE";
+    amount = 0;
+    type = PotionType::NONE;
+    system("pause");
+    return;
+  }
+
+  index = _index;
+  switch (_index) {
+    case S_HP_POTION: {
+      name = "HP 포션(소)";
+      amount = 30;
+      type = PotionType::HP_RECOVER;
+    }
+    case M_HP_POTION: {
+      name = "HP 포션(중)";
+      amount = 50;
+      type = PotionType::HP_RECOVER;
+    }
+    case L_HP_POTION: {
+      name = "HP 포션(대)";
+      amount = 80;
+      type = PotionType::HP_RECOVER;
     }
     default: {
-      std::cout << "ERROR : PotionType is Wrong" << std::endl;
+      std::cout << "ERROR:Undefined Potion Index" << std::endl;
+      name = "NONE";
+      amount = 0;
+      type = PotionType::NONE;
+      system("pause");
     }
   }
 }
 
-
-
 //인벤토리
-void Inventory::GotItem(Item* _item) {
-  Inventory* find = FindItem(_item);
-  if (find == nullptr) {
-    Inventory* node = GotNewItem(_item);
-    node->Push();
-  } else {
-    find->AddCount();
+void Inventory::GotItem(int _index) {
+  Inventory* finder = Head;
+  while (true) {
+    if (Head != nullptr) {
+      Inventory* node = GotNewItem(_index);
+      node->Push();
+      return;
+    }
+
+    if (finder->GetItem()->GetIndex() == _index) {
+      finder->AddCount();
+      return;
+    } else if (finder->Next != nullptr) {
+      finder = finder->Next;
+    } else {
+      Inventory* node = GotNewItem(_index);
+      node->Push();
+      return;
+    }
   }
 }
-
-Inventory* Inventory::GotNewItem(Item* _item) {
+Inventory* Inventory::GotNewItem(int _index) {
   Inventory* node = new Inventory;
 
-  node->item = _item;
-  node->item_count = 1;
+  if (0 < _index && _index <= 100) node->item = new Potion(_index);
+  if (100 < _index && _index <= 200)  // EQUIP
+
+    node->item_count = 1;
   node->Next = nullptr;
   node->Prev = nullptr;
 
@@ -138,7 +176,7 @@ const Inventory* Inventory::GetNode(int index) {
   return finder;
 }
 
-  void Inventory::RemoveItem(int index) {
+  void Inventory::RemoveNode(int index) {
   if (this == Head) {
     if (this->Next != nullptr) {
       this->Next->Prev = nullptr;

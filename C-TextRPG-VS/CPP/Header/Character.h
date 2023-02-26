@@ -21,7 +21,7 @@
 
 #define COMMON_MAXHP_PER_LVL 5
 #define COMMON_ATK_PER_LVL 5
-#define COMMON_DEF_PER_LVL 0
+#define COMMON_DEF_PER_LVL 1
 #define COMMON_SPD_PER_LVL 5
 
 #define CHARACTER_LVL_MAX 10
@@ -97,14 +97,10 @@ class Character {
   void SetTurnWaiter(double _turn_waiter);
   void AddTurnWaiter(double _turn_waiter);
 
+  // Boost
+
   // Combat
   void Attack(Character& target);
-
-  // Boost
-  void BoostMaxHp(int _amount, int duration);
-  void BoostAtk(int _amount, int duration);
-  void BoostDef(int _amount, int duration);
-  void BoostSpd(int _amount, int duration);
 
   // Check
   virtual bool CheckIsDead();

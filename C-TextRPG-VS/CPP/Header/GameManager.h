@@ -10,7 +10,6 @@ class GameManager {
 
   Quest* ProgressQuest;
   
-
  public:
   int GetGold();
   void SetGold(int _gold);
