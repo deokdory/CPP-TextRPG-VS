@@ -1,5 +1,6 @@
-#include "pch.h"
 #include "Character.h"
+
+#include "pch.h"
 
 Character::Character()
     : type(CharacterType::BASE),
@@ -14,7 +15,7 @@ Character::Character()
       turn_spd(0),
       turn_waiter(0),
       is_dead(false) {
-  //std::cout << "기본 생성자 호출" << std::endl;
+  // std::cout << "기본 생성자 호출" << std::endl;
 }
 
 Character::Character(std::string _name, int _lvl)
@@ -24,9 +25,10 @@ Character::Character(std::string _name, int _lvl)
       turn_spd(0),
       turn_waiter(0),
       is_dead(false) {
-  //std::cout << "매개변수 생성자 호출" << std::endl;
+  // std::cout << "매개변수 생성자 호출" << std::endl;
   if (_name.length() > NAME_LIMIT) {
-    std::cout << "ERROR : name out of range (name limit : " << NAME_LIMIT << ")" << std::endl;
+    std::cout << "ERROR : name out of range (name limit : " << NAME_LIMIT << ")"
+              << std::endl;
     _name = "Character";
   }
   name = _name;
@@ -128,7 +130,7 @@ std::string Character::GetClass() const {
 }
 
 std::string Character::GetName() const { return name; }
- 
+
 void Character::SetType(CharacterType _type) { type = _type; }
 
 void Character::SetMaxHp(int _max_hp) { max_hp = _max_hp; }
@@ -158,69 +160,70 @@ void Character::AddTurnWaiter(double _turn_waiter) {
 }
 
 void Character::Attack(Character& target) {
-    int damage = 0;
-    std::cout << name << "가 " << target.name << "을 공격하려고 한다";
-    for (int i = 0; i < 3; i++) {
-        printf(" .");
-        Sleep(500);
-    }
-    damage = atk - target.def;
-    if (damage < 0) damage = 0;
+  int damage = 0;
+  std::cout << name << "가 " << target.name << "을 공격하려고 한다";
+  for (int i = 0; i < 3; i++) {
+    printf(" .");
+    Sleep(500);
+  }
+  damage = atk - target.def;
+  if (damage < 0) damage = 0;
 
-    target.hp -= damage; 
-    std::cout << target.name << "은 " << damage << "의 피해를 입었다" << std::endl;
-    SYSTEM_MESSAGE_DELAY;
+  target.hp -= damage;
+  std::cout << target.name << "은 " << damage << "의 피해를 입었다"
+            << std::endl;
+  SYSTEM_MESSAGE_DELAY;
 
-    //
-//    if(!(target.CheckIsDead())) {
-//        std::cout << target.name << "은 반격했다";
-//        for (int i = 0; i < 3; i++) {
-//            printf(" .");
-//            Sleep(500);
-//        }
-//        if (damage = target.atk - def < 0) {
-//            damage = 0;
-//       
-//        hp -= damage;
-//
-//        std::cout << name << "은 " << damage << "의 피해를 입었다" << std::endl;
-//        SYSTEM_MESSAGE_DELAY;
-//        CheckIsDead();
-//        }
-//    }
+  //
+  //    if(!(target.CheckIsDead())) {
+  //        std::cout << target.name << "은 반격했다";
+  //        for (int i = 0; i < 3; i++) {
+  //            printf(" .");
+  //            Sleep(500);
+  //        }
+  //        if (damage = target.atk - def < 0) {
+  //            damage = 0;
+  //
+  //        hp -= damage;
+  //
+  //        std::cout << name << "은 " << damage << "의 피해를 입었다" <<
+  //        std::endl; SYSTEM_MESSAGE_DELAY; CheckIsDead();
+  //        }
+  //    }
 }
 
-//void Character::BoostMaxHp(int _amount, int duration) {
+// void Character::BoostMaxHp(int _amount, int duration) {
 //  if (duration) {
 //    max_hp = _amount;
 //  }
 //}
 //
-//void Character::BoostAtk(int _amount, int duration) {
+// void Character::BoostAtk(int _amount, int duration) {
 //  if (duration) {
 //    atk += _amount;
 //  }
 //}
-//void Character::BoostDef(int _amount, int duration) {
+// void Character::BoostDef(int _amount, int duration) {
 //  if (duration) {
 //    def += _amount;
 //  }
 //}
-//void Character::BoostSpd(int _amount, int duration) {
+// void Character::BoostSpd(int _amount, int duration) {
 //  if (duration) {
 //    spd += _amount;
 //  }
 //}
 
 bool Character::CheckIsDead() {
-    if (!is_dead) {
-        if (hp <= 0) {
-            hp = 0;
-            is_dead = true;
-            std::cout << name << "은 쓰러졌다." << std::endl;
-            SYSTEM_MESSAGE_DELAY;
-        }
-    } return is_dead;
+  if (!is_dead) {
+    if (hp <= 0) {
+      hp = 0;
+      is_dead = true;
+      std::cout << name << "은 쓰러졌다." << std::endl;
+      SYSTEM_MESSAGE_DELAY;
+    }
+  }
+  return is_dead;
 }
 
 CharacterType Character::GetType() const { return type; }
@@ -241,7 +244,7 @@ void Character::PrintStatus(short x) {
     std::cout << "=";
   }
   ENDL;
-  
+
   gotox(x);
   SET_FORMAT_WIDTH_L(NAME_LIMIT + 2);
   std::cout << GetName();
@@ -343,9 +346,9 @@ void Character::PrintHp() const {
   SET_FORMAT_WIDTH_L(3);
   std::cout << max_hp;
   RESET_FORMAT;
-  //SET_FORMAT_2PREC;
-  //std::cout << GetHpRemain() << "%)";
-  //RESET_FORMAT;
+  // SET_FORMAT_2PREC;
+  // std::cout << GetHpRemain() << "%)";
+  // RESET_FORMAT;
 }
 
 void Character::PrintHpBar() const {
@@ -393,7 +396,7 @@ void Character::PrintLvl() const {
 }
 
 Character::~Character() {
-  //std::cout << "캐릭터 수 감소" << std::endl;
+  // std::cout << "캐릭터 수 감소" << std::endl;
 }
 
 void NewPlayerCharacter(Hero** _Player, int _lvl) {
@@ -446,4 +449,87 @@ void Swap(Hero* _Hero1, Hero* _Hero2) {
   Hero* temp = _Hero1;
   _Hero1 = _Hero2;
   _Hero2 = temp;
+}
+
+// 대상 선택
+Character* SelectTarget(Enemy** enemy) {
+  Character* Target = nullptr;
+  int personnel = 0;
+
+  std::cout << "0. 취소";
+  for (int i = 0; i < PARTY_MAX; i++) {
+    if (enemy[i] != nullptr) {
+      std::cout << "   ";
+      std::cout << i + 1 << ". " << enemy[i]->GetName();
+      if (enemy[i]->CheckIsDead()) std::cout << "(쓰러짐)";
+      personnel++;
+    } else {
+      break;
+    }
+  }
+  ENDL;
+  int target;
+  while (true) {
+    std::cout << "대상을 선택해주십시오 : ";
+    std::cin >> target;
+
+    if (target == 0) return nullptr;
+
+    if (target > 0 || target <= personnel) {
+      if (enemy[target - 1] != nullptr) {
+        if (enemy[target - 1]->CheckIsDead() == false) {
+          Target = enemy[target - 1];
+          break;
+        } else {  // 대상이 이미 죽었을 경우
+          std::cout << "대상이 이미 쓰러졌습니다." << std::endl;
+        }
+      } else {  // 선택 범위를 벗어났을 경우
+        std::cout << "선택 범위를 벗어났습니다." << std::endl;
+        SYSTEM_MESSAGE_DELAY;
+      }
+    }
+  }
+  if (Target != nullptr) {
+    return Target;
+  } else {
+    return NULL;
+  }
+}
+Character* SelectTarget(Hero** Player) {
+  Character* Target = nullptr;
+  int personnel = 0;
+
+  std::cout << "0. 취소";
+
+  for (int i = 0; i < PARTY_MAX; i++) {
+    if (Player[i] != nullptr) {
+      std::cout << "   ";
+      std::cout << i + 1 << ". " << Player[i]->GetName();
+      if (Player[i]->CheckIsDead()) std::cout << "(쓰러짐)";
+      personnel++;
+    } else {
+      break;
+    }
+  }
+  ENDL;
+  int target;
+  while (true) {
+    std::cout << "대상을 선택해주십시오 : ";
+    std::cin >> target;
+
+    if (target == 0) return nullptr;
+
+    if (target > 0 || target <= personnel) {
+      if (Player[target - 1]->CheckIsDead() == false) {
+        Target = Player[target - 1];
+        break;
+      } else {  // 대상이 이미 죽었을 경우
+        std::cout << "대상이 이미 쓰러졌습니다." << std::endl;
+      }
+    } else {  // 선택 범위를 벗어났을 경우
+      std::cout << "선택 범위를 벗어났습니다." << std::endl;
+      SYSTEM_MESSAGE_DELAY;
+    }
+  }
+  return Target;
 }

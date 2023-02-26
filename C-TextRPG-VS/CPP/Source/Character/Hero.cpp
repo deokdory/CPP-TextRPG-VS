@@ -78,16 +78,17 @@ void Hero::PrintSkillsAll() {
   for (int i = 0; i < HERO_SKILL_MAX; i++) {
     std::cout << i + 1 << ". ";
     if (skill[i] != nullptr) {
-      std::cout << skill[i]->GetName() << std::endl;
-      std::cout << skill[i]->GetDescription() << std::endl;
+      std::cout << skill[i]->GetName() << " | ";
       if (skill[i]->GetCoolDownRemain()) {
         std::cout << "재사용 대기 중 : " << skill[i]->GetCoolDownRemain()
                   << "턴 후 사용가능" << std::endl;
       } else {
         std::cout << "사용가능" << std::endl;
       }
+      std::cout << skill[i]->GetDescription() << std::endl;
+      
     } else {
-      std::cout << "스킬 없음" << std::endl;
+      std::cout << "스킬 없음" << std::endl << std::endl;
       continue;
     }
   }

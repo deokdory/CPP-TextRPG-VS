@@ -17,6 +17,15 @@
 #define YELLOW        14
 #define WHITE         15
 
+#define SET_FORMAT_WIDTH_L(length) \
+  std::cout << std::setw(length) << std::setiosflags(std::ios::left)
+#define SET_FORMAT_WIDTH_R(length) \
+  std::cout << std::setw(length) << std::setiosflags(std::ios::right)
+#define SET_FORMAT_2PREC \
+  std::cout << std::setiosflags(std::ios::fixed) << std::setprecision(2)
+
+#define ENDL std::cout << std::endl
+
 void gotoxy(short x, short y);
 void gotox(short x);
 void gotoy(short y);
@@ -24,3 +33,4 @@ void gotoy(short y);
 void TextColor(int foreground = LIGHT_GRAY, int background = BLACK);
 
 double RealRandom();
+

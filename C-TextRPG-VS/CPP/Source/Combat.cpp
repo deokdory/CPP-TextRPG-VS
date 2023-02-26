@@ -1,5 +1,6 @@
-#include "pch.h"
 #include "Combat.h"
+
+#include "pch.h"
 
 //장소 별 적 인원 및 확률
 
@@ -25,38 +26,38 @@ void Combat(GameManager& Game, Hero** Player, Place _place) {
   // PlayerArrayAlign(Player);
 
   Inventory::GotItem(1);
+  Inventory::GotItem(1);
 
-  int allies_personnel = GetNumOfPlayableHeroes(Player); // 현재 생성된 영웅 수
-  int enemies_personnel = GetEnemiesPersonnel(_place); // 생성할 적 수
-  int total_combat_personnel = allies_personnel + enemies_personnel; // 이번 전투의 전체 캐릭터 수
+  int allies_personnel = GetNumOfPlayableHeroes(Player);  // 현재 생성된 영웅 수
+  int enemies_personnel = GetEnemiesPersonnel(_place);  // 생성할 적 수
+  int total_combat_personnel =
+      allies_personnel + enemies_personnel;  // 이번 전투의 전체 캐릭터 수
 
-  Enemy* enemy = new Enemy[enemies_personnel];
-  
+  Enemy* enemy[PARTY_MAX] = {};
+
   int total_reward_gold = 0;
   int total_reward_exp = 0;
 
   for (int i = 0; i < enemies_personnel; i++) {
-    Enemy enemy_temp(GetEnemyIndex(_place), GetEnemyLvl(_place));
-    if (&enemy[i] != nullptr) {
-      enemy[i] = enemy_temp;
-      total_reward_gold += enemy[i].GetRewardGold();
-      total_reward_exp += enemy[i].GetRewardExp();
-    } else {
-      std::cout << "ERROR:enemy[" << i << "] is nullptr!" << std::endl;
-    }
+    enemy[i] = new Enemy(GetEnemyIndex(_place), GetEnemyLvl(_place));
+    total_reward_gold += enemy[i]->GetRewardGold();
+    total_reward_exp += enemy[i]->GetRewardExp();
   }
-  Character* TurnWaiting[PARTY_MAX * 2]; // 턴 계산용 포인터 배열
+
+  Character* TurnWaiting[PARTY_MAX * 2];  // 턴 계산용 포인터 배열
   {
     int index = 0;
-    for (int i = 0; i < allies_personnel; i++) { // 턴 계산용 포인터 배열에 플레이어 캐릭터 주소 할당
-      if (Player[i]) {
+    for (int i = 0; i < allies_personnel;
+         i++) {  // 턴 계산용 포인터 배열에 플레이어 캐릭터 주소 할당
+      if (Player[i] != nullptr) {
         TurnWaiting[index] = Player[i];
         TurnWaiting[index]->SetTurnWaiter(0);
         index++;
       }
     }
-    for (int i = 0; i < enemies_personnel; i++) { // 턴 계산용 포인터 배열에 적 캐릭터 주소 할당
-      TurnWaiting[index] = &enemy[i];
+    for (int i = 0; i < enemies_personnel;
+         i++) {  // 턴 계산용 포인터 배열에 적 캐릭터 주소 할당
+      TurnWaiting[index] = enemy[i];
       TurnWaiting[index]->SetTurnWaiter(0);
       index++;
     }
@@ -72,7 +73,7 @@ void Combat(GameManager& Game, Hero** Player, Place _place) {
       }
     }
     for (int i = 0; i < enemies_personnel; i++) {  // 생존 적 캐릭터 수 확인
-      if (!(enemy[i].CheckIsDead())) {
+      if (!(enemy[i]->CheckIsDead())) {
         enemies_alive++;
       }
     }
@@ -88,7 +89,7 @@ void Combat(GameManager& Game, Hero** Player, Place _place) {
       if (Player[i]->CheckIsDead()) {
         TextColor(DARK_GRAY, BLACK);
       }
-        Player[i]->PrintStatus();
+      Player[i]->PrintStatus();
       TextColor();
     }
     gotoxy(35, 0);
@@ -98,10 +99,10 @@ void Combat(GameManager& Game, Hero** Player, Place _place) {
     }
     gotoy(0);
     for (int i = 0; i < enemies_personnel; i++) {
-      if (enemy[i].CheckIsDead()) {
+      if (enemy[i]->CheckIsDead()) {
         TextColor(DARK_GRAY, BLACK);
       }
-        enemy[i].PrintStatus(40);
+      enemy[i]->PrintStatus(40);
       TextColor();
     }
     gotoxy(0, 22);
@@ -123,11 +124,11 @@ void Combat(GameManager& Game, Hero** Player, Place _place) {
           TurnWaiting[i]->SetTurnSpd(
               0);  // 캐릭터가 죽은 경우 턴 돌아오는 속도 0으로 설정
         }
-        //std::cout << TurnWaiting[i]->GetName()
-        //          << " TurnSpd = " << TurnWaiting[i]->GetTurnSpd() << std::endl;
+        // std::cout << TurnWaiting[i]->GetName()
+        //          << " TurnSpd = " << TurnWaiting[i]->GetTurnSpd() <<
+        //          std::endl;
       }
     }
-
     //턴 계산
     Character* turn_now = 0;
     Character* turn_next = 0;
@@ -156,9 +157,10 @@ void Combat(GameManager& Game, Hero** Player, Place _place) {
         }
       }
     }
-    std::cout << turn_now->GetName() << "이 행동할 차례입니다." << std::endl;
+    std::cout << turn_now->GetName() << "이 행동할 차례입니다.";
     if (turn_next) {
-      std::cout << "다음 차례 : " << turn_next->GetName() << std::endl;
+      std::cout << "   ( 다음 차례 : " << turn_next->GetName() << " )"
+                << std::endl;
     }
     // 플레이어 턴
     if (turn_now->GetType() == CharacterType::HERO) {
@@ -171,29 +173,30 @@ void Combat(GameManager& Game, Hero** Player, Place _place) {
       std::cin >> action;
 
       switch (action) {
-        case ATTACK: {
-          Character* Target = SelectTarget(enemy, enemies_personnel);
+        case COMBAT_ATTACK: {
+          Character* Target = SelectTarget(enemy);
           if (Target != nullptr) {
             turn_now->Attack(*Target);
             TurnNowHero->TurnEnd();
-          } else {
-            std::cout << "ERROR: TargetPtr is NULL!" << std::endl;
           }
           break;
         }
-        case USE_SKILL: {
+        case COMBAT_USE_SKILL: {
           int skill_select = 0;
           Skill* UsingSkill = nullptr;
+          std::cout << "0. 취소" << std::endl;
           TurnNowHero->PrintSkillsAll();
-          std::cout << "4. 취소" << std::endl;
           while (true) {
             std::cout << "사용할 스킬을 선택해주세요 : ";
             std::cin >> skill_select;
+
+            if (skill_select == 0) break;  // 스킬 사용 취소
+
             if (skill_select >= 1 && skill_select <= 3) {
               if (TurnNowHero->GetSkill(skill_select - 1) != nullptr) {
                 if (TurnNowHero->GetSkill(skill_select - 1)->IsAvailable()) {
-                UsingSkill = TurnNowHero->GetSkill(skill_select - 1);
-                break;
+                  UsingSkill = TurnNowHero->GetSkill(skill_select - 1);
+                  break;
                 } else {
                   std::cout << "해당 스킬은 아직 사용할 수 없습니다."
                             << std::endl;
@@ -201,31 +204,27 @@ void Combat(GameManager& Game, Hero** Player, Place _place) {
               } else {
                 std::cout << "해당 스킬 슬롯은 비어있습니다." << std::endl;
               }
-            } else if (skill_select == 4) {
-              break;
             } else {
               std::cout << "선택 범위를 벗어났습니다." << std::endl;
             }
           }
-          if (skill_select == 4) break;  // 스킬 사용 취소
+
+          if (skill_select == 0) break;  // 스킬 사용 취소
 
           switch (UsingSkill->GetSkillType()) {
             case SkillType::ATTACK: {
-              Character* Target = SelectTarget(enemy, enemies_personnel);
+              Character* Target = SelectTarget(enemy);
               UsingSkill->Use(*Target);
               TurnNowHero->TurnEnd();
               break;
             }
             case SkillType::HEAL: {
-
               break;
             }
             case SkillType::BUFF: {
-
               break;
             }
             case SkillType::DEBUFF: {
-
               break;
             }
             default:
@@ -234,16 +233,15 @@ void Combat(GameManager& Game, Hero** Player, Place _place) {
           }
           break;
         }
-        case USE_ITEM: {
-          OpenInventory();
-          system("pause");
+        case COMBAT_USE_ITEM: {
+          Inventory::Open(*TurnNowHero, Player, enemy);
           break;
         }
-        case RUNAWAY: {
+        case COMBAT_RUNAWAY: {
           break;
         }
       }
-    } else { // 적 차례
+    } else {  // 적 차례
       int target_score[PARTY_MAX] = {};
       int dealt_damage[PARTY_MAX] = {};
       int max_dealt_damage = 0;
@@ -262,11 +260,11 @@ void Combat(GameManager& Game, Hero** Player, Place _place) {
             if (dealt_damage[i] > max_dealt_damage) {
               max_dealt_damage = dealt_damage[i];
             }
-            //received_damage[i] = Player[i]->GetAtk() - turn_now->GetAtk();
-            //if (received_damage[i] < min_received_damage) {
+            // received_damage[i] = Player[i]->GetAtk() - turn_now->GetAtk();
+            // if (received_damage[i] < min_received_damage) {
             //  min_received_damage = received_damage[i];
             //}
-            //if (turn_now->GetHp() - received_damage[i] <= 0) {
+            // if (turn_now->GetHp() - received_damage[i] <= 0) {
             //  attack_will_die[i] = true;
             //}
             target_hp_remain[i] = Player[i]->GetHp() - dealt_damage[i];
@@ -284,10 +282,10 @@ void Combat(GameManager& Game, Hero** Player, Place _place) {
             if (dealt_damage[i] == max_dealt_damage) {
               target_score[i]++;
             }
-            //if (received_damage[i] == min_received_damage) {
+            // if (received_damage[i] == min_received_damage) {
             //  target_score[i] += 1;
             //}
-            //if (attack_will_die) {
+            // if (attack_will_die) {
             //  target_score[i] -= 1;
             //}
             if (target_hp_remain[i] = min_target_hp_remain) {
@@ -334,7 +332,9 @@ void Combat(GameManager& Game, Hero** Player, Place _place) {
     std::cout << "당신은 도망쳤습니다." << std::endl;
     SYSTEM_MESSAGE_DELAY;
   }
-  delete[] enemy;
+  for (int i = 0; i < enemies_personnel; i++) {
+    delete enemy[i];
+  }
 }
 
 // 적 세팅
@@ -446,74 +446,4 @@ int GetEnemyIndex(Place _place) {
     }
   }
   return index;
-}
-
-// 대상 선택
-Character* SelectTarget(Enemy* enemy, int personnel) {
-  Character* Target = nullptr;
-
-  for (int i = 0; i < personnel; i++) {
-    if (&enemy[i] != nullptr) {
-      if (i) {
-        std::cout << "   ";
-      }
-      std::cout << i + 1 << ". " << enemy[i].GetName();
-      if (enemy[i].CheckIsDead()) std::cout << "(쓰러짐)";
-    }
-  }
-  ENDL;
-  int target;
-  while (true) {
-    std::cout << "대상을 선택해주십시오" << std::endl;
-    std::cin >> target;
-    if (target > 0 || target <= personnel) {
-      if (&enemy[target - 1] != nullptr) {
-        if (enemy[target - 1].CheckIsDead() == false) {
-          Target = &enemy[target - 1];
-          break;
-        } else {  // 대상이 이미 죽었을 경우
-          std::cout << "대상이 이미 쓰러졌습니다." << std::endl;
-        }
-      } else {  // 선택 범위를 벗어났을 경우
-        std::cout << "선택 범위를 벗어났습니다." << std::endl;
-        SYSTEM_MESSAGE_DELAY;
-      }
-    }
-  }
-  if (Target != nullptr) {
-    return Target;
-  } else {
-    return NULL;
-  }
-}
-Character* SelectTarget(Hero** Player, int personnel) {
-  Character* Target = nullptr;
-
-  for (int i = 0; i < personnel; i++) {
-    if (Player[i] != nullptr) {
-      if (i) {
-        std::cout << "   ";
-      }
-      std::cout << i + 1 << ". " << Player[i]->GetName();
-      if (Player[i]->CheckIsDead()) std::cout << "(쓰러짐)";
-    }
-  }
-  ENDL;
-  int target;
-  while (true) {
-    std::cout << "대상을 선택해주십시오" << std::endl;
-    std::cin >> target;
-    if (target > 0 || target <= personnel) {
-      if (Player[target - 1]->CheckIsDead() == false) {
-        Target = Player[target - 1];
-        break;
-      } else {  // 대상이 이미 죽었을 경우
-        std::cout << "대상이 이미 쓰러졌습니다." << std::endl;
-      }
-    } else {  // 선택 범위를 벗어났을 경우
-      std::cout << "선택 범위를 벗어났습니다." << std::endl;
-      SYSTEM_MESSAGE_DELAY;
-    }
-  }
-  return Target;
 }

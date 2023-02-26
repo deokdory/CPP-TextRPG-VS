@@ -7,13 +7,6 @@
 #define NAME_LIMIT 14
 #define CLASS_TOTAL 4
 
-#define SET_FORMAT_WIDTH_L(length) \
-  std::cout << std::setw(length) << std::setiosflags(std::ios::left)
-#define SET_FORMAT_WIDTH_R(length) \
-  std::cout << std::setw(length) << std::setiosflags(std::ios::right)
-#define SET_FORMAT_2PREC \
-  std::cout << std::setiosflags(std::ios::fixed) << std::setprecision(2)
-
 #define COMMON_MAXHP_ORIGIN 50
 #define COMMON_ATK_ORIGIN 25
 #define COMMON_DEF_ORIGIN 10
@@ -244,3 +237,6 @@ void NewPlayerCharacter(Hero** _Player, int _lvl);
 void PlayerArrayAlign(Hero** Player);
 int GetNumOfPlayableHeroes(Hero** _Player);
 void Swap(Hero*, Hero*);
+
+Character* SelectTarget(Enemy**);
+Character* SelectTarget(Hero**);
