@@ -10,9 +10,9 @@ enum PotionIndex {
 };
 
 enum ACTION_IN_INVENTORY {
-  INVENTORY_USE_ITEM = 1,
+  INVENTORY_CLOSE,
+  INVENTORY_USE_ITEM,
   INVENTORY_REMOVE_ITEM,
-  INVENTORY_CLOSE
 };
 
 class Item {
@@ -69,6 +69,7 @@ class Inventory {
  public:
   Inventory();
   Inventory(int _index, int count = 1);
+
   // 비전투 상황에서 인벤토리 열기
   static void Open(Hero** player);
 

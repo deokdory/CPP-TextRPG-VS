@@ -73,19 +73,19 @@ void Potion::NewPotion(int _index) {
   index = _index;
   switch (_index) {
     case S_HP_POTION: {
-      name = "HP 포션(소)";
+      name = "HP포션(소)";
       amount = 30;
       type = PotionType::HP_RECOVER;
       break;
     }
     case M_HP_POTION: {
-      name = "HP 포션(중)";
+      name = "HP포션(중)";
       amount = 50;
       type = PotionType::HP_RECOVER;
       break;
     }
     case L_HP_POTION: {
-      name = "HP 포션(대)";
+      name = "HP포션(대)";
       amount = 80;
       type = PotionType::HP_RECOVER;
       break;
@@ -132,28 +132,8 @@ void Inventory::Open(Hero** player) {
 }
 
 void Inventory::Open(Hero& turn_hero, Hero** player, Enemy** enemies) {
-  while (true) {
     Open();
-    switch (MenuSelect()) {
-      case INVENTORY_USE_ITEM: {
-        MenuUseItem(turn_hero, player, enemies);
-        if (turn_hero.GetTurnWaiter() == 0) {
-          return;
-        }
-        break;
-      }
-      case INVENTORY_REMOVE_ITEM: {
-        MenuRemoveItem();
-        break;
-      }
-      case INVENTORY_CLOSE: {
-        return;
-      }
-      default:
-        std::cout << "undefined menuselect" << std::endl;
-        system("pause");
-    }
-  }
+    MenuUseItem(turn_hero, player, enemies);
 }
 
 void Inventory::GotItem(int _index, int count) {
@@ -290,9 +270,9 @@ int Inventory::MenuSelect() {
     return 3;
   }
   while (true) {
-    std::cout << "1. 아이템 사용   2. 아이템 버리기   3. 인벤토리 닫기 : ";
+    std::cout << "1. 아이템 사용   2. 아이템 버리기   0. 인벤토리 닫기 : ";
     std::cin >> menu_select;
-    if (1 <= menu_select && menu_select <= 3) {
+    if (0 <= menu_select && menu_select <= 2) {
       break;
     } else {
       std::cout << "잘못된 입력입니다." << std::endl;

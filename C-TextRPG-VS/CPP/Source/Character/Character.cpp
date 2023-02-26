@@ -456,10 +456,9 @@ Character* SelectTarget(Enemy** enemy) {
   Character* Target = nullptr;
   int personnel = 0;
 
-  std::cout << "0. 취소";
   for (int i = 0; i < PARTY_MAX; i++) {
     if (enemy[i] != nullptr) {
-      std::cout << "   ";
+      if(i) std::cout << "   ";
       std::cout << i + 1 << ". " << enemy[i]->GetName();
       if (enemy[i]->CheckIsDead()) std::cout << "(쓰러짐)";
       personnel++;
@@ -467,6 +466,7 @@ Character* SelectTarget(Enemy** enemy) {
       break;
     }
   }
+  std::cout << "   0. 취소";
   ENDL;
   int target;
   while (true) {
@@ -475,24 +475,25 @@ Character* SelectTarget(Enemy** enemy) {
 
     if (target == 0) return nullptr;
 
-    if (target > 0 || target <= personnel) {
+    if (target > 0 && target <= personnel) {
       if (enemy[target - 1] != nullptr) {
         if (enemy[target - 1]->CheckIsDead() == false) {
           Target = enemy[target - 1];
           break;
         } else {  // 대상이 이미 죽었을 경우
           std::cout << "대상이 이미 쓰러졌습니다." << std::endl;
+          SYSTEM_MESSAGE_DELAY;
         }
+      }
       } else {  // 선택 범위를 벗어났을 경우
         std::cout << "선택 범위를 벗어났습니다." << std::endl;
         SYSTEM_MESSAGE_DELAY;
       }
     }
-  }
   if (Target != nullptr) {
     return Target;
   } else {
-    return NULL;
+    return nullptr;
   }
 }
 Character* SelectTarget(Hero** Player) {
@@ -519,7 +520,7 @@ Character* SelectTarget(Hero** Player) {
 
     if (target == 0) return nullptr;
 
-    if (target > 0 || target <= personnel) {
+    if (target > 0 && target <= personnel) {
       if (Player[target - 1]->CheckIsDead() == false) {
         Target = Player[target - 1];
         break;

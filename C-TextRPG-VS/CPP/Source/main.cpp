@@ -14,7 +14,6 @@ int main() {
 
   Player[0]->GiveSkill(STRONG_ATTACK);
 
-
   Combat(Game, Player, Place::CAVE);
 }
 

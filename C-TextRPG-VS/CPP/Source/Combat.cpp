@@ -2,26 +2,6 @@
 
 #include "pch.h"
 
-//장소 별 적 인원 및 확률
-
-#define FOREST_ENEMIES_MIN 1
-#define FOREST_ENEMIES_MAX 2
-#define FOREST_ENEMIES_LVL_MIN 1
-#define FOREST_ENEMIES_LVL_MAX 2
-#define FOREST_ENEMY_ADD_PERCENTAGE 0.5
-
-#define CAVE_ENEMIES_MIN 1
-#define CAVE_ENEMIES_MAX 3
-#define CAVE_ENEMIES_LVL_MIN 2
-#define CAVE_ENEMIES_LVL_MAX 3
-#define CAVE_ENEMY_ADD_PERCENTAGE 0.5
-
-#define MOUNTAIN_ENEMIES_MIN 1
-#define MOUNTAIN_ENEMIES_MAX 3
-#define MOUNTAIN_ENEMIES_LVL_MIN 4
-#define MOUNTAIN_ENEMIES_LVL_MAX 4
-#define MOUNTAIN_ENEMY_ADD_PERCENTAGE 0.75
-
 void Combat(GameManager& Game, Hero** Player, Place _place) {
   // PlayerArrayAlign(Player);
 
@@ -64,6 +44,7 @@ void Combat(GameManager& Game, Hero** Player, Place _place) {
   }
   int allies_alive = 0;
   int enemies_alive = 0;
+  bool ranaway = false;
   while (true) {
     allies_alive = enemies_alive = 0;
     for (int i = 0; i < allies_personnel;
@@ -78,9 +59,10 @@ void Combat(GameManager& Game, Hero** Player, Place _place) {
       }
     }
 
-    if (!allies_alive || !enemies_alive) {  // 전투 종료 조건
-      break;
-    }
+    // 어느 한쪽이 전멸했을 시 전투 종료
+    if (!allies_alive || !enemies_alive) break;
+    // 도망에 성공했을 시 전투 종료
+    if (ranaway) break;
 
     system("cls");
 
@@ -157,11 +139,12 @@ void Combat(GameManager& Game, Hero** Player, Place _place) {
         }
       }
     }
+
     std::cout << turn_now->GetName() << "이 행동할 차례입니다.";
-    if (turn_next) {
-      std::cout << "   ( 다음 차례 : " << turn_next->GetName() << " )"
-                << std::endl;
-    }
+    std::cout << "   ( 다음 차례 : " << turn_next->GetName() << " )"
+              << std::endl;
+    if (turn_now->GetType() == CharacterType::ENEMY) SYSTEM_MESSAGE_DELAY;
+
     // 플레이어 턴
     if (turn_now->GetType() == CharacterType::HERO) {
       Hero* TurnNowHero = dynamic_cast<Hero*>(turn_now);
@@ -184,8 +167,8 @@ void Combat(GameManager& Game, Hero** Player, Place _place) {
         case COMBAT_USE_SKILL: {
           int skill_select = 0;
           Skill* UsingSkill = nullptr;
-          std::cout << "0. 취소" << std::endl;
           TurnNowHero->PrintSkillsAll();
+          std::cout << "0. 취소" << std::endl << std::endl;
           while (true) {
             std::cout << "사용할 스킬을 선택해주세요 : ";
             std::cin >> skill_select;
@@ -203,9 +186,11 @@ void Combat(GameManager& Game, Hero** Player, Place _place) {
                 }
               } else {
                 std::cout << "해당 스킬 슬롯은 비어있습니다." << std::endl;
+                SYSTEM_MESSAGE_DELAY;
               }
             } else {
               std::cout << "선택 범위를 벗어났습니다." << std::endl;
+              SYSTEM_MESSAGE_DELAY;
             }
           }
 
@@ -238,6 +223,8 @@ void Combat(GameManager& Game, Hero** Player, Place _place) {
           break;
         }
         case COMBAT_RUNAWAY: {
+          ranaway = RunAway(Player, enemy);
+          TurnNowHero->TurnEnd();
           break;
         }
       }
@@ -329,8 +316,6 @@ void Combat(GameManager& Game, Hero** Player, Place _place) {
     std::cout << "당신은 패배했습니다..." << std::endl;
     SYSTEM_MESSAGE_DELAY;
   } else {  // 도망
-    std::cout << "당신은 도망쳤습니다." << std::endl;
-    SYSTEM_MESSAGE_DELAY;
   }
   for (int i = 0; i < enemies_personnel; i++) {
     delete enemy[i];
@@ -446,4 +431,71 @@ int GetEnemyIndex(Place _place) {
     }
   }
   return index;
+}
+
+bool RunAway(Hero** player, Enemy** enemy) {
+  double player_spd_avg = GetSpdAvgAlive(player);
+  double enemies_spd_avg = GetSpdAvgAlive(enemy);
+
+  double runaway_chance = GetRunAwayChance(player_spd_avg, enemies_spd_avg);
+
+  // std::cout << runaway_chance * 100 << std::endl; // 도망칠 확률 체크용
+
+  std::cout << "도망갈 수 있을까";
+  for (int i = 0; i < 4; i++) {
+    std::cout << " .";
+    Sleep(500);
+  }
+
+  if (RealRandom() < runaway_chance) {
+    std::cout << "성공적으로 도망쳤다!" << std::endl;
+    SYSTEM_MESSAGE_DELAY;
+    return true;
+  } else {
+    std::cout << "도망치지 못했다.." << std::endl;
+    SYSTEM_MESSAGE_DELAY;
+    return false;
+  }
+}
+
+double GetSpdAvgAlive(Hero** team) {
+  int team_spd_sum = 0;
+  int team_alive = 0;
+  for (int i = 0; i < PARTY_MAX; i++) {
+    if (team[i] != nullptr) {
+      if (team[i]->CheckIsDead() == false) {
+        team_spd_sum += team[i]->GetSpd();
+        team_alive++;
+      }
+    } else {
+      break;
+    }
+  }
+  return (double)team_spd_sum / team_alive;
+}
+
+double GetSpdAvgAlive(Enemy** team) {
+  int team_spd_sum = 0;
+  int team_alive = 0;
+  for (int i = 0; i < PARTY_MAX; i++) {
+    if (team[i] != nullptr) {
+      if (team[i]->CheckIsDead() == false) {
+        team_spd_sum += team[i]->GetSpd();
+        team_alive++;
+      }
+    } else {
+      break;
+    }
+  }
+  return (double)team_spd_sum / team_alive;
+}
+
+double GetRunAwayChance(double player_spd_avg, double enemy_spd_avg) {
+  double runaway_chance = 0.0;
+  if (player_spd_avg >= enemy_spd_avg) {
+    runaway_chance = RUNAWAY_CHANCE_MAX;
+  } else if (enemy_spd_avg) {
+    runaway_chance = (player_spd_avg / enemy_spd_avg) * RUNAWAY_CHANCE_MAX;
+  }
+  return runaway_chance;
 }
