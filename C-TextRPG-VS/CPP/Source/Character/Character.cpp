@@ -1,5 +1,4 @@
 #include "Character.h"
-
 #include "pch.h"
 
 Character::Character()
@@ -533,4 +532,30 @@ Character* SelectTarget(Hero** Player) {
     }
   }
   return Target;
+}
+
+const int GetAvgLvlOfTeam(Hero** team) {
+  int personnel = 0;
+  int sum = 0;
+
+  for (int i = 0; i < PARTY_MAX; i++) {
+    if (team[i] != nullptr) {
+      sum += team[i]->GetLvl();
+      personnel++;
+    }
+  }
+  return sum / personnel;
+}
+
+const int GetAvgLvlOfTeam(Enemy** team) {
+  int personnel = 0;
+  int sum = 0;
+
+  for (int i = 0; i < PARTY_MAX; i++) {
+    if (team[i] != nullptr) {
+      sum += team[i]->GetLvl();
+      personnel++;
+    }
+  }
+  return sum / personnel;
 }

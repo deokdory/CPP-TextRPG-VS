@@ -111,8 +111,7 @@ Inventory::Inventory()
 
 Inventory::Inventory(int _index, int count) {
   Inventory* node = new Inventory;
-  if (1 <= _index && _index <= 100) item = new Potion(_index);
-  if (1000 <= _index && _index <= 1500) item = new item_count += count;
+  item = NewItem(_index);
 }
 
 void Inventory::Open(Hero** player) {

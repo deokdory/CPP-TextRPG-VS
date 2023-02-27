@@ -23,6 +23,7 @@ void Quest::QuestComplete(Hero** player) {
   SetIsCompleted();
 }
 
+// 사냥 퀘스트
 HuntQuest::HuntQuest(int _index, std::string _name, std::string _description,
                      QuestType _type, int _target_enemy_index,
                      int _target_enemy_goal, int _count)
@@ -54,15 +55,7 @@ void HuntQuest::PrintProgress() {
             << std::endl;
 }
 
-SupplyQuest::SupplyQuest(int _index, std::string _name,
-                         std::string _description, QuestType _type,
-                         int _required_item_index, int _required_item_count,
-                         int count)
-    : Quest(_index, _name, _description, _type),
-      required_item_index(_required_item_index),
-      required_item_count(_required_item_count),
-      count(count) {}
-
+// 아이템 전달 퀘스트
 SupplyQuest::SupplyQuest(int _index, std::string _name,
                          std::string _description, QuestType _type,
                          int _required_item_index, int _required_item_count)
@@ -77,12 +70,6 @@ int SupplyQuest::GetCount() const {
   } else {
     return 0;
   }
-}
-
-bool SupplyQuest::IsGoalAchieved() {
-  bool is_goal_achieved = false;
-  if (count >= required_item_count) is_goal_achieved = true;
-  return is_goal_achieved;
 }
 
 void SupplyQuest::SetRequiredItemIndex(int _index) {
@@ -100,6 +87,12 @@ void SupplyQuest::PrintProgress() {
             << "전달 : " << count << " / " << required_item_count << " ("
             << progress_percent << "%)" << std::endl;
 }
+void SupplyQuest::AddCount() {}
+bool SupplyQuest::IsGoalAchieved() {
+  bool is_goal_achieved = false;
+  if (GetCount() >= required_item_count) is_goal_achieved = true;
+  return is_goal_achieved;
+}
 
 void SupplyQuest::QuestComplete(Hero** player) {
   Inventory* required_item = Inventory::FindItem(required_item_index);
@@ -112,7 +105,7 @@ void SupplyQuest::QuestComplete(Hero** player) {
     std::cout << "ERROR:Quest goal is unfinished" << std::endl;
   }
 }
-
+/*
   QuestList* QuestList::Head = nullptr;
   QuestList* QuestList::Tail = nullptr;
   int QuestList::Length = 0;
@@ -138,6 +131,7 @@ void SupplyQuest::QuestComplete(Hero** player) {
   const int QuestList::GetHighestLvlOfPlayer(Hero**) {}
 
   void QuestList::GiveUpQuest() {}
+  */
 
   Quest* NewQuest(int _index) {
     if (1 <= _index && _index <= 1000)

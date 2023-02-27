@@ -141,3 +141,9 @@ void Enemy::PrintStatus(short x, short y) {
   }
   ENDL;
 }
+
+Enemy::~Enemy() { 
+
+  // 퀘스트 템 지급 or 퀘스트 목표 카운트 ++
+
+}

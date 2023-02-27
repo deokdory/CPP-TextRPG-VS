@@ -96,7 +96,7 @@ class Inventory {
   void IncreaseItemCount(int increase = 1);
   void DecreaseItemCount(int decrease = 1);
   static Inventory* FindItem(Item* item);
-  static Inventory* FIndItem(int _index);
+  static Inventory* FindItem(int _index);
 
   Item* GetItem() const { return item; }
   int GetItemCount() const { return item_count; }

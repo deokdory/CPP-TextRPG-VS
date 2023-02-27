@@ -240,3 +240,7 @@ void Swap(Hero*, Hero*);
 
 Character* SelectTarget(Enemy**);
 Character* SelectTarget(Hero**);
+
+  // 포인터배열을 전달받아 평균 레벨을 구함
+const int GetAvgLvlOfTeam(Hero** team);
+const int GetAvgLvlOfTeam(Enemy** team);

@@ -85,7 +85,8 @@ class SupplyQuest : public Quest {
   void SetRequiredItemCount(int);
 
   virtual void PrintProgress();
-
+  // 보급 퀘스트에선 사용하지 않음
+  virtual void AddCount();
   virtual void QuestComplete(Hero**);
 
  private:
@@ -109,8 +110,6 @@ class QuestList {
   // ==========================
   void Open();
 
-  static const int GetHighestLvlOfPlayer(
-      Hero**);  // 히어로 포인터배열을 전달받아 가장 높은 레벨을 구함
   void QuestComplete(Hero**);
   void GiveUpQuest();
 

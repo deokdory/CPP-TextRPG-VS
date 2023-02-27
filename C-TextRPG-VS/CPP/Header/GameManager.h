@@ -3,10 +3,10 @@
 enum class Place { TOWN, WORLD_MAP, FOREST, CAVE, MOUNTAIN };
 
 class GameManager {
-  int gold;
+  static int gold;
   
  public:
-  int GetGold();
-  void SetGold(int _gold);
-  void AddGold(int _gold);
+  static const int GetGold();
+  static void SetGold(int _gold);
+  static void AddGold(int _gold);
 };
