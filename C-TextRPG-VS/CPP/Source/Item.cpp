@@ -58,20 +58,17 @@ void Potion::PrintDescription() {
 	}
 }
 
-void Potion::NewPotion(int _index) {
-	item_type = ItemType::POTION;
+Potion* NewPotion(int _index) {
 
 	if (_index > 100) {
 		std::cout << "ERROR:Potion Index is 1~100" << std::endl;
-		index = 0;
-		name = "NONE";
-		amount = 0;
-		type = PotionType::NONE;
 		system("pause");
-		return;
+		return nullptr;
 	}
+	std::string name = "null";
+	int amount = 0;
+	PotionType type = PotionType::NONE;
 
-	index = _index;
 	switch (_index) {
 	case S_HP_POTION: {
 		name = "HP포션(소)";
@@ -93,14 +90,14 @@ void Potion::NewPotion(int _index) {
 	}
 	default: {
 		std::cout << "ERROR:Undefined Potion Index" << std::endl;
-		name = "NONE";
-		amount = 0;
-		type = PotionType::NONE;
 		system("pause");
-		break;
+		return nullptr;
 	}
 	}
 }
+
+QuestItem::QuestItem(int _index) {}
+void QuestItem::PrintDescription() {}
 
 //인벤토리
 Inventory* Inventory::Head = nullptr;
@@ -412,21 +409,9 @@ void Inventory::RemoveAll(Inventory* head) {
 	head->Remove();
 }
 
-QuestItem::QuestItem(int _index) { NewQuestItem(_index); }
-
-void QuestItem::NewQuestItem(int _index) {
-	std::string name = "null";
-	ItemType item_type = ItemType::QUEST_ITEM;
-	if (1001 <= _index && _index <= 1500) {
-
-		switch (_index) {}
-	}
-	else {
-		std::cout << "ERROR:The Index is not Quest Item" << std::endl;
-	}
-
-	Item* NewItem(int _index) {
-		Item* new_item = nullptr;
-		if (1 <= _index && _index <= 100) new_item = // 포션 Index
-	}
+Item* NewItem(int _index) {
+	Item* new_item = nullptr;
+	if (1 <= _index && _index <= 100) { return NewPotion(_index); } // 포션 Index
+	if (1001 <= _index && _index <= 1500) { return NewQuestItem(_index); } // 퀘스트아이템 Index
+}
 
