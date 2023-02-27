@@ -112,7 +112,7 @@ Inventory::Inventory()
 Inventory::Inventory(int _index, int count) {
   Inventory* node = new Inventory;
   if (1 <= _index && _index <= 100) item = new Potion(_index);
-  item_count += count;
+  if (1000 <= _index && _index <= 1500) item = new item_count += count;
 }
 
 void Inventory::Open(Hero** player) {
@@ -132,8 +132,8 @@ void Inventory::Open(Hero** player) {
 }
 
 void Inventory::Open(Hero& turn_hero, Hero** player, Enemy** enemies) {
-    Open();
-    MenuUseItem(turn_hero, player, enemies);
+  Open();
+  MenuUseItem(turn_hero, player, enemies);
 }
 
 void Inventory::GotItem(int _index, int count) {
@@ -193,6 +193,23 @@ Inventory* Inventory::FindItem(Item* _item) {
   return nullptr;
 }
 
+Inventory* Inventory::FindItem(int _index) {
+  if (Head == nullptr) {
+    // std::cout << "Inventory is null" << std::endl;
+    return nullptr;
+  }
+  Inventory* finder = Head;
+  while (true) {
+    if (finder->GetItem() != nullptr) {
+      if (finder->GetItem()->GetIndex() == _index) return finder;
+    }
+    if (finder->Next != nullptr)
+      finder = finder->Next;
+    else
+      return nullptr;
+  }
+}
+
 Inventory* Inventory::GetNode(int index) {
   if (Head == nullptr) {
     std::cout << "Inventory is null" << std::endl;
@@ -240,6 +257,7 @@ void Inventory::RemoveAll() {
   Head = nullptr;
   Tail = nullptr;
 }
+
 
 void Inventory::Open() {
   std::cout << "Inventory "
@@ -373,3 +391,21 @@ void Inventory::RemoveAll(Inventory* head) {
   }
   head->Remove();
 }
+
+QuestItem::QuestItem(int _index) { NewQuestItem(_index); }
+
+void QuestItem::NewQuestItem(int _index) {
+  std::string name = NULL;
+  ItemType item_type = NULL;
+  if (1001 <= _index && _index <= 1500) {
+    
+    switch (_index) {}
+  } else {
+    std::cout << "ERROR:The Index is not Quest Item" << std::endl;
+  }
+
+  Item* NewItem(int _index) {
+    Item* new_item = nullptr;
+    if (1 <= _index && _index <= 100) new_item = // Æ÷¼Ç Index
+  }
+

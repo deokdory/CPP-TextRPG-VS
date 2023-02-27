@@ -1,12 +1,16 @@
 #pragma once
 #include "Character.h"
 
-enum class ItemType { WEAPON, EQUIP, POTION, VALUABLE, QUEST, NONE };
+enum class ItemType { WEAPON, EQUIP, POTION, VALUABLE, QUEST_ITEM, NONE };
 
-enum PotionIndex {
+enum PotionIndex { // 1 ~ 100
   S_HP_POTION = 1,
   M_HP_POTION,
   L_HP_POTION,
+};
+
+enum QuestItemIndex { // 1001 ~ 1500
+  WOLF_TOOTH = 1001,
 };
 
 enum ACTION_IN_INVENTORY {
@@ -65,6 +69,13 @@ class Potion : public Item {
   ~Potion();
 };
 
+class QuestItem : public Item {
+  QuestItem(int _index);
+  void NewQuestItem(int _index);
+};
+
+Item* NewItem(int _index);
+
 class Inventory {
  public:
   Inventory();
@@ -85,6 +96,7 @@ class Inventory {
   void IncreaseItemCount(int increase = 1);
   void DecreaseItemCount(int decrease = 1);
   static Inventory* FindItem(Item* item);
+  static Inventory* FIndItem(int _index);
 
   Item* GetItem() const { return item; }
   int GetItemCount() const { return item_count; }

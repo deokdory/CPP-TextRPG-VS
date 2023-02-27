@@ -1,5 +1,4 @@
 #pragma once
-#include "Quest.h"
 
 enum class Place { TOWN, WORLD_MAP, FOREST, CAVE, MOUNTAIN };
 
