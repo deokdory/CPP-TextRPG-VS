@@ -8,13 +8,13 @@ int main() {
   Hero* Player[PARTY_MAX] = {};
   GameManager Game;
 
-  NewPlayerCharacter(Player, 3);
-  NewPlayerCharacter(Player, 3);
-  NewPlayerCharacter(Player, 3);
+  NewPlayerCharacter(Player, 1);
+  NewPlayerCharacter(Player, 1);
+  //NewPlayerCharacter(Player, 3);
 
   Player[0]->GiveSkill(STRONG_ATTACK);
-
-  Combat(Game, Player, Place::CAVE);
+  
+  Combat(Game, Player, Place::FOREST);
 }
 
   //gotoxy(60, 0);

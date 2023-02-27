@@ -231,6 +231,10 @@ class Enemy : public Character {
 
   virtual void PrintStatus(short x = 0);
   virtual void PrintStatus(short x, short y);
+  
+  virtual bool CheckIsDead();
+
+  ~Enemy();
 };
 
 void NewPlayerCharacter(Hero** _Player, int _lvl);

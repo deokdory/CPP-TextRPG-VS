@@ -1,6 +1,7 @@
 #pragma once
 #include "Character.h"
 #include "Item.h"
+#include "Quest.h"
 #include "System.h"
 #include "GameManager.h"
 

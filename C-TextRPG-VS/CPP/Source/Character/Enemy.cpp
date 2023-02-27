@@ -1,5 +1,6 @@
-#include "pch.h"
 #include "Character.h"
+#include "Quest.h"
+#include "pch.h"
 
 #define ENEMY_STAT_ADJUST 0.9
 
@@ -16,7 +17,7 @@ Enemy::Enemy(int _index, int _lvl)
   type = CharacterType::ENEMY;
 }
 
-const std::string Enemy::GetNameWithIndex(int _index){
+const std::string Enemy::GetNameWithIndex(int _index) {
   std::string name;
   switch (_index) {
     case 0:
@@ -142,8 +143,19 @@ void Enemy::PrintStatus(short x, short y) {
   ENDL;
 }
 
-Enemy::~Enemy() { 
+bool Enemy::CheckIsDead() {
+  if (!is_dead) {
+    if (hp <= 0) {
+      hp = 0;
+      is_dead = true;
+      std::cout << name << "은 쓰러졌다." << std::endl;
+      QuestList::HuntQuestProgressChecker(index);
+      SYSTEM_MESSAGE_DELAY;
+    }
+  }
+  return is_dead;
+}
 
+Enemy::~Enemy() {
   // 퀘스트 템 지급 or 퀘스트 목표 카운트 ++
-
 }

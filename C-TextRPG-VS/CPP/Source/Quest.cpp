@@ -2,16 +2,15 @@
 
 #include "pch.h"
 
-Quest::Quest()
-    : index(0), name("null"), description("null"), type(QuestType::NONE) {}
 Quest::Quest(int index, std::string name, std::string description,
-             QuestType type)
-    : index(0), name(name), description(description), type(type) {}
-
-void Quest::SetIsCompleted(bool _is_completed) { is_completed = _is_completed; }
-
-void Quest::SetRewardExp(int _reward_exp) { reward_exp = _reward_exp; }
-void Quest::SetRewardGold(int _reward_gold) { reward_gold = _reward_gold; }
+             QuestType type, int reward_exp, int reward_gold, Item* reward_item)
+    : index(0),
+      name(name),
+      description(description),
+      type(type),
+      reward_exp(reward_exp),
+      reward_gold(reward_gold),
+      reward_item(reward_item) {}
 
 void Quest::QuestComplete(Hero** player) {
   for (int i = 0; i < PARTY_MAX; i++) {
@@ -20,14 +19,16 @@ void Quest::QuestComplete(Hero** player) {
       GameManager::AddGold(reward_gold);
     }
   }
-  SetIsCompleted();
+  CompletedQuest::NewCompletedQuest(index);
 }
 
 // 사냥 퀘스트
 HuntQuest::HuntQuest(int _index, std::string _name, std::string _description,
-                     QuestType _type, int _target_enemy_index,
-                     int _target_enemy_goal, int _count)
-    : Quest(_index, name, description, _type),
+                     QuestType _type, int _reward_exp, int _reward_gold,
+                     int _target_enemy_index, int _target_enemy_goal,
+                     int _count, Item* _reward_item)
+    : Quest(_index, _name, _description, _type, _reward_exp, _reward_gold,
+            _reward_item),
       target_enemy_index(_target_enemy_index),
       target_enemy_goal(_target_enemy_goal),
       count(_count) {}
@@ -58,8 +59,11 @@ void HuntQuest::PrintProgress() {
 // 아이템 전달 퀘스트
 SupplyQuest::SupplyQuest(int _index, std::string _name,
                          std::string _description, QuestType _type,
-                         int _required_item_index, int _required_item_count)
-    : Quest(_index, _name, _description, _type),
+                         int _reward_exp, int _reward_gold,
+                         int _required_item_index, int _required_item_count,
+                         Item* _reward_item)
+    : Quest(_index, _name, _description, _type, _reward_exp, _reward_gold,
+            _reward_item),
       required_item_index(_required_item_index),
       required_item_count(_required_item_count) {}
 
@@ -133,58 +137,238 @@ void SupplyQuest::QuestComplete(Hero** player) {
   void QuestList::GiveUpQuest() {}
   */
 
-  Quest* NewQuest(int _index) {
-    if (1 <= _index && _index <= 1000)
-      return NewHuntQuest(_index);
-    else if (1001 <= _index && _index <= 2000)
-      return NewSupplyQuest(_index);
+Quest* NewQuest(int _index) {
+  if (CompletedQuest::CheckIsCompletedQuest(_index)) {
+    std::cout << "이미 완료한 퀘스트입니다." << std::endl;
+    return nullptr;
   }
 
-  Quest* NewHuntQuest(int _index) {
-    std::string name = "NULL";
-    std::string description = "NULL";
-    QuestType type = QuestType::HUNT;
-    int target_enemy_index = 0;
-    int target_enemy_goal = 0;
-    switch (_index) {
-      type = QuestType::HUNT;
-      case 1: {
-        name = "늑대 잡기";
-        description = "늑대 무서워 5마리 잡아줘";
-        target_enemy_index = WOLF;
-        target_enemy_goal = 5;
-        break;
-      }
-      default: {
-        std::cout << "ERROR:Undefined Quest Index" << std::endl;
-        system("pause");
-        return nullptr;
-      }
+  if (1 <= _index && _index <= 1000) return NewHuntQuest(_index);
+  // else if (1001 <= _index && _index <= 2000)
+  //  return NewSupplyQuest(_index);
+  else {
+    std::cout << "Undefined Quest Index" << std::endl;
+    system("pause");
+    return nullptr;
+  }
+}
+
+Quest* NewHuntQuest(int _index) {
+  int index = _index;
+  std::string name = "NULL";
+  std::string description = "NULL";
+  QuestType type = QuestType::HUNT;
+  int target_enemy_index = 0;
+  int target_enemy_goal = 0;
+  int reward_exp = 0;
+  int reward_gold = 0;
+  Item* reward_item = nullptr;
+  switch (_index) {
+    type = QuestType::HUNT;
+    case 1: {
+      name = "늑대 잡기";
+      description = "늑대 무서워 5마리 잡아줘";
+      target_enemy_index = WOLF;
+      target_enemy_goal = 5;
+      reward_exp = 30;
+      reward_gold = 100;
+      break;
     }
-    return new HuntQuest(_index, name, description, type, target_enemy_index,
-                         target_enemy_goal);
+    default: {
+      std::cout << "ERROR:Undefined Quest Index" << std::endl;
+      system("pause");
+      return nullptr;
+    }
+  }
+  return new HuntQuest(index, name, description, type, reward_exp, reward_gold,
+                       target_enemy_index, target_enemy_goal, 0, reward_item);
+}
+
+/*
+Quest* NewSupplyQuest(int _index) {
+  int index = _index;
+  std::string name = "NULL";
+  std::string description = "NULL";
+  QuestType type = QuestType::HUNT;
+  int required_item_index = 0;
+  int required_item_count = 0;
+  int reward_exp = 0;
+  int reward_gold = 0;
+  Item* reward_item = nullptr;
+  switch (_index) {
+    case 1001: {
+      name = "늑대 이빨 갖고 싶어";
+      description = "늑대 이빨이 필요해 3개 갖다줘";
+      required_item_index = WOLF_TOOTH;
+      required_item_count = 3;
+      reward_exp = 45;
+      reward_gold = 125;
+      break;
+    }
+    default: {
+      std::cout << "ERROR:Undefined Quest Index" << std::endl;
+      system("pause");
+      return nullptr;
+    }
+  }
+  return new SupplyQuest(index, name, description, type, reward_exp,
+                         reward_gold, required_item_index, required_item_count,
+                         reward_item);
+}
+*/
+
+QuestList* QuestList::Head = nullptr;
+QuestList* QuestList::Tail = nullptr;
+int QuestList::Length = 0;
+
+QuestList::QuestList(int _index)
+    : quest_in_progress(NewQuest(_index)), Next(nullptr), Prev(nullptr) {}
+
+void QuestList::NewQuestList(int _index) {
+  QuestList* node = new QuestList(_index);
+
+  if (node->GetQuestInProgress() != nullptr) {
+    node->Push();
+  } else {
+    delete node;
+  }
+}
+
+void QuestList::Push() {
+  if (Head == nullptr) {
+    Head = this;
+    Tail = this;
   }
 
-  Quest* NewSupplyQuest(int _index) {
-    std::string name = "NULL";
-    std::string description = "NULL";
-    QuestType type = QuestType::HUNT;
-    int target_item_index = 0;
-    int target_item_goal = 0;
-    switch (_index) {
-      case 1001: {
-        name = "늑대 이빨 갖고 싶어";
-        description = "늑대 이빨이 필요해 3개 갖다줘";
-        target_item_index = WOLF_TOOTH;
-        target_item_goal = 3;
-        break;
+  else {
+    Tail->Next = this;
+    Tail = this;
+  }
+
+  Length++;
+}
+
+void QuestList::Remove() {
+  if (Head == this) {
+    if (this->Next != nullptr) {
+      Head = this->Next;
+      delete this;
+    } else {
+      Head = Tail = nullptr;
+      delete this;
+    }
+  }
+
+  QuestList* cur = Head;
+
+  while (true) {
+    if (cur->Next == this) {
+      if (this->Next != nullptr) {
+        cur->Next = this->Next;
+      } else {
+        cur->Next = nullptr;
       }
-      default: {
-        std::cout << "ERROR:Undefined Quest Index" << std::endl;
-        system("pause");
-        return nullptr;
+      delete this;
+    } else {
+      cur = cur->Next;
+    }
+  }
+  Length--;
+}
+
+void QuestList::RemoveAll() {
+  if (Head == nullptr) {
+    std::cout << "QuestList is null" << std::endl;
+    system("pause");
+    return;
+  }
+
+  if (Head->Next != nullptr) {
+    RemoveAll(Head->Next);
+  }
+  delete Head;
+  Length = 0;
+}
+
+void QuestList::HuntQuestProgressChecker(int _index) {
+  if (Head == nullptr) return;
+
+  QuestList* checker = Head;
+  Quest* quest_checker = checker->GetQuestInProgress();
+
+  while (true) {
+    if (quest_checker != nullptr) {
+      if (quest_checker->GetType() == QuestType::HUNT) {
+        HuntQuest* hunt_quest_checker = dynamic_cast<HuntQuest*>(quest_checker);
+        if (hunt_quest_checker->GetTargetIndex() == _index) {
+          hunt_quest_checker->AddCount();
+          return;
+        }
       }
     }
-    return new SupplyQuest(_index, name, description, type, target_item_index,
-                           target_item_goal);
+    if (checker->Next != nullptr) {
+      checker = checker->Next;
+    } else {
+      return;
+    }
   }
+}
+
+void QuestList::Open() {
+  std::cout << "Quest ===="
+               "============================================================"
+            << std::endl
+            << std::endl;
+  if (Head == nullptr) {
+    std::cout << "진행중인 퀘스트가 없습니다." << std::endl;
+  } else {
+    QuestList* node = Head;
+    Quest* quest = node->quest_in_progress;
+    for (int i = 0; i < Length; i++) {
+      if (quest != nullptr) {
+        std::cout << i + 1 << ". " << quest->GetName() << " | "
+                  << quest->GetDescription() << std::endl;
+        quest->PrintProgress();
+      }
+      node = node->Next;
+    }
+  }
+  std::cout << std::endl
+            << "============================================================="
+               "========="
+            << std::endl;
+}
+
+void QuestList::QuestComplete(Hero** player) {
+  quest_in_progress->QuestComplete(player);
+  delete quest_in_progress;
+  Remove();
+}
+
+void QuestList::GiveUpQuest() {
+  std::cout
+      << quest_in_progress->GetName()
+      << " 퀘스트를 포기하시겠습니까? 해당 퀘스트의 진행상황이 초기화됩니다."
+      << std::endl;
+  while (true) {
+    std::cout << "1. 포기   2. 취소 : ";
+    int is_sure = 0;
+    std::cin >> is_sure;
+    if (is_sure == 1) {
+      delete quest_in_progress;
+      Remove();
+      break;
+    } else if (is_sure == 2) {
+      break;
+    } else {
+      std::cout << "잘못된 입력입니다." << std::endl;
+    }
+  }
+}
+
+void QuestList::RemoveAll(QuestList* head) {
+  if (head->Next != nullptr) {
+    RemoveAll(head->Next);
+  }
+  delete head;
+}

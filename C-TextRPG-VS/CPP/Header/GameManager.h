@@ -10,3 +10,4 @@ class GameManager {
   static void SetGold(int _gold);
   static void AddGold(int _gold);
 };
+

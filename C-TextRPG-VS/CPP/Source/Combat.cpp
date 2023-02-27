@@ -1,9 +1,9 @@
 #include "Combat.h"
-
 #include "pch.h"
 
 void Combat(GameManager& Game, Hero** Player, Place _place) {
-  // PlayerArrayAlign(Player);
+  
+  QuestList::NewQuestList(1);
 
   Inventory::GotItem(1);
   Inventory::GotItem(1);
@@ -317,6 +317,7 @@ void Combat(GameManager& Game, Hero** Player, Place _place) {
     SYSTEM_MESSAGE_DELAY;
   } else {  // µµ¸Á
   }
+  QuestList::Open();
   for (int i = 0; i < enemies_personnel; i++) {
     delete enemy[i];
   }
