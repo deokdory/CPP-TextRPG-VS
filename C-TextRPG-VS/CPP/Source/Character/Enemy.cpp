@@ -11,7 +11,7 @@ Enemy::Enemy()
 
 Enemy::Enemy(int _index, int _lvl)
     : index(_index),
-      Character::Character(GetNameWithIndex(_index), _lvl, 0.9),
+      Character::Character(GetNameWithIndex(_index), Class::COMMON, _lvl, 0.9),
       reward_gold(GetRewardGoldForCurrentLvl()),
       reward_exp(GetRewardExpForCurrentLvl()) {
   type = CharacterType::ENEMY;

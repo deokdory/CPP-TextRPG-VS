@@ -1,4 +1,5 @@
 #include "Character.h"
+
 #include "pch.h"
 
 Character::Character()
@@ -17,9 +18,9 @@ Character::Character()
   // std::cout << "기본 생성자 호출" << std::endl;
 }
 
-Character::Character(std::string _name, int _lvl)
+Character::Character(std::string _name, Class class_of_character, int _lvl)
     : type(CharacterType::BASE),
-      class_of_character(Class::COMMON),
+      class_of_character(class_of_character),
       lvl(_lvl),
       turn_spd(0),
       turn_waiter(0),
@@ -41,16 +42,45 @@ Character::Character(std::string _name, int _lvl)
     std::cout << "ERROR : lvl out of range" << std::endl;
     lvl_for_stat = 1;
   }
-  max_hp = COMMON_MAXHP_ORIGIN + COMMON_MAXHP_PER_LVL * lvl_for_stat;
-  hp = max_hp;
-  atk = COMMON_ATK_ORIGIN + COMMON_ATK_PER_LVL * lvl_for_stat;
-  def = COMMON_DEF_ORIGIN + COMMON_DEF_PER_LVL * lvl_for_stat;
-  spd = COMMON_SPD_ORIGIN + COMMON_SPD_PER_LVL * lvl_for_stat;
+  switch (class_of_character) {
+    case Class::COMMON: {
+      max_hp = COMMON_MAXHP_ORIGIN + COMMON_MAXHP_PER_LVL * lvl_for_stat;
+      atk = COMMON_ATK_ORIGIN + COMMON_ATK_PER_LVL * lvl_for_stat;
+      def = COMMON_DEF_ORIGIN + COMMON_DEF_PER_LVL * lvl_for_stat;
+      spd = COMMON_SPD_ORIGIN + COMMON_SPD_PER_LVL * lvl_for_stat;
+      hp = max_hp;
+      break;
+    }
+    case Class::TANKER: {
+      max_hp = TANKER_MAXHP_ORIGIN + TANKER_MAXHP_PER_LVL * lvl_for_stat;
+      atk = TANKER_ATK_ORIGIN + TANKER_ATK_PER_LVL * lvl_for_stat;
+      def = TANKER_DEF_ORIGIN + TANKER_DEF_PER_LVL * lvl_for_stat;
+      spd = TANKER_SPD_ORIGIN + TANKER_SPD_PER_LVL * lvl_for_stat;
+      hp = max_hp;
+      break;
+    }
+    case Class::THIEF: {
+      max_hp = THIEF_MAXHP_ORIGIN + THIEF_MAXHP_PER_LVL * lvl_for_stat;
+      atk = THIEF_ATK_ORIGIN + THIEF_ATK_PER_LVL * lvl_for_stat;
+      def = THIEF_DEF_ORIGIN + THIEF_DEF_PER_LVL * lvl_for_stat;
+      spd = THIEF_SPD_ORIGIN + THIEF_SPD_PER_LVL * lvl_for_stat;
+      hp = max_hp;
+      break;
+    }
+      // case Class::ARCHOR: {
+      //  max_hp =    ARCHOR_MAXHP_ORIGIN + ARCHOR_MAXHP_PER_LVL * lvl_for_stat;
+      //  atk =       ARCHOR_ATK_ORIGIN   + ARCHOR_ATK_PER_LVL * lvl_for_stat;
+      //  def =       ARCHOR_DEF_ORIGIN   + ARCHOR_DEF_PER_LVL * lvl_for_stat;
+      //  spd =       ARCHOR_SPD_ORIGIN   + ARCHOR_SPD_PER_LVL * lvl_for_stat;
+      //  hp = max_hp;
+      //}
+  }
 }
 
-Character::Character(std::string _name, int _lvl, double _adjust)
+Character::Character(std::string _name, Class class_of_character, int _lvl,
+                     double _adjust)
     : type(CharacterType::BASE),
-      class_of_character(Class::COMMON),
+      class_of_character(class_of_character),
       lvl(_lvl),
       turn_spd(0),
       turn_waiter(0),
@@ -113,11 +143,8 @@ std::string Character::GetClass() const {
     case Class::COMMON:
       class_name = "COMMON";
       break;
-    case Class::WARRIOR:
-      class_name = "WARRIOR";
-      break;
-    case Class::ARCHOR:
-      class_name = "ARCHOR";
+    case Class::TANKER:
+      class_name = "TANKER";
       break;
     case Class::THIEF:
       class_name = "THIEF";
@@ -153,6 +180,7 @@ void Character::SetTurnSpd(double _turn_spd) { turn_spd = _turn_spd; }
 void Character::SetTurnWaiter(double _turn_waiter) {
   turn_waiter = _turn_waiter;
 }
+bool Character::IsTurn() const { return turn_waiter >= 100; }
 
 void Character::AddTurnWaiter(double _turn_waiter) {
   turn_waiter += _turn_waiter;
@@ -281,7 +309,6 @@ void Character::PrintStatus(short x) {
   }
   ENDL;
 }
-
 void Character::PrintStatus(short x, short y) {
   gotoxy(x, y);
   for (int i = 0; i < STATUS_LENGTH; i++) {
@@ -349,7 +376,6 @@ void Character::PrintHp() const {
   // std::cout << GetHpRemain() << "%)";
   // RESET_FORMAT;
 }
-
 void Character::PrintHpBar() const {
   float hp_per_box;
   if (HP_BAR_LENGTH) {
@@ -365,28 +391,24 @@ void Character::PrintHpBar() const {
     }
   }
 }
-
 void Character::PrintAtk() const {
   std::cout << "ATK ";
   SET_FORMAT_WIDTH_L(4);
   std::cout << GetAtk();
   RESET_FORMAT;
 }
-
 void Character::PrintDef() const {
   std::cout << "DEF ";
   SET_FORMAT_WIDTH_L(4);
   std::cout << GetDef();
   RESET_FORMAT;
 }
-
 void Character::PrintSpd() const {
   std::cout << "SPD ";
   SET_FORMAT_WIDTH_L(4);
   std::cout << GetSpd();
   RESET_FORMAT;
 }
-
 void Character::PrintLvl() const {
   std::cout << "lvl ";
   SET_FORMAT_WIDTH_R(2);
@@ -398,15 +420,44 @@ Character::~Character() {
   // std::cout << "캐릭터 수 감소" << std::endl;
 }
 
+Skill* SkillSelect(Hero* TurnNowHero) {
+  int skill_select = 0;
+  Skill* UsingSkill = nullptr;
+  TurnNowHero->PrintSkillsAll();
+  std::cout << "0. 취소" << std::endl << std::endl;
+  while (true) {
+    std::cout << "사용할 스킬을 선택해주세요 : ";
+    std::cin >> skill_select;
+
+    if (skill_select == 0) break;  // 스킬 사용 취소
+
+    if (skill_select >= 1 && skill_select <= 3) {
+      if (TurnNowHero->GetSkill(skill_select - 1) != nullptr) {
+        if (TurnNowHero->GetSkill(skill_select - 1)->IsAvailable()) {
+          UsingSkill = TurnNowHero->GetSkill(skill_select - 1);
+          break;
+        } else {
+          std::cout << "해당 스킬은 아직 사용할 수 없습니다." << std::endl;
+        }
+      } else {
+        std::cout << "해당 스킬 슬롯은 비어있습니다." << std::endl;
+        SYSTEM_MESSAGE_DELAY;
+      }
+    } else {
+      std::cout << "선택 범위를 벗어났습니다." << std::endl;
+      SYSTEM_MESSAGE_DELAY;
+    }
+  }
+  return UsingSkill;
+}
+
 void NewPlayerCharacter(Hero** _Player, int _lvl) {
   int slot = GetNumOfPlayableHeroes(_Player);
   if (slot < PARTY_MAX) {
     std::string name;
     while (true) {
-      system("cls");
-
       std::string temp;
-      std::cout << "이름? : ";
+      std::cout << "영웅의 이름을 입력해주세요 : ";
       std::cin >> temp;
 
       if (temp.length() > NAME_LIMIT) {
@@ -418,20 +469,33 @@ void NewPlayerCharacter(Hero** _Player, int _lvl) {
         break;
       }
     }
-    _Player[slot] = new Hero(name, _lvl);
-  }
-}
-
-void PlayerArrayAlign(Hero** Player) {
-  for (int i = 0; i < PARTY_MAX; i++) {
-    for (int j = i + 1; j < PARTY_MAX; j++) {
-      if (Player[i] == nullptr && Player[j] != nullptr) {
-        Swap(Player[i], Player[j]);
+    Class class_of_character = Class::COMMON;
+    while (true) {
+      int class_choice;
+      std::cout << "1. 일반   2. 탱커   3. 도적" << std::endl;
+      std::cout << "영웅의 직업을 선택해주세요 : ";
+      std::cin >> class_choice;
+      if (1 <= class_choice && class_choice <= 3) {
+        switch (class_choice) {
+          case 1:
+            class_of_character = Class::COMMON;
+            break;
+          case 2:
+            class_of_character = Class::TANKER;
+            break;
+          case 3:
+            class_of_character = Class::THIEF;
+            break;
+        }
+        _Player[slot] = new Hero(name, class_of_character, _lvl);
+        break;
+      } else {
+        std::cout << "잘못된 입력입니다." << std::endl;
+        continue;
       }
     }
   }
 }
-
 int GetNumOfPlayableHeroes(Hero** _Player) {
   int num_of_playble_heroes = 0;
   for (int i = 0; i < PARTY_MAX; i++) {
@@ -457,7 +521,7 @@ Character* SelectTarget(Enemy** enemy) {
 
   for (int i = 0; i < PARTY_MAX; i++) {
     if (enemy[i] != nullptr) {
-      if(i) std::cout << "   ";
+      if (i) std::cout << "   ";
       std::cout << i + 1 << ". " << enemy[i]->GetName();
       if (enemy[i]->CheckIsDead()) std::cout << "(쓰러짐)";
       personnel++;
@@ -484,11 +548,11 @@ Character* SelectTarget(Enemy** enemy) {
           SYSTEM_MESSAGE_DELAY;
         }
       }
-      } else {  // 선택 범위를 벗어났을 경우
-        std::cout << "선택 범위를 벗어났습니다." << std::endl;
-        SYSTEM_MESSAGE_DELAY;
-      }
+    } else {  // 선택 범위를 벗어났을 경우
+      std::cout << "선택 범위를 벗어났습니다." << std::endl;
+      SYSTEM_MESSAGE_DELAY;
     }
+  }
   if (Target != nullptr) {
     return Target;
   } else {
@@ -499,11 +563,9 @@ Character* SelectTarget(Hero** Player) {
   Character* Target = nullptr;
   int personnel = 0;
 
-  std::cout << "0. 취소";
-
   for (int i = 0; i < PARTY_MAX; i++) {
     if (Player[i] != nullptr) {
-      std::cout << "   ";
+      if (i) std::cout << "   ";
       std::cout << i + 1 << ". " << Player[i]->GetName();
       if (Player[i]->CheckIsDead()) std::cout << "(쓰러짐)";
       personnel++;
@@ -511,6 +573,7 @@ Character* SelectTarget(Hero** Player) {
       break;
     }
   }
+  std::cout << "   0. 취소";
   ENDL;
   int target;
   while (true) {
@@ -558,4 +621,10 @@ const int GetAvgLvlOfTeam(Enemy** team) {
     }
   }
   return sum / personnel;
+}
+
+void LobbyPlayerStatus(Hero** player) {
+  for (int i = 0; i < PARTY_MAX; i++) {
+    player[i]->PrintStatus(i * 32, 0);
+  }
 }

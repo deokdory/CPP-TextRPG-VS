@@ -1,13 +1,8 @@
 #include "Combat.h"
+
 #include "pch.h"
 
 void Combat(GameManager& Game, Hero** Player, Place _place) {
-  
-  QuestList::NewQuestList(1);
-
-  Inventory::GotItem(1);
-  Inventory::GotItem(1);
-
   int allies_personnel = GetNumOfPlayableHeroes(Player);  // 현재 생성된 영웅 수
   int enemies_personnel = GetEnemiesPersonnel(_place);  // 생성할 적 수
   int total_combat_personnel =
@@ -23,7 +18,6 @@ void Combat(GameManager& Game, Hero** Player, Place _place) {
     total_reward_gold += enemy[i]->GetRewardGold();
     total_reward_exp += enemy[i]->GetRewardExp();
   }
-
   Character* TurnWaiting[PARTY_MAX * 2];  // 턴 계산용 포인터 배열
   {
     int index = 0;
@@ -61,6 +55,7 @@ void Combat(GameManager& Game, Hero** Player, Place _place) {
 
     // 어느 한쪽이 전멸했을 시 전투 종료
     if (!allies_alive || !enemies_alive) break;
+
     // 도망에 성공했을 시 전투 종료
     if (ranaway) break;
 
@@ -103,8 +98,8 @@ void Combat(GameManager& Game, Hero** Player, Place _place) {
           TurnWaiting[i]->SetTurnSpd((double)(TurnWaiting[i]->GetSpd()) /
                                      top_spd);
         } else {
-          TurnWaiting[i]->SetTurnSpd(
-              0);  // 캐릭터가 죽은 경우 턴 돌아오는 속도 0으로 설정
+          // 캐릭터가 죽은 경우 턴 돌아오는 속도 0으로 설정
+          TurnWaiting[i]->SetTurnSpd(0);
         }
         // std::cout << TurnWaiting[i]->GetName()
         //          << " TurnSpd = " << TurnWaiting[i]->GetTurnSpd() <<
@@ -112,41 +107,53 @@ void Combat(GameManager& Game, Hero** Player, Place _place) {
       }
     }
     //턴 계산
-    Character* turn_now = 0;
-    Character* turn_next = 0;
-    bool turn_waiting = true;
-    while (turn_waiting) {
-      for (int i = 0; i < total_combat_personnel; i++) {
-        if (TurnWaiting[i]->GetTurnWaiter() >= 100) {
-          turn_now = TurnWaiting[i];
+    Character* turn_now = nullptr;
 
-          int second_turn_waiter = 0;
-          for (int i = 0; i < total_combat_personnel; i++) {
-            if (TurnWaiting[i] != turn_now &&
-                TurnWaiting[i]->GetTurnWaiter() > second_turn_waiter) {
-              second_turn_waiter = TurnWaiting[i]->GetTurnWaiter();
-              turn_next = TurnWaiting[i];
+    bool turn_waiting = true;
+    int turn_score[PARTY_MAX * 2] = {};
+    int turn_now_count = 0;
+
+    int turn_now_index = 0;  // 적 번호 붙여주기 위함
+
+    while (true) {
+      for (int i = 0; i < total_combat_personnel; i++) {
+        if (TurnWaiting[i]->IsTurn()) {
+          turn_score[i]++;
+          turn_now_count++;
+        }
+      }
+      // 턴이 돌아온 캐릭터가 하나라면 해당 캐릭터의 턴
+
+      if (turn_now_count > 1) {
+        int top_score = 0;
+        for (int i = 0; i < total_combat_personnel; i++) {
+          if (turn_score[i]) {
+            if (turn_score[i] > top_score) {
+              turn_now = TurnWaiting[i];
+              top_score = turn_score[i];
+              turn_now_index = i;
             }
           }
-          turn_waiting = false;
-          break;
-        } else
-          continue;
-      }
-      if (turn_waiting) {
+        }
+        break;
+
+        // 턴이 돌아온 캐릭터가 없다면
+      } else {
         for (int i = 0; i < total_combat_personnel; i++) {
           TurnWaiting[i]->AddTurnWaiter(TurnWaiting[i]->GetTurnSpd());
         }
       }
     }
 
-    std::cout << turn_now->GetName() << "이 행동할 차례입니다.";
-    std::cout << "   ( 다음 차례 : " << turn_next->GetName() << " )"
-              << std::endl;
+    std::cout << (turn_now_index % 3) + 1 << ". " << turn_now->GetName()
+              << "이(가) 행동할 차례입니다." << std::endl;
+
     if (turn_now->GetType() == CharacterType::ENEMY) SYSTEM_MESSAGE_DELAY;
 
     // 플레이어 턴
     if (turn_now->GetType() == CharacterType::HERO) {
+      ClearFromY(23, 6);
+
       Hero* TurnNowHero = dynamic_cast<Hero*>(turn_now);
       //행동 선택
       int action = 0;
@@ -165,40 +172,16 @@ void Combat(GameManager& Game, Hero** Player, Place _place) {
           break;
         }
         case COMBAT_USE_SKILL: {
-          int skill_select = 0;
-          Skill* UsingSkill = nullptr;
-          TurnNowHero->PrintSkillsAll();
-          std::cout << "0. 취소" << std::endl << std::endl;
-          while (true) {
-            std::cout << "사용할 스킬을 선택해주세요 : ";
-            std::cin >> skill_select;
+          Skill* UsingSkill = SkillSelect(TurnNowHero);
 
-            if (skill_select == 0) break;  // 스킬 사용 취소
-
-            if (skill_select >= 1 && skill_select <= 3) {
-              if (TurnNowHero->GetSkill(skill_select - 1) != nullptr) {
-                if (TurnNowHero->GetSkill(skill_select - 1)->IsAvailable()) {
-                  UsingSkill = TurnNowHero->GetSkill(skill_select - 1);
-                  break;
-                } else {
-                  std::cout << "해당 스킬은 아직 사용할 수 없습니다."
-                            << std::endl;
-                }
-              } else {
-                std::cout << "해당 스킬 슬롯은 비어있습니다." << std::endl;
-                SYSTEM_MESSAGE_DELAY;
-              }
-            } else {
-              std::cout << "선택 범위를 벗어났습니다." << std::endl;
-              SYSTEM_MESSAGE_DELAY;
-            }
-          }
-
-          if (skill_select == 0) break;  // 스킬 사용 취소
+          if (UsingSkill == nullptr) break;  // 스킬 사용 취소
 
           switch (UsingSkill->GetSkillType()) {
             case SkillType::ATTACK: {
               Character* Target = SelectTarget(enemy);
+              if (Target == nullptr) {
+                break;
+              }
               UsingSkill->Use(*Target);
               TurnNowHero->TurnEnd();
               break;
@@ -212,6 +195,11 @@ void Combat(GameManager& Game, Hero** Player, Place _place) {
             case SkillType::DEBUFF: {
               break;
             }
+            case SkillType::PROTECT: {
+              
+              break;
+            }
+              
             default:
               std::cout << "ERROR : Undefined SkillType in Combat" << std::endl;
               break;
@@ -247,10 +235,10 @@ void Combat(GameManager& Game, Hero** Player, Place _place) {
             if (dealt_damage[i] > max_dealt_damage) {
               max_dealt_damage = dealt_damage[i];
             }
-            // received_damage[i] = Player[i]->GetAtk() - turn_now->GetAtk();
-            // if (received_damage[i] < min_received_damage) {
-            //  min_received_damage = received_damage[i];
-            //}
+            received_damage[i] = Player[i]->GetAtk() - turn_now->GetAtk();
+            if (received_damage[i] < min_received_damage) {
+              min_received_damage = received_damage[i];
+            }
             // if (turn_now->GetHp() - received_damage[i] <= 0) {
             //  attack_will_die[i] = true;
             //}
@@ -269,9 +257,9 @@ void Combat(GameManager& Game, Hero** Player, Place _place) {
             if (dealt_damage[i] == max_dealt_damage) {
               target_score[i]++;
             }
-            // if (received_damage[i] == min_received_damage) {
-            //  target_score[i] += 1;
-            //}
+            if (received_damage[i] == min_received_damage) {
+              target_score[i] += 1;
+            }
             // if (attack_will_die) {
             //  target_score[i] -= 1;
             //}
@@ -317,7 +305,6 @@ void Combat(GameManager& Game, Hero** Player, Place _place) {
     SYSTEM_MESSAGE_DELAY;
   } else {  // 도망
   }
-  QuestList::Open();
   for (int i = 0; i < enemies_personnel; i++) {
     delete enemy[i];
   }

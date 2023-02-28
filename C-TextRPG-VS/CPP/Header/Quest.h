@@ -105,6 +105,8 @@ class QuestList {
   static const QuestList* GetHead() { return Head; }
   QuestList* GetNext() const { return Next; }
 
+  static const int GetLength() { return Length; }
+
   void Remove();
   void static RemoveAll();
 

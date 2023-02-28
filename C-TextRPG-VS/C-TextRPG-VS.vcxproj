@@ -23,6 +23,7 @@
     <ClCompile Include="CPP\Source\GameManager.cpp" />
     <ClCompile Include="CPP\Source\Combat.cpp" />
     <ClCompile Include="CPP\Source\Quest.cpp" />
+    <ClCompile Include="CPP\Source\Shop.cpp" />
     <ClCompile Include="CPP\Source\System.cpp" />
     <ClCompile Include="CPP\Source\Item.cpp" />
     <ClCompile Include="CPP\Source\pch.cpp" />

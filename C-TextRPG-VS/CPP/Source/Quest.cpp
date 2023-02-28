@@ -1,5 +1,4 @@
 #include "Quest.h"
-
 #include "pch.h"
 
 Quest::Quest(int index, std::string name, std::string description,
@@ -139,7 +138,6 @@ void SupplyQuest::QuestComplete(Hero** player) {
 
 Quest* NewQuest(int _index) {
   if (CompletedQuest::CheckIsCompletedQuest(_index)) {
-    std::cout << "이미 완료한 퀘스트입니다." << std::endl;
     return nullptr;
   }
 
@@ -228,6 +226,9 @@ void QuestList::NewQuestList(int _index) {
   QuestList* node = new QuestList(_index);
 
   if (node->GetQuestInProgress() != nullptr) {
+    std::cout << node->GetQuestInProgress()->GetName()
+              << " 퀘스트를 받았습니다." << std::endl;
+    SYSTEM_MESSAGE_DELAY;
     node->Push();
   } else {
     delete node;
@@ -337,6 +338,7 @@ void QuestList::Open() {
             << "============================================================="
                "========="
             << std::endl;
+  Pause;
 }
 
 void QuestList::QuestComplete(Hero** player) {

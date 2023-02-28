@@ -38,3 +38,12 @@ double RealRandom() {
   }
   return random[rand() % 10];
 }
+void ClearFromY(short y, int lines) {
+  gotoxy(0, y);
+  for (int i = 0; i < lines; i++) {
+    std::cout << "                                                           "
+                 "                                         "
+              << std::endl;
+  }
+  gotoy(y);
+}

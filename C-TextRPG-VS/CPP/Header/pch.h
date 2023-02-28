@@ -13,6 +13,10 @@
 
 #define endll std::endl << std::endl
 #define ENDL std::cout << std::endl
+#define ENDLL std::cout << std::endl << std::endl
+
+#define Pause system("pause")
+#define Clear system("cls")
 
 #define SYSTEM_MESSAGE_DELAY Sleep(1500)
 

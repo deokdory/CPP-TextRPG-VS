@@ -1,9 +1,10 @@
 #pragma once
 #include "Character.h"
+#include "GameManager.h"
 
 enum class ItemType { WEAPON, EQUIP, POTION, VALUABLE, QUEST_ITEM, NONE };
 
-enum PotionIndex {  // 1 ~ 100
+enum PotionIndex {  // 1 ~ 30
   S_HP_POTION = 1,
   M_HP_POTION,
   L_HP_POTION,
@@ -26,15 +27,17 @@ class Item {
   std::string description;
   ItemType item_type;
 
+  int price;
  public:
   Item();
-  Item(int _index, std::string _name, std::string _description, ItemType _type);
+  Item(int _index, std::string _name, std::string _description, ItemType _type, int _price);
 
   // Get
   int GetIndex() const { return index; }
   std::string GetName() const { return name; }
   std::string GetDescription() const { return description; }
   ItemType GetItemType() const { return item_type; }
+  int GetPrice() const { return price; }
 
   // Set
   void SetName(std::string _name);
@@ -63,7 +66,7 @@ class Potion : public Item {
 
  public:
   Potion(int _index, std::string _name, std::string _description, ItemType _item_type, int _amount,
-         PotionType _potion_type);
+         PotionType _potion_type, int _price);
 
   virtual void Use(Character& character);
 
@@ -92,6 +95,9 @@ class Inventory {
 
   // 비전투 상황에서 인벤토리 열기
   static void Open(Hero** player);
+
+  // 상점에서 열기
+  static void OpenForSell();
 
   // 전투 중 인벤토리 열기 ( 공격 아이템이 있는 경우 or 전체 버프 템 등을 사용할
   // 수 있도록 해당 턴의 영웅, 플레이어 팀, 적 팀을 모두 매개변수로 받음 )
@@ -140,3 +146,10 @@ private:
 
   static int Length;
 };
+
+void Shop();
+void ShopListPotion();
+void ShopMenu();
+
+void BuyItem();
+void SellItem();
