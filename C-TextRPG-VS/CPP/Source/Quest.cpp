@@ -1,4 +1,5 @@
 #include "Quest.h"
+
 #include "pch.h"
 
 Quest::Quest(int index, std::string name, std::string description,
@@ -12,12 +13,14 @@ Quest::Quest(int index, std::string name, std::string description,
       reward_item(reward_item) {}
 
 void Quest::QuestComplete(Hero** player) {
+  std::cout << GetName() << " 퀘스트를 완료하셨습니다." << std::endl;
+
   for (int i = 0; i < PARTY_MAX; i++) {
     if (player[i] != nullptr) {
       player[i]->GiveExp(reward_exp);
-      GameManager::AddGold(reward_gold);
     }
   }
+  GameManager::AddGold(reward_gold);
   CompletedQuest::NewCompletedQuest(index);
 }
 
@@ -165,11 +168,29 @@ Quest* NewHuntQuest(int _index) {
     type = QuestType::HUNT;
     case 1: {
       name = "늑대 잡기";
-      description = "늑대 무서워 5마리 잡아줘";
+      description = "늑대 무서워 3마리 잡아줘";
       target_enemy_index = WOLF;
-      target_enemy_goal = 5;
+      target_enemy_goal = 3;
       reward_exp = 30;
       reward_gold = 100;
+      break;
+    }
+    case 2: {
+      name = "고블린 잡기";
+      description = "고블린 무서워 3마리 잡아줘";
+      target_enemy_index = GOBLIN;
+      target_enemy_goal = 3;
+      reward_exp = 60;
+      reward_gold = 150;
+      break;
+    }
+    case 3: {
+      name = "마왕 잡기";
+      description = "마왕 무서워 잡아줘";
+      target_enemy_index = DEVILKING;
+      target_enemy_goal = 1;
+      reward_exp = 100;
+      reward_gold = 1000;
       break;
     }
     default: {
@@ -222,6 +243,24 @@ int QuestList::Length = 0;
 QuestList::QuestList(int _index)
     : quest_in_progress(NewQuest(_index)), Next(nullptr), Prev(nullptr) {}
 
+void QuestList::QuestCompleteChecker(Hero** Player) {
+  if (!Head) return;
+
+  QuestList* checker = Head;
+
+  while (true) {
+    if (checker->GetQuestInProgress()->IsGoalAchieved()) {
+      checker->GetQuestInProgress()->QuestComplete(Player);
+      checker->Remove();
+    }
+
+    if (checker->Next)
+      checker = checker->Next;
+    else
+      break;
+  }
+}
+
 void QuestList::NewQuestList(int _index) {
   QuestList* node = new QuestList(_index);
 
@@ -263,7 +302,7 @@ void QuestList::Remove() {
   QuestList* cur = Head;
 
   while (true) {
-    if (cur->Next == this) {
+    if (cur != nullptr) {
       if (this->Next != nullptr) {
         cur->Next = this->Next;
       } else {
@@ -342,6 +381,8 @@ void QuestList::Open() {
 }
 
 void QuestList::QuestComplete(Hero** player) {
+  std::cout << quest_in_progress->GetName() << " 퀘스트를 완료했습니다."
+            << std::endl;
   quest_in_progress->QuestComplete(player);
   delete quest_in_progress;
   Remove();

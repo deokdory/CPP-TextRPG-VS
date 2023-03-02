@@ -186,19 +186,29 @@ void Character::AddTurnWaiter(double _turn_waiter) {
   turn_waiter += _turn_waiter;
 }
 
-void Character::Attack(Character& target) {
+void Character::Attack(Character* target) {
   int damage = 0;
-  std::cout << name << "가 " << target.name << "을 공격하려고 한다";
+  std::cout << name << "가 " << target->name << "을 공격하려고 한다";
   for (int i = 0; i < 3; i++) {
     printf(" .");
     Sleep(500);
   }
-  damage = atk - target.def;
+
+  target = Protector::ProtectorChecker(target);
+
+  ENDL;
+
+  damage = atk - target->def;
   if (damage < 0) damage = 0;
 
-  target.hp -= damage;
-  std::cout << target.name << "은 " << damage << "의 피해를 입었다"
+  target->hp -= damage;
+  std::cout << target->name << "은 " << damage << "의 피해를 입었다"
             << std::endl;
+
+  if (Poisoner* node = Poisoner::FindIsPoisoner(this)) {
+    Poisoned::NewPoisoned(target, 3, node->GetPoisonDmg());
+  }
+
   SYSTEM_MESSAGE_DELAY;
 
   //
@@ -242,13 +252,19 @@ void Character::Attack(Character& target) {
 //}
 
 bool Character::CheckIsDead() {
-  if (!is_dead) {
-    if (hp <= 0) {
+  if (hp <= 0) {
+    if (!is_dead) {
       hp = 0;
       is_dead = true;
       std::cout << name << "은 쓰러졌다." << std::endl;
+      Poisoned* node = Poisoned::FindIsPoisoned(this);
+
+      if (node != nullptr) node->Remove();
+
       SYSTEM_MESSAGE_DELAY;
     }
+  } else {
+    is_dead = false;
   }
   return is_dead;
 }
@@ -363,7 +379,12 @@ double Character::GetHpRemain() const {
   }
 }
 
-void Character::PrintHp() const {
+void Character::PrintHp() {
+  Poisoned* node = Poisoned::FindIsPoisoned(this);
+  bool is_poisoned = node != nullptr;
+
+  if (is_poisoned) TextColor(GREEN, BLACK);
+
   std::cout << "HP ";
   SET_FORMAT_WIDTH_R(3);
   std::cout << hp;
@@ -372,11 +393,18 @@ void Character::PrintHp() const {
   SET_FORMAT_WIDTH_L(3);
   std::cout << max_hp;
   RESET_FORMAT;
+
+  if (is_poisoned) TextColor();
   // SET_FORMAT_2PREC;
   // std::cout << GetHpRemain() << "%)";
   // RESET_FORMAT;
 }
-void Character::PrintHpBar() const {
+void Character::PrintHpBar() {
+  Poisoned* node = Poisoned::FindIsPoisoned(this);
+  bool is_poisoned = node != nullptr;
+
+  if (is_poisoned) TextColor(GREEN, BLACK);
+
   float hp_per_box;
   if (HP_BAR_LENGTH) {
     hp_per_box = 100 / HP_BAR_LENGTH;
@@ -390,26 +418,38 @@ void Character::PrintHpBar() const {
       printf("□");
     }
   }
+  if (is_poisoned) TextColor();
 }
-void Character::PrintAtk() const {
+
+void Character::PrintAtk() {
   std::cout << "ATK ";
   SET_FORMAT_WIDTH_L(4);
+
+  Poisoner* poisoner = Poisoner::FindIsPoisoner(this);
+  bool is_poisoner = poisoner != nullptr;
+
+  if (is_poisoner) {
+    TextColor(GREEN, BLACK);
+  }
   std::cout << GetAtk();
-  RESET_FORMAT;
+  if (is_poisoner) {
+    TextColor();
+  }
 }
-void Character::PrintDef() const {
+
+void Character::PrintDef() {
   std::cout << "DEF ";
   SET_FORMAT_WIDTH_L(4);
   std::cout << GetDef();
   RESET_FORMAT;
 }
-void Character::PrintSpd() const {
+void Character::PrintSpd() {
   std::cout << "SPD ";
   SET_FORMAT_WIDTH_L(4);
   std::cout << GetSpd();
   RESET_FORMAT;
 }
-void Character::PrintLvl() const {
+void Character::PrintLvl() {
   std::cout << "lvl ";
   SET_FORMAT_WIDTH_R(2);
   std::cout << GetLvl();
@@ -479,15 +519,20 @@ void NewPlayerCharacter(Hero** _Player, int _lvl) {
         switch (class_choice) {
           case 1:
             class_of_character = Class::COMMON;
+            _Player[slot] = new Hero(name, class_of_character, _lvl);
+            _Player[slot]->GiveSkill(STRONG_ATTACK);
             break;
           case 2:
             class_of_character = Class::TANKER;
+            _Player[slot] = new Hero(name, class_of_character, _lvl);
+            _Player[slot]->GiveSkill(PROTECT);
             break;
           case 3:
             class_of_character = Class::THIEF;
+            _Player[slot] = new Hero(name, class_of_character, _lvl);
+            _Player[slot]->GiveSkill(FAIR_PARTY);
             break;
         }
-        _Player[slot] = new Hero(name, class_of_character, _lvl);
         break;
       } else {
         std::cout << "잘못된 입력입니다." << std::endl;
@@ -627,4 +672,33 @@ void LobbyPlayerStatus(Hero** player) {
   for (int i = 0; i < PARTY_MAX; i++) {
     player[i]->PrintStatus(i * 32, 0);
   }
+}
+void CombatPrintStatus(Hero** player, Enemy** enemy, int allies_personnel,
+                       int enemies_personnel) {
+  ClearFromY(0, 21);
+
+  gotoy(0);
+  for (int i = 0; i < allies_personnel; i++) {
+    if (player[i]->CheckIsDead()) {
+      TextColor(RED, BLACK);
+    } else if (Hider::FindIsHiding(player[i])) {
+      TextColor(DARK_GRAY, BLACK);
+    }
+    player[i]->PrintStatus();
+    TextColor();
+  }
+  gotoxy(35, 0);
+  for (int i = 0; i < 21; i++) {
+    gotox(34);
+    std::cout << "||" << std::endl;
+  }
+  gotoy(0);
+  for (int i = 0; i < enemies_personnel; i++) {
+    if (enemy[i]->CheckIsDead()) {
+      TextColor(RED, BLACK);
+    }
+    enemy[i]->PrintStatus(40);
+    TextColor();
+  }
+  gotoxy(0, 22);
 }

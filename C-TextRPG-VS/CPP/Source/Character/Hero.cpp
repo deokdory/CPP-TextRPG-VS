@@ -67,6 +67,14 @@ void Hero::GiveSkill(int _index) {
       skill[slot] = new StrongAttack(this);
       break;
     }
+    case PROTECT: {
+      skill[slot] = new Protect(this);
+      break;
+    }
+    case FAIR_PARTY: {
+      skill[slot] = new FairParty(this);
+      break;
+    }
     default: {
       std::cout << "ERROR:UNDEFINED SKILL INDEX" << std::endl;
     }

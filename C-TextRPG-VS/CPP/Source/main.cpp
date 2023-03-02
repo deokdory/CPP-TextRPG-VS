@@ -1,4 +1,5 @@
 #include "main.h"
+
 #include "pch.h"
 
 enum ActionInLobby {
@@ -12,7 +13,7 @@ enum ActionInLobby {
 
 int main() {
   Initialize();
-
+  
   Hero* Player[PARTY_MAX] = {};
   GameManager Game;
 
@@ -20,13 +21,26 @@ int main() {
   NewPlayerCharacter(Player, 1);
   NewPlayerCharacter(Player, 1);
 
-  Player[0]->GiveSkill(STRONG_ATTACK);
 
   QuestList::NewQuestList(1);  // 늑대 사냥 퀘스트 부여
-
   Inventory::GotItem(1, 3);  // 포션 지급
 
   while (true) {
+
+    QuestList::QuestCompleteChecker(Player);
+
+    if (GetAvgLvlOfTeam(Player) >= 3) QuestList::NewQuestList(2);
+    if (GetAvgLvlOfTeam(Player) >= 6) QuestList::NewQuestList(3);
+
+    if (GameManager::IsGameEnded()) return 0;
+
+    for (int i = 0; i < PARTY_MAX; i++) {
+      if (Player[i] && Player[i]->CheckIsDead()) {
+        Player[i]->SetHp(1);
+        Player[i]->CheckIsDead();
+      }
+    }
+
     Clear;
 
     LobbyPlayerStatus(Player);
@@ -63,7 +77,7 @@ int main() {
       case LOBBY_GO_COMBAT: {
         std::cout << "목적지를 선택하세요." << std::endl;
         std::cout << "1. 숲 ( 권장 평균 레벨 : 1)\n2. 동굴 (권장 평균 레벨 : "
-                     "3)\n3.산 (권장 평균 레벨 : 5)\n0. 취소\n";
+                     "3)\n3.산 (권장 평균 레벨 : 6)\n0. 취소\n";
         std::cout << "입력 : ";
         int destination = 0;
         std::cin >> destination;
@@ -73,6 +87,7 @@ int main() {
             break;
           case 1:
             Combat(Game, Player, Place::FOREST);
+            
             break;
           case 2:
             Combat(Game, Player, Place::CAVE);
@@ -115,9 +130,10 @@ void Initialize() {
 
 int Lobby() {
   std::cout << "원하는 행동을 선택하세요." << std::endl;
-  std::cout << "1. 인벤토리 열기   2. 포션상점 방문   3. 캐릭터 스킬 보유 현황   "
-               "4. 퀘스트 현황   0. 전투"
-            << std::endl;
+  std::cout
+      << "1. 인벤토리 열기   2. 포션상점 방문   3. 캐릭터 스킬 보유 현황   "
+         "4. 퀘스트 현황   0. 전투"
+      << std::endl;
   std::cout << "입력 : ";
   int action = 0;
   std::cin >> action;

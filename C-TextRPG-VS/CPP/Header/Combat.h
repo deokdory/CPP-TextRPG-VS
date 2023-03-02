@@ -40,3 +40,4 @@ bool RunAway(Hero** player, Enemy** enemy);  // 적과 spd 비교해서 확률 설정 후 �
 double GetSpdAvgAlive(Hero** player);
 double GetSpdAvgAlive(Enemy** enemy); 
 double GetRunAwayChance(double player_spd_avg, double enemy_spd_avg);
+

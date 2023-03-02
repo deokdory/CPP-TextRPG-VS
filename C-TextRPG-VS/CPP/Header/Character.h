@@ -111,7 +111,7 @@ class Character {
   // Boost
 
   // Combat
-  void Attack(Character& target);
+  void Attack(Character* target);
 
   // Check
   virtual bool CheckIsDead();
@@ -120,12 +120,12 @@ class Character {
   virtual void PrintStatus(short x = 0);
   virtual void PrintStatus(short x, short y);
 
-  void PrintHp() const;
-  void PrintHpBar() const;
-  void PrintAtk() const;
-  void PrintDef() const;
-  void PrintSpd() const;
-  void PrintLvl() const;
+  void PrintHp();
+  void PrintHpBar();
+  void PrintAtk();
+  void PrintDef();
+  void PrintSpd();
+  void PrintLvl();
 
   // 소멸자
   virtual ~Character();
@@ -139,7 +139,7 @@ enum SkillIndex {
   NONE,
   STRONG_ATTACK,
   PROTECT,
-  POISON_IN_WEAPON,
+  FAIR_PARTY,
   SMASH,
   ROAR,
   SPRAY_KNIFE
@@ -179,80 +179,6 @@ class Skill : public Character {
 
   // Virtual
   virtual void Use(Character& _Target);
-};
-
-class StrongAttack : public Skill {  // index : 1
- public:
-  StrongAttack(Character* _Owner);
-
-  virtual void Use(Character& _Target);
-};
-
-class Protect : public Skill {  // 2
- public:
-  Protect(Character* _Owner);
-
-  virtual void Use(Character& Target);
-
- private:
-  int protect_count;
-};
-
-class Protector {
- public:
-  Protector(Character* _protector, int _count, Character* _is_protected_1, Character* _is_protected_2 = nullptr);
-  void ProtectNow(Character* _is_protected);
-  void ProtectEnd(Character* _is_protected); // Now와 같은 변수 전달
-  void Switch(Character*, Character*);
-
-  static Protector* NewProtector(Character* _protector, int _count,
-                                 Character* _is_protected_1,
-                                 Character* _i2_protected2 = nullptr);
-  void Push();
-
-  void DecreaseCount();
-
-  void Remove();
-  void RemoveAll();
-
-  static Protector* GetHead();
-  static Protector* GetTail();
-
- private:
-  Character* is_protected[PARTY_MAX - 1];
-  Character* protector;
-
-  static Protector* Head;
-  static Protector* Tail;
-
-  static int Length;
-
-  int count;
-};
-
-class PoisonInWeapon : public Skill {  // 3
- public:
-  PoisonInWeapon(Character* Owner);
-
-  virtual void Use();
-};
-
-class Smash : public Skill {  // 4
- public:
-  Smash(Character* Owner);
-
-  virtual void Use(Character& Target);
-
- private:
-  bool is_charging;
-  Character& Target;
-};
-
-class Roar : public Skill {
- public:
-  Roar(Character* Owner);
-
-  virtual void Use(Hero** player);
 };
 
 class Hero : public Character {
@@ -323,8 +249,222 @@ class Enemy : public Character {
   ~Enemy();
 };
 
+class Protector {
+ public:
+  Protector(Character* _protector, int _count, Character* _is_protected_1,
+            Character* _is_protected_2 = nullptr);
+  // void ProtectNow(Character* _is_protected);
+  // void ProtectEnd(Character* _is_protected);  // Now와 같은 변수 전달
+  // void Switch(Character*, Character*);
+
+  static void NewProtector(Character* _protector, int _count,
+                           Character* _is_protected_1,
+                           Character* _is_protected_2 = nullptr);
+
+  static Protector* FindIsProtected(Character* character);
+  static Protector* FindIsProtecting(Character* character);
+  Character* GetProtector() { return protector; }
+
+  static Character* ProtectorChecker(Character* target);
+
+  void Push();
+
+  void DecreaseCount();
+
+  void Remove();
+  static void RemoveAll();
+
+  static const Protector* GetHead() { return Head; }
+  static const Protector* GetTail() { return Tail; }
+
+ private:
+  static void RemoveAll(Protector* head);
+
+ private:
+  Character* is_protected[PARTY_MAX - 1];
+  Character* protector;
+  int count;
+
+  static Protector* Head;
+  static Protector* Tail;
+
+  Protector* Next;
+  Protector* Prev;
+
+  static int Length;
+};
+
+class Hider {
+ public:
+  Hider(Character* _hided, int _count);
+
+  static void NewHider(Character* _hided, int _count);
+
+  static Hider* FindIsHiding(Character* character);
+  Character* GetHided() { return hided; }
+
+  void Push();
+
+  void DecreaseCount();
+
+  void Remove();
+  static void RemoveAll();
+
+  static const Hider* GetHead() { return Head; }
+  static const Hider* GetTail() { return Tail; }
+
+ private:
+  static void RemoveAll(Hider* head);
+
+ private:
+  Character* hided;
+  int count;
+
+  static Hider* Head;
+  static Hider* Tail;
+
+  Hider* Next;
+  Hider* Prev;
+
+  static int Length;
+};
+
+class Poisoner {
+ public:
+  Poisoner(Character* _poisoner, int _count);
+  static void NewPoisoner(Character* _poisoner, int _count);
+
+  static Poisoner* FindIsPoisoner(Character* character);
+  Character* GetPoisoner() { return poisoner; }
+  int GetPoisonDmg() const { return poison_dmg; }
+
+  void Push();
+
+  void DecreaseCount();
+
+  void Remove();
+  static void RemoveAll();
+
+  static const Poisoner* GetHead() { return Head; }
+  static const Poisoner* GetTail() { return Tail; }
+
+ private:
+  static void RemoveAll(Poisoner* head);
+
+ private:
+  Character* poisoner;
+  int count;
+  int poison_dmg;
+
+  static Poisoner* Head;
+  static Poisoner* Tail;
+
+  Poisoner* Next;
+  Poisoner* Prev;
+
+  static int Length;
+};
+
+#define POISON_STACK_MAX 2
+
+class Poisoned {
+ public:
+  Poisoned(Character* _poisoner, int _count, int _dmg);
+  static void NewPoisoned(Character* _poisoner, int _count, int _dmg);
+
+  static Poisoned* FindIsPoisoned(Character* character);
+  Character* GetPoisoner() { return poisoned; }
+
+  int GetPoisonDmg() const { return poison_dmg; }
+
+  // bool IsFullStack();
+
+  void Push();
+
+  void DecreaseCount();
+  void PoisonDamage();
+
+  void Remove();
+  static void RemoveAll();
+
+  static const Poisoned* GetHead() { return Head; }
+  static const Poisoned* GetTail() { return Tail; }
+
+ private:
+  static void RemoveAll(Poisoned* head);
+
+ private:
+  Character* poisoned;
+  int count;
+  int poison_dmg;
+  // int stack;
+
+  static Poisoned* Head;
+  static Poisoned* Tail;
+
+  Poisoned* Next;
+  Poisoned* Prev;
+
+  static int Length;
+};
+
+class StrongAttack : public Skill {  // 1 세게 때리기
+ public:
+  StrongAttack(Character* _Owner);
+
+  virtual void Use(Character& _Target);
+};
+
+class Protect : public Skill {  // 2 보호
+ public:
+  Protect(Character* _Owner);
+
+  virtual void Use(Character& Target);
+
+ private:
+  int protect_count;
+};
+
+class FairParty
+    : public Skill {  // 3 정정당당한 승부 ( 한 턴 은신 & 일반공격 3번 동안 독
+                      // 부여 ) ( 독 : 공격력의 25퍼센트 )
+ public:
+  FairParty(Character* Owner);
+
+  virtual void Use(Character& Owner);
+};
+
+class Smash : public Skill {  // 4 혼신의 일격 ( 한 턴 스킵 & 다음 공격은 3배의
+                              // 대미지 ) 쿨타임 : 3턴
+ public:
+  Smash(Character* Owner);
+
+  virtual void Use(Character& Target);
+
+ private:
+  bool is_charging;
+  Character& Target;
+};
+
+class Roar : public Skill {  // 5 전장의 포효 ( 방어력 + 5, 이번 턴 동안 모든
+                             // 공격 방어 ) 쿨타임 : 2턴
+ public:
+  Roar(Character* Owner);
+
+  virtual void Use();
+  virtual void Use(Hero** player);
+};
+
+class EvilParty : public Skill {  // 6 고약한 축제 ( 모든 적에게 공격력의
+                                  // 70%만큼의 대미지 , 독 부여 )
+ public:
+  EvilParty(Character* Owner);
+
+  virtual void Use(Enemy** enemy);
+};
+
 void NewPlayerCharacter(Hero** _Player, int _lvl);
-void PlayerArrayAlign(Hero** Player);
+// void PlayerArrayAlign(Hero** Player);
 int GetNumOfPlayableHeroes(Hero** _Player);
 void Swap(Hero*, Hero*);
 
@@ -336,3 +476,5 @@ const int GetAvgLvlOfTeam(Hero** team);
 const int GetAvgLvlOfTeam(Enemy** team);
 
 void LobbyPlayerStatus(Hero** player);
+void CombatPrintStatus(Hero** player, Enemy** enemy, int allies_personnel,
+                       int enemies_personnel);

@@ -99,6 +99,8 @@ class QuestList {
   // Linked List ±âº» ¸â¹ö
   QuestList(int _index);
 
+  static void QuestCompleteChecker(Hero** Player);
+
   static void NewQuestList(int _index);
   void Push();
 

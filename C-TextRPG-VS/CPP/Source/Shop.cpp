@@ -19,7 +19,7 @@ void ShopListPotion() {
     Item* item = NewItem(index);
     if (item != nullptr && index <= 30) {
       std::cout << index << ". " << item->GetName() << " | " << item->GetPrice()
-                << "G";
+                << "G | ";
       item->PrintDescription();
       ENDL;
       delete item;
@@ -84,7 +84,7 @@ void BuyItem() {
     if (count == 0) continue;
 
     if (GameManager::GetGold() >= item->GetPrice() * count) {
-      GameManager::SetGold(GameManager::GetGold() - item->GetPrice());
+      GameManager::SetGold(GameManager::GetGold() - item->GetPrice() * count);
       Inventory::GotItem(index, count);
       std::cout << item->GetName() << "을(를) " << count << "개 구매했습니다."
                 << std::endl;

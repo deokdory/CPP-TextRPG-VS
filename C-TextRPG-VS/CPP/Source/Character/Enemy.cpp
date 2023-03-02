@@ -151,6 +151,8 @@ bool Enemy::CheckIsDead() {
       std::cout << name << "은 쓰러졌다." << std::endl;
       QuestList::HuntQuestProgressChecker(index);
       SYSTEM_MESSAGE_DELAY;
+      Poisoned* node = Poisoned::FindIsPoisoned(this);
+      if (node) node->Remove();
     }
   }
   return is_dead;
