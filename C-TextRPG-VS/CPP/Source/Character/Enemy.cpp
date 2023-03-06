@@ -11,7 +11,7 @@ Enemy::Enemy()
 
 Enemy::Enemy(int _index, int _lvl)
     : index(_index),
-      Character::Character(GetNameWithIndex(_index), Class::COMMON, _lvl, 0.9),
+      Character::Character(GetNameWithIndex(_index), Class::COMMON, _lvl, 0.92),
       reward_gold(GetRewardGoldForCurrentLvl()),
       reward_exp(GetRewardExpForCurrentLvl()) {
   type = CharacterType::ENEMY;
@@ -24,13 +24,16 @@ const std::string Enemy::GetNameWithIndex(int _index) {
       name = "NONE";
       break;
     case WOLF:
-      name = "WOLF";
+      name = "´Á´ë";
       break;
     case GOBLIN:
-      name = "GOBLIN";
+      name = "°íºí¸°";
       break;
     case DEVILKING:
-      name = "DEVILKING";
+      name = "¸¶¿Õ";
+      break;
+    case DEVIL:
+      name = "¾Ç¸¶ Á¹°³";
       break;
     default:
       name = "DEFAULT";
@@ -56,6 +59,23 @@ int Enemy::GetRewardExpForCurrentLvl() {
 }
 
 void Enemy::PrintStatus(short x) {
+  int OriginColor = LIGHT_GRAY;
+  bool is_hiding = false;
+  bool is_poisoner = false;
+  bool is_poisoned = false;
+
+  if (CheckIsDead()) {
+    OriginColor = RED;
+  } else {
+    if (Hider::FindIsHiding(this)) is_hiding = true;
+    if (Poisoner::FindIsPoisoner(this)) is_poisoner = true;
+    if (Poisoned::FindIsPoisoned(this)) is_poisoned = true;
+  }
+  if (is_hiding) {
+    OriginColor = DARK_GRAY;
+  }
+  TextColor(OriginColor);
+
   gotox(x);
   for (int i = 0; i < STATUS_LENGTH; i++) {
     std::cout << "=";
@@ -71,12 +91,16 @@ void Enemy::PrintStatus(short x) {
 
   gotox(x);
   RESET_FORMAT;
+  if (is_poisoned) TextColor(GREEN);
   PrintHp();
   PrintHpBar();
+  if (is_poisoned) TextColor(OriginColor);
   ENDL;
 
   gotox(x);
+  if (is_poisoner) TextColor(GREEN);
   PrintAtk();
+  if (is_poisoner) TextColor(OriginColor);
   PrintDef();
   PrintSpd();
   ENDL;
@@ -100,6 +124,23 @@ void Enemy::PrintStatus(short x) {
 }
 
 void Enemy::PrintStatus(short x, short y) {
+  int OriginColor = LIGHT_GRAY;
+  bool is_hiding = false;
+  bool is_poisoner = false;
+  bool is_poisoned = false;
+
+  if (CheckIsDead()) {
+    OriginColor = RED;
+  } else {
+    if (Hider::FindIsHiding(this)) is_hiding = true;
+    if (Poisoner::FindIsPoisoner(this)) is_poisoner = true;
+    if (Poisoned::FindIsPoisoned(this)) is_poisoned = true;
+  }
+  if (is_hiding) {
+    OriginColor = DARK_GRAY;
+  }
+  TextColor(OriginColor);
+
   gotoxy(x, y);
   for (int i = 0; i < STATUS_LENGTH; i++) {
     std::cout << "=";
@@ -115,12 +156,16 @@ void Enemy::PrintStatus(short x, short y) {
 
   gotox(x);
   RESET_FORMAT;
+  if (is_poisoned) TextColor(GREEN);
   PrintHp();
   PrintHpBar();
+  if (is_poisoned) TextColor(OriginColor);
   ENDL;
 
   gotox(x);
+  if (is_poisoned) TextColor(GREEN);
   PrintAtk();
+  if (is_poisoned) TextColor(OriginColor);
   PrintDef();
   PrintSpd();
   ENDL;

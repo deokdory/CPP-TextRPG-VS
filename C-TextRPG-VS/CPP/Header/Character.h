@@ -83,7 +83,7 @@ class Character {
   std::string GetName() const;
   void LvlUp();
 
-  // Get
+    // Get
   CharacterType GetType() const;
   int GetMaxHp() const;
   double GetHp() const;
@@ -117,8 +117,8 @@ class Character {
   virtual bool CheckIsDead();
 
   // Print
-  virtual void PrintStatus(short x = 0);
-  virtual void PrintStatus(short x, short y);
+  virtual void PrintStatus(short x = 0) = 0;
+  virtual void PrintStatus(short x, short y) = 0;
 
   void PrintHp();
   void PrintHpBar();
@@ -129,6 +129,7 @@ class Character {
 
   // ¼Ò¸êÀÚ
   virtual ~Character();
+
 };
 
 #define HERO_SKILL_MAX 3
@@ -145,8 +146,9 @@ enum SkillIndex {
   SPRAY_KNIFE
 };
 
-class Skill : public Character {
+class Skill {
  protected:
+  std::string name;
   int index;
 
   Character* Owner;
@@ -165,6 +167,7 @@ class Skill : public Character {
   Skill(const Skill& other);
 
   // Get
+  std::string GetName() const { return name; }
   int GetCoolDown() const;
   int GetCoolDownRemain() const;
   std::string GetDescription() const;
@@ -219,7 +222,7 @@ class Hero : public Character {
 
 Skill* SkillSelect(Hero* TurnNowHero);
 
-enum EnemyIndex { WOLF = 1, GOBLIN, DEVILKING };
+enum EnemyIndex { WOLF = 1, GOBLIN, DEVILKING, DEVIL };
 
 class Enemy : public Character {
   int index;

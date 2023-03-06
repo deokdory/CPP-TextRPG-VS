@@ -4,7 +4,7 @@
 
 Quest::Quest(int index, std::string name, std::string description,
              QuestType type, int reward_exp, int reward_gold, Item* reward_item)
-    : index(0),
+    : index(index),
       name(name),
       description(description),
       type(type),
@@ -13,14 +13,22 @@ Quest::Quest(int index, std::string name, std::string description,
       reward_item(reward_item) {}
 
 void Quest::QuestComplete(Hero** player) {
-  std::cout << GetName() << " 퀘스트를 완료하셨습니다." << std::endl;
+  std::cout << GetName() << " 퀘스트를 완료했다." << std::endl;
+  SYSTEM_MESSAGE_DELAY;
+  std::cout << "모든 캐릭터가 경험치를 " << reward_exp << " 만큼 얻는다"
+            << std::endl;
+  SYSTEM_MESSAGE_DELAY;
 
   for (int i = 0; i < PARTY_MAX; i++) {
     if (player[i] != nullptr) {
       player[i]->GiveExp(reward_exp);
     }
   }
+
   GameManager::AddGold(reward_gold);
+  std::cout << reward_gold << "G 를 보상으로 얻었다." << std::endl;
+  SYSTEM_MESSAGE_DELAY;
+
   CompletedQuest::NewCompletedQuest(index);
 }
 
@@ -140,7 +148,7 @@ void SupplyQuest::QuestComplete(Hero** player) {
   */
 
 Quest* NewQuest(int _index) {
-  if (CompletedQuest::CheckIsCompletedQuest(_index)) {
+  if (CompletedQuest::CheckIsCompletedQuest(_index) || QuestList::FindQuestIsProgress(_index)) {
     return nullptr;
   }
 
@@ -243,18 +251,40 @@ int QuestList::Length = 0;
 QuestList::QuestList(int _index)
     : quest_in_progress(NewQuest(_index)), Next(nullptr), Prev(nullptr) {}
 
+QuestList::~QuestList() {}
+
+QuestList* QuestList::FindQuestIsProgress(int _index) {
+  if (!Head) return nullptr;
+
+  QuestList* checker = Head;
+
+  while (true) {
+    if (checker->GetQuestInProgress()->GetIndex() == _index) {
+      return checker;
+    }
+
+    else if (checker->Next)
+      checker = checker->Next;
+    else
+      return nullptr;
+  }
+}
+
 void QuestList::QuestCompleteChecker(Hero** Player) {
   if (!Head) return;
 
   QuestList* checker = Head;
 
   while (true) {
+    if (checker == nullptr) break;
+
     if (checker->GetQuestInProgress()->IsGoalAchieved()) {
-      checker->GetQuestInProgress()->QuestComplete(Player);
-      checker->Remove();
+      checker->QuestComplete(Player);
+      checker = Head;
+      continue;
     }
 
-    if (checker->Next)
+    else if (checker->Next)
       checker = checker->Next;
     else
       break;
@@ -264,7 +294,7 @@ void QuestList::QuestCompleteChecker(Hero** Player) {
 void QuestList::NewQuestList(int _index) {
   QuestList* node = new QuestList(_index);
 
-  if (node->GetQuestInProgress() != nullptr) {
+  if (node->GetQuestInProgress()) {
     std::cout << node->GetQuestInProgress()->GetName()
               << " 퀘스트를 받았습니다." << std::endl;
     SYSTEM_MESSAGE_DELAY;
@@ -289,11 +319,9 @@ void QuestList::Push() {
 }
 
 void QuestList::Remove() {
-
   if (Head == this) {
     if (this->Next == nullptr) {
       Head = nullptr;
-      delete this;
     } else {
       this->Next->Prev = nullptr;
       Head = this->Next;
@@ -309,7 +337,6 @@ void QuestList::Remove() {
       this->Next->Prev = this->Prev;
     }
   }
-
   delete this;
   Length--;
 }
@@ -379,8 +406,6 @@ void QuestList::Open() {
 }
 
 void QuestList::QuestComplete(Hero** player) {
-  std::cout << quest_in_progress->GetName() << " 퀘스트를 완료했습니다."
-            << std::endl;
   quest_in_progress->QuestComplete(player);
   delete quest_in_progress;
   Remove();

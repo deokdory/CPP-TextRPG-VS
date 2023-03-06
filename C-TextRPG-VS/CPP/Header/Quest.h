@@ -98,6 +98,7 @@ class QuestList {
  public:
   // Linked List ±âº» ¸â¹ö
   QuestList(int _index);
+  ~QuestList();
 
   static void QuestCompleteChecker(Hero** Player);
 
@@ -117,6 +118,7 @@ class QuestList {
   static void Open();
 
   void QuestComplete(Hero**);
+  static QuestList* FindQuestIsProgress(int _index);
   Quest* GetQuestInProgress() { return quest_in_progress; }
   void GiveUpQuest();
 

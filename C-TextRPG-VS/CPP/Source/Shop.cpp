@@ -28,6 +28,9 @@ void ShopListPotion() {
       break;
     }
   }
+  std::cout << "=========="
+               "============================================================"
+            << std::endl;
 }
 
 void ShopMenu() {

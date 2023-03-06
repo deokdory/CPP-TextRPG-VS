@@ -428,7 +428,10 @@ Poisoned* Poisoned::Tail = nullptr;
 int Poisoned::Length = 0;
 
 Poisoned::Poisoned(Character* _poisoned, int _count, int _dmg)
-    : poisoned(_poisoned), count(_count), poison_dmg(_dmg), Next(nullptr), Prev(nullptr) {}
+    : poisoned(_poisoned), count(_count), poison_dmg(_dmg), Next(nullptr), Prev(nullptr) {
+  std::cout << poisoned->GetName() << "이(가) 중독되었다." << std::endl;
+  SYSTEM_MESSAGE_DELAY;
+}
 void Poisoned::NewPoisoned(Character* _poisoned, int _count, int _dmg) {
   if (_poisoned) {
     if (Poisoned* node = FindIsPoisoned(_poisoned)) {

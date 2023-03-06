@@ -44,8 +44,8 @@ Skill* Hero::GetSkill(int slot_number) { return skill[slot_number]; }
 void Hero::GiveExp(int _exp) {
   int prev_lvl = GetLvl();
   exp += _exp;
-  //std::cout << "경험치를 " << exp << "만큼 얻었다!" << std::endl;
-  SYSTEM_MESSAGE_DELAY;
+  // std::cout << "경험치를 " << exp << "만큼 얻었다!" << std::endl;
+  // SYSTEM_MESSAGE_DELAY;
   while (true) {
     if (exp >= max_exp) {
       LvlUp();
@@ -102,8 +102,7 @@ void Hero::PrintSkillsAll() {
       continue;
     }
   }
-  std::cout
-            << "============================================================="
+  std::cout << "============================================================="
                "========="
             << std::endl;
 }
@@ -145,6 +144,23 @@ void Hero::TurnEnd() {
 }
 
 void Hero::PrintStatus(short x) {
+  int OriginColor = LIGHT_GRAY;
+  bool is_hiding = false;
+  bool is_poisoner = false;
+  bool is_poisoned = false;
+
+  if (CheckIsDead()) {
+    OriginColor = RED;
+  } else {
+    if (Hider::FindIsHiding(this)) is_hiding = true;
+    if (Poisoner::FindIsPoisoner(this)) is_poisoner = true;
+    if (Poisoned::FindIsPoisoned(this)) is_poisoned = true;
+  }
+  if (is_hiding) {
+    OriginColor = DARK_GRAY;
+  }
+  TextColor(OriginColor);
+
   gotox(x);
   for (int i = 0; i < STATUS_LENGTH; i++) {
     std::cout << "=";
@@ -152,6 +168,7 @@ void Hero::PrintStatus(short x) {
   ENDL;
 
   gotox(x);
+
   SET_FORMAT_WIDTH_L(NAME_LIMIT + 2);
   std::cout << Character::GetName();
   RESET_FORMAT;
@@ -160,12 +177,17 @@ void Hero::PrintStatus(short x) {
 
   gotox(x);
   RESET_FORMAT;
+
+  if (is_poisoned) TextColor(GREEN);
   PrintHp();
   PrintHpBar();
+  if (is_poisoned) TextColor(OriginColor);
   ENDL;
 
   gotox(x);
+  if (is_poisoner) TextColor(GREEN);
   Character::PrintAtk();
+  if (is_poisoner) TextColor(OriginColor);
   Character::PrintDef();
   Character::PrintSpd();
   ENDL;
@@ -190,6 +212,22 @@ void Hero::PrintStatus(short x) {
 }
 
 void Hero::PrintStatus(short x, short y) {
+  int OriginColor = LIGHT_GRAY;
+  bool is_hiding = false;
+  bool is_poisoner = false;
+  bool is_poisoned = false;
+
+  if (CheckIsDead()) {
+    OriginColor = RED;
+  } else {
+    if (Hider::FindIsHiding(this)) is_hiding = true;
+    if (Poisoner::FindIsPoisoner(this)) is_poisoner = true;
+    if (Poisoned::FindIsPoisoned(this)) is_poisoned = true;
+  }
+  if (is_hiding) {
+    OriginColor = DARK_GRAY;
+  }
+  TextColor(OriginColor);
   gotoxy(x, y);
   for (int i = 0; i < STATUS_LENGTH; i++) {
     std::cout << "=";
@@ -205,12 +243,16 @@ void Hero::PrintStatus(short x, short y) {
 
   gotox(x);
   RESET_FORMAT;
+  if (is_poisoned) TextColor(GREEN, BLACK);
   PrintHp();
   PrintHpBar();
+  if (is_poisoned) TextColor(OriginColor);
   ENDL;
 
   gotox(x);
+  if (is_poisoner) TextColor(GREEN, BLACK);
   Character::PrintAtk();
+  if (is_poisoner) TextColor(OriginColor);
   Character::PrintDef();
   Character::PrintSpd();
   ENDL;

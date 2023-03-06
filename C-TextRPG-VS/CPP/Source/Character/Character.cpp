@@ -1,5 +1,4 @@
 #include "Character.h"
-
 #include "pch.h"
 
 Character::Character()
@@ -188,7 +187,7 @@ void Character::AddTurnWaiter(double _turn_waiter) {
 
 void Character::Attack(Character* target) {
   int damage = 0;
-  std::cout << name << "가 " << target->name << "을 공격하려고 한다";
+  std::cout << name << "이(가) " << target->name << "을 공격하려고 한다";
   for (int i = 0; i < 3; i++) {
     printf(" .");
     Sleep(500);
@@ -204,12 +203,12 @@ void Character::Attack(Character* target) {
   target->hp -= damage;
   std::cout << target->name << "은 " << damage << "의 피해를 입었다"
             << std::endl;
+  SYSTEM_MESSAGE_DELAY;
 
   if (Poisoner* node = Poisoner::FindIsPoisoner(this)) {
     Poisoned::NewPoisoned(target, 3, node->GetPoisonDmg());
   }
 
-  SYSTEM_MESSAGE_DELAY;
 
   //
   //    if(!(target.CheckIsDead())) {
@@ -280,7 +279,7 @@ int Character::GetLvl() const { return lvl; }
 double Character::GetTurnSpd() const { return turn_spd; }
 
 double Character::GetTurnWaiter() const { return turn_waiter; }
-
+/*
 void Character::PrintStatus(short x) {
   gotox(x);
   for (int i = 0; i < STATUS_LENGTH; i++) {
@@ -303,7 +302,15 @@ void Character::PrintStatus(short x) {
   ENDL;
 
   gotox(x);
+
+  Poisoner* poisoner = Poisoner::FindIsPoisoner(this);
+  bool is_poisoner = poisoner != nullptr;
+
+  if (is_poisoner) {
+    TextColor(GREEN, BLACK);
+  }
   PrintAtk();
+
   PrintDef();
   PrintSpd();
   ENDL;
@@ -325,6 +332,8 @@ void Character::PrintStatus(short x) {
   }
   ENDL;
 }
+*/
+/*
 void Character::PrintStatus(short x, short y) {
   gotoxy(x, y);
   for (int i = 0; i < STATUS_LENGTH; i++) {
@@ -369,7 +378,7 @@ void Character::PrintStatus(short x, short y) {
   }
   ENDL;
 }
-
+*/
 double Character::GetHpRemain() const {
   if (max_hp != 0) {
     return (hp / max_hp) * 100;
@@ -422,19 +431,12 @@ void Character::PrintHpBar() {
 }
 
 void Character::PrintAtk() {
+
+
   std::cout << "ATK ";
   SET_FORMAT_WIDTH_L(4);
 
-  Poisoner* poisoner = Poisoner::FindIsPoisoner(this);
-  bool is_poisoner = poisoner != nullptr;
-
-  if (is_poisoner) {
-    TextColor(GREEN, BLACK);
-  }
   std::cout << GetAtk();
-  if (is_poisoner) {
-    TextColor();
-  }
 }
 
 void Character::PrintDef() {
@@ -679,11 +681,6 @@ void CombatPrintStatus(Hero** player, Enemy** enemy, int allies_personnel,
 
   gotoy(0);
   for (int i = 0; i < allies_personnel; i++) {
-    if (player[i]->CheckIsDead()) {
-      TextColor(RED, BLACK);
-    } else if (Hider::FindIsHiding(player[i])) {
-      TextColor(DARK_GRAY, BLACK);
-    }
     player[i]->PrintStatus();
     TextColor();
   }

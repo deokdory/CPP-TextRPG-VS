@@ -14,7 +14,11 @@ void Combat(GameManager& Game, Hero** Player, Place _place) {
   int total_reward_exp = 0;
 
   for (int i = 0; i < enemies_personnel; i++) {
-    enemy[i] = new Enemy(GetEnemyIndex(_place), GetEnemyLvl(_place));
+    if (i == 0 && _place == Place::MOUNTAIN) {
+      enemy[i] = new Enemy(DEVILKING, 6);
+    } else {
+      enemy[i] = new Enemy(GetEnemyIndex(_place), GetEnemyLvl(_place));
+    }
     total_reward_gold += enemy[i]->GetRewardGold();
     total_reward_exp += enemy[i]->GetRewardExp();
   }
@@ -107,12 +111,10 @@ void Combat(GameManager& Game, Hero** Player, Place _place) {
       if (turn_now_count > 1) {
         int top_score = 0;
         for (int i = 0; i < total_combat_personnel; i++) {
-          if (turn_score[i]) {
-            if (turn_score[i] > top_score) {
-              turn_now = TurnWaiting[i];
-              top_score = turn_score[i];
-              turn_now_index = i;
-            }
+          if (turn_score[i] || turn_score[i] > top_score) {
+            turn_now = TurnWaiting[i];
+            top_score = turn_score[i];
+            turn_now_index = i;
           }
         }
         break;
@@ -150,219 +152,221 @@ void Combat(GameManager& Game, Hero** Player, Place _place) {
       prev_turn = turn_now;
       continue;
     }
-  
-//  system("cls");
-//
-//  CombatPrintStatus(Player, enemy, allies_personnel, enemies_personnel);
 
-  
+    //  system("cls");
+    //
+    //  CombatPrintStatus(Player, enemy, allies_personnel, enemies_personnel);
 
-  // 플레이어 턴
-  if (turn_now->GetType() == CharacterType::HERO) {
-    ClearFromY(23, 6);
+    // 플레이어 턴
+    if (turn_now->GetType() == CharacterType::HERO) {
+      ClearFromY(23, 6);
+      gotoy(23);
+      Hero* TurnNowHero = dynamic_cast<Hero*>(turn_now);
+      //행동 선택
+      int action = 0;
+      std::cout << "1. 공격   2. 스킬 사용   3. 아이템 사용   4. 도망"
+                << std::endl;
+      std::cout << "행동을 선택해주십시오 : ";
+      std::cin >> action;
 
-    Hero* TurnNowHero = dynamic_cast<Hero*>(turn_now);
-    //행동 선택
-    int action = 0;
-    std::cout << "1. 공격   2. 스킬 사용   3. 아이템 사용   4. 도망"
-              << std::endl;
-    std::cout << "행동을 선택해주십시오 : ";
-    std::cin >> action;
-
-    switch (action) {
-      case COMBAT_ATTACK: {
-        Character* Target = SelectTarget(enemy);
-        if (Target != nullptr) {
-          if (Protector* protector = Protector::FindIsProtected(Target)) {
-            Target = protector->GetProtector();
-            protector->DecreaseCount();
+      switch (action) {
+        case COMBAT_ATTACK: {
+          Character* Target = SelectTarget(enemy);
+          if (Target != nullptr) {
+            if (Protector* protector = Protector::FindIsProtected(Target)) {
+              Target = protector->GetProtector();
+              protector->DecreaseCount();
+            }
+            turn_now->Attack(Target);
+            TurnNowHero->TurnEnd();
           }
-          turn_now->Attack(Target);
+          break;
+        }
+        case COMBAT_USE_SKILL: {
+          Skill* UsingSkill = SkillSelect(TurnNowHero);
+
+          if (UsingSkill == nullptr) break;  // 스킬 사용 취소
+
+          switch (UsingSkill->GetSkillType()) {
+            case SkillType::ATTACK: {
+              Character* Target = SelectTarget(enemy);
+              if (Target == nullptr) {
+                break;
+              }
+              UsingSkill->Use(*Target);
+              TurnNowHero->TurnEnd();
+              break;
+            }
+            case SkillType::HEAL: {
+              break;
+            }
+            case SkillType::BUFF: {
+              UsingSkill->Use(*turn_now);
+              TurnNowHero->TurnEnd();
+              break;
+            }
+            case SkillType::DEBUFF: {
+              break;
+            }
+            case SkillType::PROTECT: {
+              Character* Target = SelectTarget(Player);
+              if (Target == nullptr) {
+                break;
+              } else if (Target == turn_now) {
+                std::cout << "자신을 보호할 수는 없습니다." << std::endl;
+                SYSTEM_MESSAGE_DELAY;
+                break;
+              }
+              UsingSkill->Use(*Target);
+              TurnNowHero->TurnEnd();
+              break;
+            }
+
+            default:
+              std::cout << "ERROR : Undefined SkillType in Combat" << std::endl;
+              break;
+          }
+          break;
+        }
+        case COMBAT_USE_ITEM: {
+          Inventory::Open(*TurnNowHero, Player, enemy);
+          break;
+        }
+        case COMBAT_RUNAWAY: {
+          ranaway = RunAway(Player, enemy);
           TurnNowHero->TurnEnd();
+          break;
         }
-        break;
       }
-      case COMBAT_USE_SKILL: {
-        Skill* UsingSkill = SkillSelect(TurnNowHero);
+    } else {  // 적 차례
+      SYSTEM_MESSAGE_DELAY;
 
-        if (UsingSkill == nullptr) break;  // 스킬 사용 취소
+      if (!turn_now->CheckIsDead()) {
+        int target_score[PARTY_MAX] = {};
+        int dealt_damage[PARTY_MAX] = {};
+        int max_dealt_damage = 0;
+        int received_damage[PARTY_MAX] = {};
+        int min_received_damage = 99999;
+        int target_hp_remain[PARTY_MAX] = {};
+        int min_target_hp_remain = 99999;
+        bool attack_will_die[PARTY_MAX] = {};
 
-        switch (UsingSkill->GetSkillType()) {
-          case SkillType::ATTACK: {
-            Character* Target = SelectTarget(enemy);
-            if (Target == nullptr) {
-              break;
+        for (int i = 0; i < allies_personnel; i++) {
+          if (Player[i] != nullptr) {
+            if (Player[i]->CheckIsDead() || Hider::FindIsHiding(Player[i])) {
+              continue;
+            } else {
+              dealt_damage[i] = turn_now->GetAtk() - Player[i]->GetDef();
+              if (dealt_damage[i] > max_dealt_damage) {
+                max_dealt_damage = dealt_damage[i];
+              }
+              received_damage[i] = Player[i]->GetAtk() - turn_now->GetAtk();
+              if (received_damage[i] < min_received_damage) {
+                min_received_damage = received_damage[i];
+              }
+              // if (turn_now->GetHp() - received_damage[i] <= 0) {
+              //  attack_will_die[i] = true;
+              //}
+              target_hp_remain[i] = Player[i]->GetHp() - dealt_damage[i];
+              if (target_hp_remain[i] < min_target_hp_remain) {
+                min_target_hp_remain = target_hp_remain[i];
+              }
             }
-            UsingSkill->Use(*Target);
-            TurnNowHero->TurnEnd();
-            break;
           }
-          case SkillType::HEAL: {
-            break;
-          }
-          case SkillType::BUFF: {
-            UsingSkill->Use(*turn_now);
-            TurnNowHero->TurnEnd();
-            break;
-          }
-          case SkillType::DEBUFF: {
-            break;
-          }
-          case SkillType::PROTECT: {
-            Character* Target = SelectTarget(Player);
-            if (Target == nullptr) {
-              break;
-            } else if (Target == turn_now) {
-              std::cout << "자신을 보호할 수는 없습니다." << std::endl;
-              SYSTEM_MESSAGE_DELAY;
-              break;
-            }
-            UsingSkill->Use(*Target);
-            TurnNowHero->TurnEnd();
-            break;
-          }
-
-          default:
-            std::cout << "ERROR : Undefined SkillType in Combat" << std::endl;
-            break;
         }
-        break;
-      }
-      case COMBAT_USE_ITEM: {
-        Inventory::Open(*TurnNowHero, Player, enemy);
-        break;
-      }
-      case COMBAT_RUNAWAY: {
-        ranaway = RunAway(Player, enemy);
-        TurnNowHero->TurnEnd();
-        break;
+
+        for (int i = 0; i < allies_personnel; i++) {
+          if (Player[i] != nullptr) {
+            if (Player[i]->CheckIsDead() || Hider::FindIsHiding(Player[i])) {
+              continue;
+            } else {
+              if (dealt_damage[i] == max_dealt_damage) {
+                target_score[i]++;
+              }
+              // if (received_damage[i] == min_received_damage) {
+              //  target_score[i] += 1;
+              //}
+              // if (attack_will_die) {
+              //  target_score[i] -= 1;
+              //}
+              if (target_hp_remain[i] == min_target_hp_remain) {
+                target_score[i]++;
+              }
+              if (target_hp_remain[i] <= 0) {
+                target_score[i]++;
+              }
+            }
+          }
+        }
+        Character* Target = nullptr;
+        int target_top_score = 0;
+        for (int i = 0; i < allies_personnel; i++) {
+          if (Player[i] != nullptr) {
+            if (Player[i]->CheckIsDead()) {
+              continue;
+            } else {
+              if (target_score[i] > target_top_score) {
+                target_top_score = target_score[i];
+                Target = Player[i];
+              }
+            }
+          }
+        }
+
+        if (!Target) {
+          std::cout << "공격할 수 있는 대상이 없어 턴을 넘깁니다." << std::endl;
+          SYSTEM_MESSAGE_DELAY;
+        } else {
+          turn_now->Attack(Target);
+        }
+        turn_now->SetTurnWaiter(0);
       }
     }
-  } else {  // 적 차례
+  }
+
+  // 승패 결정났을 때
+  Clear;
+  CombatPrintStatus(Player, enemy, allies_personnel, enemies_personnel);
+
+  for (int i = 0; i < allies_alive; i++) {  // 쿨타임 초기화
+    for (int j = 0; j < HERO_SKILL_MAX; j++) {
+      if (Player[i]->GetSkill(j)) Player[i]->GetSkill(j)->SetCoolDownRemain(0);
+    }
+  }
+
+  Protector::RemoveAll();  // 모든 보호 해제
+  Poisoner::RemoveAll();   // 모든 독 공격자 해제
+  Poisoned::RemoveAll();   // 모든 독 상태 해제
+  Hider::RemoveAll();      // 모든 은신 상태 해제
+
+  if (allies_alive && !enemies_alive) {  // 승리
+    std::cout << "경험치를 " << total_reward_exp
+              << "만큼 얻습니다. ( 쓰러진 영웅 제외 )" << std::endl;
+    for (int i = 0; i < allies_personnel; i++) {
+      if (Player[i]->CheckIsDead() == false) {
+        Player[i]->GiveExp(total_reward_exp);
+      }
+    }
+    if (_place == Place::MOUNTAIN) {
+      std::cout << "마왕을 물리쳤고 세상은 평화로워졌다." << std::endl;
+      SYSTEM_MESSAGE_DELAY;
+      std::cout << "준비된 게임은 여기까지입니다. 감사합니다. :)" << std::endl;
+      GameManager::SetGameEnded(true);
+      return;
+    }
+
+    Game.AddGold(total_reward_gold);
+    std::cout << total_reward_gold << "G 를 획득했습니다" << std::endl;
     SYSTEM_MESSAGE_DELAY;
-
-    if (!turn_now->CheckIsDead()) {
-      int target_score[PARTY_MAX] = {};
-      int dealt_damage[PARTY_MAX] = {};
-      int max_dealt_damage = 0;
-      int received_damage[PARTY_MAX] = {};
-      int min_received_damage = 99999;
-      int target_hp_remain[PARTY_MAX] = {};
-      int min_target_hp_remain = 99999;
-      bool attack_will_die[PARTY_MAX] = {};
-
-      for (int i = 0; i < allies_personnel; i++) {
-        if (Player[i] != nullptr) {
-          if (Player[i]->CheckIsDead() || Hider::FindIsHiding(Player[i])) {
-            continue;
-          } else {
-            dealt_damage[i] = turn_now->GetAtk() - Player[i]->GetDef();
-            if (dealt_damage[i] > max_dealt_damage) {
-              max_dealt_damage = dealt_damage[i];
-            }
-            received_damage[i] = Player[i]->GetAtk() - turn_now->GetAtk();
-            if (received_damage[i] < min_received_damage) {
-              min_received_damage = received_damage[i];
-            }
-            // if (turn_now->GetHp() - received_damage[i] <= 0) {
-            //  attack_will_die[i] = true;
-            //}
-            target_hp_remain[i] = Player[i]->GetHp() - dealt_damage[i];
-            if (target_hp_remain[i] < min_target_hp_remain) {
-              min_target_hp_remain = target_hp_remain[i];
-            }
-          }
-        }
-      }
-
-      for (int i = 0; i < allies_personnel; i++) {
-        if (Player[i] != nullptr) {
-          if (Player[i]->CheckIsDead() || Hider::FindIsHiding(Player[i])) {
-            continue;
-          } else {
-            if (dealt_damage[i] == max_dealt_damage) {
-              target_score[i]++;
-            }
-            // if (received_damage[i] == min_received_damage) {
-            //  target_score[i] += 1;
-            //}
-            // if (attack_will_die) {
-            //  target_score[i] -= 1;
-            //}
-            if (target_hp_remain[i] == min_target_hp_remain) {
-              target_score[i]++;
-            }
-            if (target_hp_remain[i] <= 0) {
-              target_score[i]++;
-            }
-          }
-        }
-      }
-      Character* Target = nullptr;
-      int target_top_score = 0;
-      for (int i = 0; i < allies_personnel; i++) {
-        if (Player[i] != nullptr) {
-          if (Player[i]->CheckIsDead()) {
-            continue;
-          } else {
-            if (target_score[i] > target_top_score) {
-              target_top_score = target_score[i];
-              Target = Player[i];
-            }
-          }
-        }
-      }
-
-      if (!Target) {
-        std::cout << "공격할 수 있는 대상이 없어 턴을 넘깁니다." << std::endl;
-        SYSTEM_MESSAGE_DELAY;
-      } else {
-        turn_now->Attack(Target);
-      }
-      turn_now->SetTurnWaiter(0);
-    }
-  }
-}
-
-// 승패 결정났을 때
-
-for (int i = 0; i < allies_alive; i++) {  // 쿨타임 초기화
-  for (int j = 0; j < HERO_SKILL_MAX; j++) {
-    if (Player[i]->GetSkill(j)) Player[i]->GetSkill(j)->SetCoolDownRemain(0);
-  }
-}
-
-Protector::RemoveAll();  // 모든 보호 해제
-Poisoner::RemoveAll();
-Poisoned::RemoveAll();
-Hider::RemoveAll();
-
-if (allies_alive && !enemies_alive) {  // 승리
-  for (int i = 0; i < allies_personnel; i++) {
-    if (Player[i]->CheckIsDead() == false) {
-      Player[i]->GiveExp(total_reward_exp);
-    }
-  }
-  if (_place == Place::MOUNTAIN) {
-    std::cout << "마왕을 물리쳤고 세상은 평화로워졌다." << std::endl;
-    SYSTEM_MESSAGE_DELAY;
-    std::cout << "준비된 게임은 여기까지입니다. 감사합니다. :)" << std::endl;
+  } else if (!allies_alive && enemies_alive) {  //패배
+    std::cout << "모든 영웅이 쓰러졌습니다.." << std::endl;
     GameManager::SetGameEnded(true);
-    return;
+    SYSTEM_MESSAGE_DELAY;
+  } else {  // 도망
   }
-
-  Game.AddGold(total_reward_gold);
-  std::cout << total_reward_gold << "G 를 획득했습니다" << std::endl;
-  SYSTEM_MESSAGE_DELAY;
-} else if (!allies_alive && enemies_alive) {  //패배
-  std::cout << "모든 영웅이 쓰러졌습니다.." << std::endl;
-  GameManager::SetGameEnded(true);
-  SYSTEM_MESSAGE_DELAY;
-} else {  // 도망
-}
-for (int i = 0; i < enemies_personnel; i++) {
-  delete enemy[i];
-}
+  for (int i = 0; i < enemies_personnel; i++) {
+    delete enemy[i];
+  }
 }
 
 // 적 세팅
@@ -442,17 +446,17 @@ int GetEnemyLvl(Place _place) {
               << std::endl;
     std::swap(lvl_min, lvl_max);
   }
-  int lvl_range = lvl_max - lvl_min + 1;
+  int lvl_range = lvl_max - lvl_min;
 
-  ratio /= lvl_range;
+  ratio /= (lvl_range + 1);
+
+  lvl = lvl_min;
 
   for (int i = 0; i < lvl_range; i++) {
-    if (random < ratio * (i + 1)) {
-      lvl = lvl_min + i;
+    if (random >= ratio * (i + 1)) {
+      lvl++;
+    } else
       break;
-    } else {
-      continue;
-    }
   }
   return lvl;
 }
@@ -469,7 +473,7 @@ int GetEnemyIndex(Place _place) {
       break;
     }
     case Place::MOUNTAIN: {
-      index = DEVILKING;
+      index = DEVIL;
       break;
     }
   }

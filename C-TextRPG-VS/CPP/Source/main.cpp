@@ -13,7 +13,7 @@ enum ActionInLobby {
 
 int main() {
   Initialize();
-  
+
   Hero* Player[PARTY_MAX] = {};
   GameManager Game;
 
@@ -21,17 +21,10 @@ int main() {
   NewPlayerCharacter(Player, 1);
   NewPlayerCharacter(Player, 1);
 
-
   QuestList::NewQuestList(1);  // 늑대 사냥 퀘스트 부여
-  Inventory::GotItem(1, 3);  // 포션 지급
+  Inventory::GotItem(1, 3);    // 포션 지급
 
   while (true) {
-
-    QuestList::QuestCompleteChecker(Player);
-
-    if (GetAvgLvlOfTeam(Player) >= 3) QuestList::NewQuestList(2);
-    if (GetAvgLvlOfTeam(Player) >= 6) QuestList::NewQuestList(3);
-
     if (GameManager::IsGameEnded()) return 0;
 
     for (int i = 0; i < PARTY_MAX; i++) {
@@ -46,7 +39,14 @@ int main() {
     LobbyPlayerStatus(Player);
 
     std::cout << "보유 골드 : " << Game.GetGold() << "G"
-              << "\t\t진행중인 퀘스트 : " << QuestList::GetLength() << "개";
+              << "\t\t진행중인 퀘스트 : " << QuestList::GetLength() << "개"
+              << std::endl
+              << std::endl;
+
+    QuestList::QuestCompleteChecker(Player);
+
+    if (GetAvgLvlOfTeam(Player) >= 3) QuestList::NewQuestList(2);
+    if (GetAvgLvlOfTeam(Player) >= 6) QuestList::NewQuestList(3);
 
     ClearFromY(9, 20);
 
@@ -87,7 +87,7 @@ int main() {
             break;
           case 1:
             Combat(Game, Player, Place::FOREST);
-            
+
             break;
           case 2:
             Combat(Game, Player, Place::CAVE);
