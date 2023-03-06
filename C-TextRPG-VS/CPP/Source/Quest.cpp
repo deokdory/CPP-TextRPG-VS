@@ -289,30 +289,28 @@ void QuestList::Push() {
 }
 
 void QuestList::Remove() {
+
   if (Head == this) {
-    if (this->Next != nullptr) {
+    if (this->Next == nullptr) {
+      Head = nullptr;
+      delete this;
+    } else {
+      this->Next->Prev = nullptr;
       Head = this->Next;
-      delete this;
-    } else {
-      Head = Tail = nullptr;
-      delete this;
     }
   }
 
-  QuestList* cur = Head;
-
-  while (true) {
-    if (cur != nullptr) {
-      if (this->Next != nullptr) {
-        cur->Next = this->Next;
-      } else {
-        cur->Next = nullptr;
-      }
-      delete this;
+  else {
+    if (this->Next == nullptr) {
+      this->Prev->Next = nullptr;
+      Tail = this->Prev;
     } else {
-      cur = cur->Next;
+      this->Prev->Next = this->Next;
+      this->Next->Prev = this->Prev;
     }
   }
+
+  delete this;
   Length--;
 }
 
@@ -389,10 +387,10 @@ void QuestList::QuestComplete(Hero** player) {
 }
 
 void QuestList::GiveUpQuest() {
-  std::cout
-      << quest_in_progress->GetName()
-      << " 퀘스트를 포기하시겠습니까? 해당 퀘스트의 진행상황이 초기화됩니다."
-      << std::endl;
+  std::cout << quest_in_progress->GetName()
+            << " 퀘스트를 포기하시겠습니까? 해당 퀘스트의 진행상황이 "
+               "초기화됩니다."
+            << std::endl;
   while (true) {
     std::cout << "1. 포기   2. 취소 : ";
     int is_sure = 0;
